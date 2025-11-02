@@ -508,15 +508,41 @@ try {
     });
   });
 
-  // Book button functionality
-  const bookButtons = document.querySelectorAll('.book-btn');
-  bookButtons.forEach((button) => {
-    button.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const serviceId = (button as HTMLElement).getAttribute('data-service-id');
-      console.log('Booking service:', serviceId);
-      // Aquí puedes agregar funcionalidad de reserva
-      alert('Booking functionality - Service ID: ' + serviceId);
-    });
+  // Preparar datos de servicios para el modal
+  const servicesDataForModal: any = {};
+  
+  serviceCards.forEach((wrapper) => {
+    const card = wrapper.querySelector('.service-card');
+    if (!card) return;
+    
+    const serviceId = card.getAttribute('data-service-id');
+    const title = card.querySelector('.service-title')?.textContent?.trim() || '';
+    const description = card.querySelector('.service-description')?.textContent?.trim() || '';
+    const priceText = card.querySelector('.service-price')?.textContent?.trim() || '$0';
+    const price = parseFloat(priceText.replace('$', ''));
+    const imageElement = card.querySelector('.service-image img') as HTMLImageElement;
+    const image = imageElement?.src || '';
+    const category = wrapper.getAttribute('data-category') || '';
+    
+    if (serviceId) {
+      servicesDataForModal[serviceId] = {
+        _id: serviceId,
+        title,
+        description,
+        price,
+        image,
+        category,
+        badge: category.charAt(0).toUpperCase() + category.slice(1)
+      };
+    }
   });
+  
+  console.log('Services data prepared:', servicesDataForModal);
+  
+  // Hacer los datos disponibles globalmente para el modal
+  (window as any).servicesData = servicesDataForModal;
+
+  // Book button functionality - SE REMOVIÓ porque el modal ya maneja los clicks con event delegation
+  // Los botones .book-btn ya son manejados por el ServiceModal.astro
+  console.log('Discover page: Setup complete. Modal will handle book button clicks.');
 </script>

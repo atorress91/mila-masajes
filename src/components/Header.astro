@@ -37,7 +37,7 @@
         </svg>
       </button>
 
-      <button class="cart-btn" id="cartButton" aria-label="Shopping cart">
+      <a href="/cart" class="cart-btn" id="cartButton" aria-label="Shopping cart" data-astro-prefetch>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
             d="M9 2L7 4H3C1.89 4 1 4.89 1 6V18C1 19.11 1.89 20 3 20H21C22.11 20 23 19.11 23 18V8C23 6.89 22.11 6 21 6H15L13 4H9Z"
@@ -61,7 +61,7 @@
           />
         </svg>
         <span class="cart-badge hidden" id="cartBadge">0</span>
-      </button>
+      </a>
 
       <button class="icon-btn menu-btn" aria-label="Menu">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -164,6 +164,10 @@
     padding: 8px;
     transition: all 0.3s ease;
     color: var(--text-primary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .cart-btn:hover {
@@ -225,17 +229,17 @@
     }
   }
 
-  // Navigate to cart
-  const cartButton = document.getElementById('cartButton');
-  if (cartButton) {
-    cartButton.addEventListener('click', () => {
-      window.location.href = '/cart';
-    });
-  }
-
   // Initialize on load
   updateCartBadge();
 
   // Listen for cart updates
-  window.addEventListener('cartUpdated', updateCartBadge);
+  window.addEventListener('cartUpdated', () => {
+    console.log('Cart updated');
+    updateCartBadge();
+  });
+
+  // Re-initialize when navigating between pages (Astro View Transitions)
+  document.addEventListener('astro:page-load', () => {
+    updateCartBadge();
+  });
 </script>
