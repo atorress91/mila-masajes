@@ -88,6 +88,18 @@ export default {
       description: 'Order in which this service appears',
       initialValue: 0,
     },
+    {
+      name: 'addons',
+      title: 'Available Add-ons',
+      type: 'array',
+      of: [
+        {
+          type: 'reference',
+          to: [{ type: 'addon' }],
+        },
+      ],
+      description: 'Select which add-ons are available for this service',
+    },
   ],
   preview: {
     select: {

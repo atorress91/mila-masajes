@@ -24,27 +24,11 @@
         <p class="modal-description" id="modalDescription"></p>
 
         <!-- Add-ons Section -->
-        <div class="addons-section">
+        <div class="addons-section" id="addonsSection">
           <h3 class="addons-title">Add-ons</h3>
           <p class="addons-subtitle">Choose additional services.</p>
-          <div class="addons-list">
-            <label class="addon-item">
-              <input type="checkbox" class="addon-checkbox" data-addon="Aromatherapy" data-price="15" />
-              <span class="addon-name">Aromatherapy</span>
-              <span class="addon-price">+ $15.00</span>
-            </label>
-
-            <label class="addon-item">
-              <input type="checkbox" class="addon-checkbox" data-addon="Hot Stones" data-price="20" />
-              <span class="addon-name">Hot Stones</span>
-              <span class="addon-price">+ $20.00</span>
-            </label>
-
-            <label class="addon-item">
-              <input type="checkbox" class="addon-checkbox" data-addon="CBD Oil Enhancement" data-price="25" />
-              <span class="addon-name">CBD Oil Enhancement</span>
-              <span class="addon-price">+ $25.00</span>
-            </label>
+          <div class="addons-list" id="addonsList">
+            <!-- Add-ons will be populated dynamically -->
           </div>
         </div>
 
@@ -266,10 +250,23 @@
     flex-shrink: 0;
   }
 
-  .addon-name {
+  .addon-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .addon-name {
     font-size: 14px;
     color: #000000;
+    font-weight: 500;
+  }
+
+  .addon-description {
+    font-size: 12px;
+    color: #666;
+    font-weight: 400;
   }
 
   .addon-price {
@@ -427,7 +424,8 @@
     const qtyInput = modal?.querySelector('.qty-input') as HTMLInputElement;
     const qtyMinus = modal?.querySelector('.qty-btn.minus');
     const qtyPlus = modal?.querySelector('.qty-btn.plus');
-    const addonCheckboxes = modal?.querySelectorAll('.addon-checkbox') as NodeListOf<HTMLInputElement>;
+    const addonsList = document.getElementById('addonsList');
+    const addonsSection = document.getElementById('addonsSection');
     const addToCartBtn = modal?.querySelector('.add-to-cart-modal-btn');
 
     let currentService: string | null = null;
@@ -445,28 +443,58 @@
       currentService = serviceId;
       basePrice = service.price;
 
-    if (modalImage) {
-      modalImage.src = service.image;
-      modalImage.alt = service.title;
-    }
-    if (modalTitle) modalTitle.textContent = service.title;
-    if (modalPrice) modalPrice.textContent = `$${service.price.toFixed(2)}`;
-    if (modalDescription) modalDescription.textContent = service.description;
-
-    if (modalBadge) {
-      if (service.badge) {
-        modalBadge.textContent = service.badge;
-        modalBadge.style.display = 'block';
-      } else {
-        modalBadge.style.display = 'none';
+      if (modalImage) {
+        modalImage.src = service.image;
+        modalImage.alt = service.title;
       }
-    }
+      if (modalTitle) modalTitle.textContent = service.title;
+      if (modalPrice) modalPrice.textContent = `$${service.price.toFixed(2)}`;
+      if (modalDescription) modalDescription.textContent = service.description;
 
-    // Reset form
-    if (qtyInput) qtyInput.value = '1';
-    addonCheckboxes.forEach((cb) => (cb.checked = false));
+      if (modalBadge) {
+        if (service.badge) {
+          modalBadge.textContent = service.badge;
+          modalBadge.style.display = 'block';
+        } else {
+          modalBadge.style.display = 'none';
+        }
+      }
 
-    updateSubtotal();
+      // Render add-ons dynamically
+      if (addonsList && addonsSection) {
+        if (service.addons && service.addons.length > 0) {
+          addonsList.innerHTML = service.addons
+            .map((addon: any) => {
+              const icon = addon.icon ? `${addon.icon} ` : '';
+              const description = addon.description ? `<span class="addon-description">${addon.description}</span>` : '';
+              return `
+                <label class="addon-item">
+                  <input 
+                    type="checkbox" 
+                    class="addon-checkbox" 
+                    data-addon-id="${addon._id}"
+                    data-addon-name="${addon.name}" 
+                    data-price="${addon.price}" 
+                  />
+                  <span class="addon-info">
+                    <span class="addon-name">${icon}${addon.name}</span>
+                    ${description}
+                  </span>
+                  <span class="addon-price">+ $${addon.price.toFixed(2)}</span>
+                </label>
+              `;
+            })
+            .join('');
+          addonsSection.style.display = 'block';
+        } else {
+          addonsSection.style.display = 'none';
+        }
+      }
+
+      // Reset form
+      if (qtyInput) qtyInput.value = '1';
+      
+      updateSubtotal();
 
       modal?.classList.add('active');
       document.body.style.overflow = 'hidden';
@@ -482,7 +510,9 @@
     function updateSubtotal() {
       let total = basePrice;
 
-      addonCheckboxes.forEach((checkbox) => {
+      // Get current addon checkboxes (dynamically rendered)
+      const currentAddonCheckboxes = modal?.querySelectorAll('.addon-checkbox') as NodeListOf<HTMLInputElement>;
+      currentAddonCheckboxes.forEach((checkbox: HTMLInputElement) => {
         if (checkbox.checked) {
           total += Number.parseFloat(checkbox.dataset.price || '0');
         }
@@ -519,9 +549,12 @@
 
     qtyInput?.addEventListener('input', updateSubtotal);
 
-    // Add-ons change
-    addonCheckboxes.forEach((checkbox) => {
-      checkbox.addEventListener('change', updateSubtotal);
+    // Add-ons change - Using event delegation since add-ons are dynamic
+    addonsList?.addEventListener('change', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('addon-checkbox')) {
+        updateSubtotal();
+      }
     });
 
     // Add to cart
@@ -531,12 +564,15 @@
       if (!service) return;
 
       const quantity = Number.parseInt(qtyInput.value);
-      const selectedAddons: Array<{ name: string; price: number }> = [];
+      const selectedAddons: Array<{ id: string; name: string; price: number }> = [];
 
-      addonCheckboxes.forEach((checkbox) => {
+      // Get current addon checkboxes (dynamically rendered)
+      const currentAddonCheckboxes = modal?.querySelectorAll('.addon-checkbox') as NodeListOf<HTMLInputElement>;
+      currentAddonCheckboxes.forEach((checkbox: HTMLInputElement) => {
         if (checkbox.checked) {
           selectedAddons.push({
-            name: checkbox.dataset.addon || '',
+            id: checkbox.dataset.addonId || '',
+            name: checkbox.dataset.addonName || '',
             price: Number.parseFloat(checkbox.dataset.price || '0'),
           });
         }

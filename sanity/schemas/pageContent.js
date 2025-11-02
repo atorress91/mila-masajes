@@ -51,8 +51,41 @@ export default {
     },
     {
       name: 'heroImage',
-      title: 'Hero Image',
+      title: 'Hero Background Image (Left)',
       type: 'image',
+      description: 'Main background image with text overlay (1400x900px recommended)',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        {
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+        },
+      ],
+    },
+    {
+      name: 'heroImageTopRight',
+      title: 'Hero Image Top Right',
+      type: 'image',
+      description: 'Small image on top right (800x800px recommended)',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        {
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+        },
+      ],
+    },
+    {
+      name: 'heroImageBottomRight',
+      title: 'Hero Image Bottom Right',
+      type: 'image',
+      description: 'Small image on bottom right (800x800px recommended)',
       options: {
         hotspot: true,
       },

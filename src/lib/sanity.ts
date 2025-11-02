@@ -19,6 +19,25 @@ export function urlFor(source: SanityImageSource) {
 }
 
 // Tipos de datos
+export interface HeroImage {
+  _id: string;
+  title: string;
+  image: any;
+  position: 'top' | 'bottom-left' | 'bottom-right';
+  order: number;
+  isActive: boolean;
+}
+
+export interface Addon {
+  _id: string;
+  name: string;
+  description?: string;
+  price: number;
+  icon?: string;
+  isActive: boolean;
+  order: number;
+}
+
 export interface Service {
   _id: string;
   title: string;
@@ -29,6 +48,7 @@ export interface Service {
   benefits: string[];
   category: string;
   featured: boolean;
+  addons?: Addon[];
 }
 
 export interface Benefit {
@@ -48,6 +68,8 @@ export interface PageContent {
   heroTitle: string;
   heroSubtitle: string;
   heroImage: any;
+  heroImageTopRight?: any;
+  heroImageBottomRight?: any;
   ogImage: any;
   keywords: string[];
 }
@@ -102,7 +124,16 @@ export async function getServices(): Promise<Service[]> {
     image,
     benefits,
     category,
-    featured
+    featured,
+    "addons": addons[]->{ 
+      _id, 
+      name, 
+      description, 
+      price, 
+      icon, 
+      isActive, 
+      order 
+    }[isActive == true] | order(order asc)
   }`;
   return await sanityClient.fetch(query);
 }
@@ -117,7 +148,16 @@ export async function getServiceById(id: string): Promise<Service> {
     image,
     benefits,
     category,
-    featured
+    featured,
+    "addons": addons[]->{ 
+      _id, 
+      name, 
+      description, 
+      price, 
+      icon, 
+      isActive, 
+      order 
+    }[isActive == true] | order(order asc)
   }`;
   return await sanityClient.fetch(query, { id });
 }
@@ -143,6 +183,8 @@ export async function getPageContent(pageType: string): Promise<PageContent> {
     heroTitle,
     heroSubtitle,
     heroImage,
+    heroImageTopRight,
+    heroImageBottomRight,
     ogImage,
     keywords
   }`;
@@ -186,6 +228,31 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
     description,
     featured,
     order
+  }`;
+  return await sanityClient.fetch(query);
+}
+
+export async function getAddons(): Promise<Addon[]> {
+  const query = `*[_type == "addon" && isActive == true] | order(order asc) {
+    _id,
+    name,
+    description,
+    price,
+    icon,
+    isActive,
+    order
+  }`;
+  return await sanityClient.fetch(query);
+}
+
+export async function getHeroImages(): Promise<HeroImage[]> {
+  const query = `*[_type == "heroImage" && isActive == true] | order(order asc) {
+    _id,
+    title,
+    image,
+    position,
+    order,
+    isActive
   }`;
   return await sanityClient.fetch(query);
 }

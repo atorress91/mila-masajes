@@ -454,14 +454,17 @@ try {
   }
 </style>
 
-<script>
+<script define:vars={{ services }}>
+  // Make Sanity services data available globally
+  window.__servicesFromSanity = services;
+  
   // Filter functionality
   const filterButtons = document.querySelectorAll('.filter-btn');
   const serviceCards = document.querySelectorAll('.service-card-wrapper');
-  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const searchInput = document.getElementById('searchInput');
 
   filterButtons.forEach((button) => {
-    button.addEventListener('click', function (this: HTMLButtonElement) {
+    button.addEventListener('click', function () {
       // Remove active class from all buttons
       filterButtons.forEach((btn) => btn.classList.remove('active'));
 
@@ -475,18 +478,18 @@ try {
         const category = card.getAttribute('data-category');
 
         if (filter === 'all' || category === filter) {
-          (card as HTMLElement).style.display = 'block';
+          card.style.display = 'block';
           // Animation
-          (card as HTMLElement).style.opacity = '0';
-          (card as HTMLElement).style.transform = 'translateY(20px)';
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
 
           setTimeout(() => {
-            (card as HTMLElement).style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            (card as HTMLElement).style.opacity = '1';
-            (card as HTMLElement).style.transform = 'translateY(0)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
           }, 50);
         } else {
-          (card as HTMLElement).style.display = 'none';
+          card.style.display = 'none';
         }
       });
     });
@@ -494,53 +497,51 @@ try {
 
   // Search functionality
   searchInput?.addEventListener('input', (e) => {
-    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+    const searchTerm = e.target.value.toLowerCase();
 
     serviceCards.forEach((card) => {
       const title = card.querySelector('.service-title')?.textContent?.toLowerCase() || '';
       const description = card.querySelector('.service-description')?.textContent?.toLowerCase() || '';
 
       if (title.includes(searchTerm) || description.includes(searchTerm)) {
-        (card as HTMLElement).style.display = 'block';
+        card.style.display = 'block';
       } else {
-        (card as HTMLElement).style.display = 'none';
+        card.style.display = 'none';
       }
     });
   });
 
-  // Preparar datos de servicios para el modal
-  const servicesDataForModal: any = {};
+  // Preparar datos de servicios para el modal con add-ons incluidos
+  const servicesDataForModal = {};
   
   serviceCards.forEach((wrapper) => {
     const card = wrapper.querySelector('.service-card');
     if (!card) return;
     
     const serviceId = card.getAttribute('data-service-id');
-    const title = card.querySelector('.service-title')?.textContent?.trim() || '';
-    const description = card.querySelector('.service-description')?.textContent?.trim() || '';
-    const priceText = card.querySelector('.service-price')?.textContent?.trim() || '$0';
-    const price = parseFloat(priceText.replace('$', ''));
-    const imageElement = card.querySelector('.service-image img') as HTMLImageElement;
-    const image = imageElement?.src || '';
-    const category = wrapper.getAttribute('data-category') || '';
+    if (!serviceId) return;
+
+    // Buscar el servicio completo en los datos de Sanity
+    const fullService = window.__servicesFromSanity?.find(s => s._id === serviceId);
     
-    if (serviceId) {
+    if (fullService) {
       servicesDataForModal[serviceId] = {
-        _id: serviceId,
-        title,
-        description,
-        price,
-        image,
-        category,
-        badge: category.charAt(0).toUpperCase() + category.slice(1)
+        _id: fullService._id,
+        title: fullService.title,
+        description: fullService.description,
+        price: fullService.price,
+        image: card.querySelector('.service-image img')?.getAttribute('src') || '',
+        category: fullService.category,
+        badge: fullService.category ? fullService.category.charAt(0).toUpperCase() + fullService.category.slice(1) : '',
+        addons: fullService.addons || []
       };
     }
   });
   
-  console.log('Services data prepared:', servicesDataForModal);
+  console.log('Services data prepared with addons:', servicesDataForModal);
   
   // Hacer los datos disponibles globalmente para el modal
-  (window as any).servicesData = servicesDataForModal;
+  window.servicesData = servicesDataForModal;
 
   // Book button functionality - SE REMOVIÓ porque el modal ya maneja los clicks con event delegation
   // Los botones .book-btn ya son manejados por el ServiceModal.astro
