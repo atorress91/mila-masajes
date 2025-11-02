@@ -1,0 +1,571 @@
+---
+// Modal Component - Client-side only
+---
+
+<div class="service-modal" id="serviceModal">
+  <div class="modal-overlay"></div>
+  <div class="modal-content">
+    <button class="modal-close" aria-label="Close modal">×</button>
+
+    <div class="modal-body">
+      <!-- Service Image -->
+      <div class="modal-image">
+        <img id="modalImage" src="" alt="" />
+      </div>
+
+      <!-- Service Info -->
+      <div class="modal-info">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <span class="modal-badge" id="modalBadge"></span>
+        </div>
+
+        <div class="modal-price" id="modalPrice"></div>
+        <p class="modal-description" id="modalDescription"></p>
+
+        <!-- Add-ons Section -->
+        <div class="addons-section">
+          <h3 class="addons-title">Add-ons</h3>
+          <div class="addons-list">
+            <label class="addon-item">
+              <input type="checkbox" class="addon-checkbox" data-addon="Aromatherapy" data-price="15" />
+              <span class="addon-name">Aromatherapy</span>
+              <span class="addon-price">+$15</span>
+            </label>
+
+            <label class="addon-item">
+              <input type="checkbox" class="addon-checkbox" data-addon="Hot Stones" data-price="20" />
+              <span class="addon-name">Hot Stones</span>
+              <span class="addon-price">+$20</span>
+            </label>
+
+            <label class="addon-item">
+              <input type="checkbox" class="addon-checkbox" data-addon="CBD Oil Enhancement" data-price="25" />
+              <span class="addon-name">CBD Oil Enhancement</span>
+              <span class="addon-price">+$25</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Subtotal -->
+        <div class="modal-subtotal">
+          <span>Subtotal</span>
+          <span class="subtotal-amount" id="subtotalAmount">$0.00</span>
+        </div>
+
+        <!-- Quantity and Add to Cart -->
+        <div class="modal-actions">
+          <div class="quantity-selector">
+            <button class="qty-btn minus" aria-label="Decrease quantity">−</button>
+            <input type="number" class="qty-input" value="1" min="1" max="10" />
+            <button class="qty-btn plus" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="add-to-cart-modal-btn">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .service-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .service-modal.active {
+    display: flex;
+  }
+
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .modal-content {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+    z-index: 1;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .modal-close:hover {
+    background: #f0f0f0;
+    transform: rotate(90deg);
+  }
+
+  .modal-body {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 40px;
+  }
+
+  .modal-image {
+    width: 400px;
+    height: 100%;
+    min-height: 450px;
+  }
+
+  .modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px 0 0 20px;
+  }
+
+  .modal-info {
+    padding: 40px 40px 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .modal-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .modal-badge {
+    background: var(--emphasis-color);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: none;
+  }
+
+  .modal-price {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--accent-color);
+  }
+
+  .modal-description {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin: 0;
+  }
+
+  .addons-section {
+    background: var(--background-light);
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .addons-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--text-primary);
+  }
+
+  .addons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .addon-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+  }
+
+  .addon-item:hover {
+    background: rgba(123, 168, 154, 0.1);
+  }
+
+  .addon-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--accent-color);
+  }
+
+  .addon-name {
+    flex: 1;
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+
+  .addon-price {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent-color);
+  }
+
+  .modal-subtotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 2px solid var(--background-light);
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .subtotal-amount {
+    color: var(--accent-color);
+    font-size: 28px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--background-light);
+    padding: 8px 12px;
+    border-radius: 12px;
+  }
+
+  .qty-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    border: none;
+    background: white;
+    color: var(--accent-color);
+    font-size: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .qty-btn:hover {
+    background: var(--accent-color);
+    color: white;
+  }
+
+  .qty-input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .qty-input::-webkit-outer-spin-button,
+  .qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .add-to-cart-modal-btn {
+    flex: 1;
+    padding: 15px 40px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .add-to-cart-modal-btn:hover {
+    background: #6a9688;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(123, 168, 154, 0.4);
+  }
+
+  @media (max-width: 968px) {
+    .modal-body {
+      grid-template-columns: 1fr;
+    }
+
+    .modal-image {
+      width: 100%;
+      height: 300px;
+      min-height: auto;
+    }
+
+    .modal-image img {
+      border-radius: 20px 20px 0 0;
+    }
+
+    .modal-info {
+      padding: 0 30px 30px;
+    }
+
+    .modal-title {
+      font-size: 26px;
+    }
+
+    .modal-price {
+      font-size: 28px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .modal-actions {
+      flex-direction: column;
+    }
+
+    .quantity-selector {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .add-to-cart-modal-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  import { servicesData } from '../data/services';
+
+  const modal = document.getElementById('serviceModal');
+  const modalOverlay = modal?.querySelector('.modal-overlay');
+  const modalClose = modal?.querySelector('.modal-close');
+  const modalImage = document.getElementById('modalImage') as HTMLImageElement;
+  const modalTitle = document.getElementById('modalTitle');
+  const modalPrice = document.getElementById('modalPrice');
+  const modalDescription = document.getElementById('modalDescription');
+  const modalBadge = document.getElementById('modalBadge');
+  const subtotalAmount = document.getElementById('subtotalAmount');
+  const qtyInput = modal?.querySelector('.qty-input') as HTMLInputElement;
+  const qtyMinus = modal?.querySelector('.qty-btn.minus');
+  const qtyPlus = modal?.querySelector('.qty-btn.plus');
+  const addonCheckboxes = modal?.querySelectorAll('.addon-checkbox') as NodeListOf<HTMLInputElement>;
+  const addToCartBtn = modal?.querySelector('.add-to-cart-modal-btn');
+
+  let currentService: string | null = null;
+  let basePrice = 0;
+
+  // Open modal function
+  function openModal(serviceId: string) {
+    const service = servicesData[serviceId];
+    if (!service) return;
+
+    currentService = serviceId;
+    basePrice = service.price;
+
+    if (modalImage) {
+      modalImage.src = service.image;
+      modalImage.alt = service.title;
+    }
+    if (modalTitle) modalTitle.textContent = service.title;
+    if (modalPrice) modalPrice.textContent = `$${service.price.toFixed(2)}`;
+    if (modalDescription) modalDescription.textContent = service.description;
+
+    if (modalBadge) {
+      if (service.badge) {
+        modalBadge.textContent = service.badge;
+        modalBadge.style.display = 'block';
+      } else {
+        modalBadge.style.display = 'none';
+      }
+    }
+
+    // Reset form
+    if (qtyInput) qtyInput.value = '1';
+    addonCheckboxes.forEach((cb) => (cb.checked = false));
+
+    updateSubtotal();
+
+    modal?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Close modal
+  function closeModal() {
+    modal?.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Update subtotal
+  function updateSubtotal() {
+    let total = basePrice;
+
+    addonCheckboxes.forEach((checkbox) => {
+      if (checkbox.checked) {
+        total += Number.parseFloat(checkbox.dataset.price || '0');
+      }
+    });
+
+    const quantity = Number.parseInt(qtyInput?.value || '1') || 1;
+    total *= quantity;
+
+    if (subtotalAmount) {
+      subtotalAmount.textContent = `$${total.toFixed(2)}`;
+    }
+  }
+
+  // Event listeners
+  modalOverlay?.addEventListener('click', closeModal);
+  modalClose?.addEventListener('click', closeModal);
+
+  // Quantity controls
+  qtyMinus?.addEventListener('click', () => {
+    let value = Number.parseInt(qtyInput.value) || 1;
+    if (value > 1) {
+      qtyInput.value = (value - 1).toString();
+      updateSubtotal();
+    }
+  });
+
+  qtyPlus?.addEventListener('click', () => {
+    let value = Number.parseInt(qtyInput.value) || 1;
+    if (value < 10) {
+      qtyInput.value = (value + 1).toString();
+      updateSubtotal();
+    }
+  });
+
+  qtyInput?.addEventListener('input', updateSubtotal);
+
+  // Add-ons change
+  addonCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener('change', updateSubtotal);
+  });
+
+  // Add to cart
+  addToCartBtn?.addEventListener('click', () => {
+    const service = servicesData[currentService || ''];
+    if (!service) return;
+
+    const quantity = Number.parseInt(qtyInput.value);
+    const selectedAddons: Array<{ name: string; price: number }> = [];
+
+    addonCheckboxes.forEach((checkbox) => {
+      if (checkbox.checked) {
+        selectedAddons.push({
+          name: checkbox.dataset.addon || '',
+          price: Number.parseFloat(checkbox.dataset.price || '0'),
+        });
+      }
+    });
+
+    const cartItem = {
+      title: service.title,
+      basePrice: basePrice,
+      image: service.image,
+      quantity: quantity,
+      addons: selectedAddons,
+    };
+
+    // Get cart from localStorage
+    const cart = JSON.parse(localStorage.getItem('massageBlissCart') || '[]');
+    
+    // Check if item already exists
+    const existingIndex = cart.findIndex(
+      (item: any) => item.title === cartItem.title && JSON.stringify(item.addons) === JSON.stringify(cartItem.addons)
+    );
+
+    if (existingIndex > -1) {
+      cart[existingIndex].quantity += cartItem.quantity;
+    } else {
+      cart.push(cartItem);
+    }
+
+    localStorage.setItem('massageBlissCart', JSON.stringify(cart));
+
+    // Dispatch event to update cart badge
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+
+    // Show success feedback
+    if (addToCartBtn) {
+      addToCartBtn.textContent = 'Added! ✓';
+      setTimeout(() => {
+        closeModal();
+        if (addToCartBtn) addToCartBtn.textContent = 'Add to Cart';
+      }, 1000);
+    }
+  });
+
+  // Listen for quick view and add button clicks
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const btn = target.closest('.quick-view-btn, .add-btn') as HTMLElement;
+    if (btn) {
+      const serviceId = btn.dataset.serviceId;
+      if (serviceId) {
+        openModal(serviceId);
+      }
+    }
+  });
+
+  // ESC key to close
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+      closeModal();
+    }
+  });
+</script>

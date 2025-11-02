@@ -1,0 +1,50 @@
+<svg width="180" height="60" viewBox="0 0 180 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Lotus flower icon -->
+    <g>
+        <!-- Center petal -->
+        <path
+            d="M30 15 C30 15, 35 20, 35 28 C35 32, 33 35, 30 35 C27 35, 25 32, 25 28 C25 20, 30 15, 30 15 Z"
+            fill="#7BA89A" />
+
+        <!-- Left petal -->
+        <path
+            d="M20 20 C20 20, 23 25, 23 30 C23 33, 22 35, 19 35 C16 35, 15 33, 15 30 C15 25, 20 20, 20 20 Z"
+            fill="#C9B8A8" opacity="0.9" />
+
+        <!-- Right petal -->
+        <path
+            d="M40 20 C40 20, 37 25, 37 30 C37 33, 38 35, 41 35 C44 35, 45 33, 45 30 C45 25, 40 20, 40 20 Z"
+            fill="#C9B8A8" opacity="0.9" />
+
+        <!-- Left outer petal -->
+        <path
+            d="M15 25 C15 25, 17 28, 17 32 C17 34, 16 35, 14 35 C12 35, 11 34, 11 32 C11 28, 15 25, 15 25 Z"
+            fill="#D4E7E1" opacity="0.8" />
+
+        <!-- Right outer petal -->
+        <path
+            d="M45 25 C45 25, 43 28, 43 32 C43 34, 44 35, 46 35 C48 35, 49 34, 49 32 C49 28, 45 25, 45 25 Z"
+            fill="#D4E7E1" opacity="0.8" />
+
+        <!-- Center circle -->
+        <circle cx="30" cy="28" r="3" fill="#B8A693" />
+
+        <!-- Leaf accents -->
+        <path d="M30 35 Q28 42 30 45" stroke="#7BA89A" stroke-width="2" stroke-linecap="round"
+            fill="none" />
+        <path d="M30 40 Q25 42 23 45" stroke="#7BA89A" stroke-width="1.5" stroke-linecap="round"
+            fill="none" opacity="0.7" />
+        <path d="M30 40 Q35 42 37 45" stroke="#7BA89A" stroke-width="1.5" stroke-linecap="round"
+            fill="none" opacity="0.7" />
+    </g>
+
+    <!-- Text: Massage Bliss -->
+    <text x="65" y="28" font-family="Poppins, sans-serif" font-size="18" font-weight="700"
+        fill="#2D3E3C">
+        Massage
+    </text>
+    <text x="65" y="45" font-family="Poppins, sans-serif" font-size="18" font-weight="400"
+        fill="#7BA89A">
+        Bliss
+    </text>
+</svg>

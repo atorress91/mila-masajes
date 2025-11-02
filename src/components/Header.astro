@@ -1,0 +1,241 @@
+---
+// No props needed, cart count will be updated client-side
+---
+
+<header class="header">
+  <div class="container">
+    <a href="/" class="logo">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <path
+          d="M20 5C19.3 5 18.6 5.3 18.2 5.8L12 13C11.4 13.7 11 14.6 11 15.5V28C11 29.7 12.3 31 14 31H26C27.7 31 29 29.7 29 28V15.5C29 14.6 28.6 13.7 28 13L21.8 5.8C21.4 5.3 20.7 5 20 5Z"
+          fill="#7BA89A"
+        />
+        <circle cx="20" cy="20" r="4" fill="#E8F4F0"></circle>
+        <path
+          d="M20 12C18.3 12 17 13.3 17 15C17 15.8 17.3 16.5 17.8 17L20 19.2L22.2 17C22.7 16.5 23 15.8 23 15C23 13.3 21.7 12 20 12Z"
+          fill="#C9B8A8"
+        />
+      </svg>
+      <div class="logo-text">
+        <h1 class="logo-title">Massage Bliss</h1>
+        <p class="logo-subtitle">Therapies</p>
+      </div>
+    </a>
+
+    <nav class="nav">
+      <a href="/" class="nav-link">HOME</a>
+      <a href="/discover" class="nav-link">SERVICES</a>
+      <a href="/gallery" class="nav-link">GALLERY</a>
+      <a href="/contact" class="nav-link">CONTACT</a>
+    </nav>
+
+    <div class="header-icons">
+      <button class="icon-btn search-btn" aria-label="Search">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2" />
+          <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+
+      <button class="cart-btn" id="cartButton" aria-label="Shopping cart">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M9 2L7 4H3C1.89 4 1 4.89 1 6V18C1 19.11 1.89 20 3 20H21C22.11 20 23 19.11 23 18V8C23 6.89 22.11 6 21 6H15L13 4H9Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M3 6H21"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+          <path
+            d="M16 10C16 12.21 14.21 14 12 14C9.79 14 8 12.21 8 10"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="cart-badge hidden" id="cartBadge">0</span>
+      </button>
+
+      <button class="icon-btn menu-btn" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    background-color: var(--white);
+    padding: 20px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+  }
+
+  .header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .logo-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1;
+  }
+
+  .logo-subtitle {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1;
+  }
+
+  .nav {
+    display: flex;
+    gap: 40px;
+  }
+
+  .nav-link {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .nav-link:hover {
+    color: var(--accent-color);
+  }
+
+  .header-icons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    transition: opacity 0.3s ease;
+    color: var(--text-primary);
+  }
+
+  .icon-btn:hover {
+    opacity: 0.7;
+  }
+
+  .cart-btn {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+  }
+
+  .cart-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .cart-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #7ba89a;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-badge.hidden {
+    display: none;
+  }
+
+  @media (max-width: 968px) {
+    .nav {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .logo-title {
+      font-size: 18px;
+    }
+
+    .logo svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+</style>
+
+<script>
+  // Update cart badge on page load
+  function updateCartBadge() {
+    const badge = document.getElementById('cartBadge');
+    if (badge) {
+      const cart = JSON.parse(localStorage.getItem('massageBlissCart') || '[]');
+      const count = cart.reduce((total: number, item: any) => total + item.quantity, 0);
+      badge.textContent = count.toString();
+      if (count > 0) {
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+  }
+
+  // Navigate to cart
+  const cartButton = document.getElementById('cartButton');
+  if (cartButton) {
+    cartButton.addEventListener('click', () => {
+      window.location.href = '/cart';
+    });
+  }
+
+  // Initialize on load
+  updateCartBadge();
+
+  // Listen for cart updates
+  window.addEventListener('cartUpdated', updateCartBadge);
+</script>

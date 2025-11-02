@@ -1,0 +1,522 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ServiceModal from '../components/ServiceModal.astro';
+import { getServices, urlFor } from '../lib/sanity';
+
+// Obtener servicios de Sanity
+let services: any[] = [];
+let categories = [
+  { id: 'all', name: 'All Services' },
+  { id: 'relaxation', name: 'Relaxation' },
+  { id: 'therapeutic', name: 'Therapeutic' },
+  { id: 'sports', name: 'Sports' },
+  { id: 'hotstone', name: 'Hot Stone' },
+  { id: 'specialty', name: 'Specialty' }
+];
+
+try {
+  services = await getServices();
+} catch (error) {
+  console.error('Error fetching services from Sanity:', error);
+  services = [];
+}
+---
+
+<Layout title="Discover Services - Massage Bliss">
+  <Header />
+
+  <main class="discover-page">
+    <!-- Hero Section -->
+    <section class="discover-hero">
+      <div class="container">
+        <h1 class="discover-title">Discover Massage Bliss</h1>
+        <p class="discover-subtitle">Find the perfect massage therapy for your needs</p>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search services, therapists, and locations"
+            id="searchInput"
+          />
+          <button class="search-btn" aria-label="Search">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2" />
+              <path d="M14 14L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter and Services Section -->
+    <section class="services-section">
+      <div class="container">
+        <!-- Filter Buttons -->
+        <div class="filter-buttons">
+          {
+            categories.map((category) => (
+              <button
+                class={`filter-btn ${category.id === 'all' ? 'active' : ''}`}
+                data-filter={category.id}
+              >
+                {category.name}
+              </button>
+            ))
+          }
+        </div>
+
+        <!-- Services Grid -->
+        <div class="services-grid" id="servicesGrid">
+          {services && services.length > 0 ? (
+            services.map((service: any) => (
+              <div data-category={service.category} class="service-card-wrapper">
+                <div class="service-card" data-service-id={service._id}>
+                  <div class="service-image">
+                    {service.image ? (
+                      <img 
+                        src={urlFor(service.image).width(500).height(350).format('webp').url()} 
+                        alt={service.image.alt || service.title} 
+                      />
+                    ) : (
+                      <div class="service-image-placeholder">
+                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                          <circle cx="30" cy="30" r="25" stroke="currentColor" stroke-width="2" />
+                          <path d="M30 20v20M20 30h20" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <div class="service-content">
+                    <div class="service-category">{service.category}</div>
+                    <h3 class="service-title">{service.title}</h3>
+                    <p class="service-description">{service.description}</p>
+                    <div class="service-details-row">
+                      <span class="service-duration">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5" />
+                          <path d="M8 4v4l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                        </svg>
+                        {service.duration} min
+                      </span>
+                      <span class="service-price">${service.price}</span>
+                    </div>
+                    <button class="book-btn" data-service-id={service._id}>
+                      Book Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div class="no-services">
+              <h3>No services available</h3>
+              <p>Add services in Sanity Studio at http://localhost:3333</p>
+            </div>
+          )}
+        </div>
+
+        <!-- Load More Button -->
+        <div class="load-more-container">
+          <button class="load-more-btn" id="loadMoreBtn" style="display: none;">
+            Load more
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <ServiceModal />
+  <Footer />
+</Layout>
+
+<style>
+  .discover-page {
+    min-height: calc(100vh - 200px);
+  }
+
+  .discover-hero {
+    background: linear-gradient(135deg, var(--background-light) 0%, var(--white) 100%);
+    padding: 60px 0 40px;
+  }
+
+  .discover-title {
+    font-size: 56px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .discover-subtitle {
+    font-size: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+  }
+
+  .search-bar {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 16px 60px 16px 24px;
+    border: 2px solid var(--accent-secondary);
+    border-radius: 50px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    background: white;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 20px rgba(123, 168, 154, 0.2);
+  }
+
+  .search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .search-btn:hover {
+    background: #6a9688;
+    transform: translateY(-50%) scale(1.05);
+  }
+
+  .services-section {
+    padding: 60px 0 80px;
+    background: var(--background-light);
+  }
+
+  .filter-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 50px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 12px 30px;
+    border: 2px solid var(--accent-secondary);
+    background: white;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+  }
+
+  .filter-btn.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+
+  .service-card-wrapper {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .service-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 40px rgba(123, 168, 154, 0.15);
+  }
+
+  .service-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .service-card:hover .service-image img {
+    transform: scale(1.1);
+  }
+
+  .service-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-color);
+  }
+
+  .service-content {
+    padding: 25px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .service-category {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+  }
+
+  .service-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .service-description {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+
+  .service-details-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--secondary-color);
+  }
+
+  .service-duration {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .service-duration svg {
+    color: var(--accent-color);
+  }
+
+  .service-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-color);
+  }
+
+  .book-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .book-btn:hover {
+    background: #6a9688;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(123, 168, 154, 0.3);
+  }
+
+  .no-services {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 20px;
+  }
+
+  .no-services h3 {
+    font-size: 24px;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+  }
+
+  .no-services p {
+    color: var(--text-secondary);
+    font-size: 16px;
+  }
+
+  .load-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 60px;
+  }
+
+  .load-more-btn {
+    padding: 15px 50px;
+    background: white;
+    border: 2px solid var(--accent-color);
+    border-radius: 30px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .load-more-btn:hover {
+    background: var(--accent-color);
+    color: white;
+  }
+
+  @media (max-width: 1200px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .discover-title {
+      font-size: 40px;
+    }
+
+    .discover-subtitle {
+      font-size: 18px;
+    }
+
+    .services-grid {
+      grid-template-columns: 1fr;
+      gap: 25px;
+    }
+
+    .filter-buttons {
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding-bottom: 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .filter-btn {
+      white-space: nowrap;
+    }
+  }
+</style>
+
+<script>
+  // Filter functionality
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const serviceCards = document.querySelectorAll('.service-card-wrapper');
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', function (this: HTMLButtonElement) {
+      // Remove active class from all buttons
+      filterButtons.forEach((btn) => btn.classList.remove('active'));
+
+      // Add active class to clicked button
+      this.classList.add('active');
+
+      const filter = this.getAttribute('data-filter');
+
+      // Filter service cards
+      serviceCards.forEach((card) => {
+        const category = card.getAttribute('data-category');
+
+        if (filter === 'all' || category === filter) {
+          (card as HTMLElement).style.display = 'block';
+          // Animation
+          (card as HTMLElement).style.opacity = '0';
+          (card as HTMLElement).style.transform = 'translateY(20px)';
+
+          setTimeout(() => {
+            (card as HTMLElement).style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            (card as HTMLElement).style.opacity = '1';
+            (card as HTMLElement).style.transform = 'translateY(0)';
+          }, 50);
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Search functionality
+  searchInput?.addEventListener('input', (e) => {
+    const searchTerm = (e.target as HTMLInputElement).value.toLowerCase();
+
+    serviceCards.forEach((card) => {
+      const title = card.querySelector('.service-title')?.textContent?.toLowerCase() || '';
+      const description = card.querySelector('.service-description')?.textContent?.toLowerCase() || '';
+
+      if (title.includes(searchTerm) || description.includes(searchTerm)) {
+        (card as HTMLElement).style.display = 'block';
+      } else {
+        (card as HTMLElement).style.display = 'none';
+      }
+    });
+  });
+
+  // Book button functionality
+  const bookButtons = document.querySelectorAll('.book-btn');
+  bookButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const serviceId = (button as HTMLElement).getAttribute('data-service-id');
+      console.log('Booking service:', serviceId);
+      // Aquí puedes agregar funcionalidad de reserva
+      alert('Booking functionality - Service ID: ' + serviceId);
+    });
+  });
+</script>

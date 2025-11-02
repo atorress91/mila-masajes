@@ -1,0 +1,167 @@
+/* CSS Variables */
+:root {
+  /* Nueva paleta de colores spa */
+  --primary-color: #e8f4f0;
+  --secondary-color: #d4e7e1;
+  --accent-color: #7ba89a;
+  --accent-secondary: #c9b8a8;
+  --text-primary: #2d3e3c;
+  --text-secondary: #5a6c69;
+  --background-light: #e8f4f0;
+  --background-cards: #fafafa;
+  --emphasis-color: #b8a693;
+  --white: #fafafa;
+  --dark-bg: #2d3e3c;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--background-light);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 96px;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--accent-color);
+  color: white;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn-primary:hover {
+  background: #6a9688;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(123, 168, 154, 0.4);
+}
+
+.btn-secondary {
+  background: var(--dark-bg);
+  color: white;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.btn-secondary:hover {
+  background: #1a2524;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(45, 62, 60, 0.3);
+} /* Responsive */
+@media (max-width: 1200px) {
+  .container {
+    padding: 0 60px;
+  }
+}
+
+@media (max-width: 968px) {
+  .container {
+    padding: 0 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+}
+
+/* View Transitions Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slideFromRight {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideFromLeft {
+  from {
+    transform: translateX(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Aplicar transiciones suaves a las páginas */
+::view-transition-old(root) {
+  animation: fadeOut 0.3s ease-out;
+}
+
+::view-transition-new(root) {
+  animation: fadeIn 0.4s ease-in;
+}
