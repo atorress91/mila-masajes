@@ -25,8 +25,8 @@
 
         <!-- Add-ons Section -->
         <div class="addons-section" id="addonsSection">
-          <h3 class="addons-title">Add-ons</h3>
-          <p class="addons-subtitle">Choose additional services.</p>
+          <h3 class="addons-title">Extras Disponibles</h3>
+          <p class="addons-subtitle">Mejora tu experiencia con estos complementos.</p>
           <div class="addons-list" id="addonsList">
             <!-- Add-ons will be populated dynamically -->
           </div>
@@ -45,7 +45,7 @@
             <input type="number" class="qty-input" value="1" min="1" max="10" />
             <button class="qty-btn plus" aria-label="Increase quantity">+</button>
           </div>
-          <button class="add-to-cart-modal-btn">Add to Cart</button>
+          <button class="add-to-cart-modal-btn">Agregar al Carrito</button>
         </div>
       </div>
     </div>
@@ -225,54 +225,64 @@
   .addons-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
   }
 
   .addon-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
+    gap: 14px;
     cursor: pointer;
-    padding: 12px 0;
-    transition: background 0.2s ease;
+    padding: 14px;
+    background: white;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
   }
 
   .addon-item:hover {
-    opacity: 0.8;
+    border-color: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(123, 168, 154, 0.1);
   }
 
   .addon-checkbox {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     cursor: pointer;
     accent-color: var(--accent-color);
     flex-shrink: 0;
+    margin-top: 2px;
   }
 
   .addon-info {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
   }
 
   .addon-name {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--text-primary);
-    font-weight: 500;
+    font-weight: 600;
+    line-height: 1.3;
   }
 
   .addon-description {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-secondary);
     font-weight: 400;
+    line-height: 1.5;
+    display: block;
   }
 
   .addon-price {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     color: var(--accent-color);
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   .modal-subtotal {
@@ -388,6 +398,18 @@
     .modal-description {
       font-size: 13px;
     }
+
+    .addon-item {
+      padding: 12px;
+    }
+
+    .addon-name {
+      font-size: 14px;
+    }
+
+    .addon-description {
+      font-size: 12px;
+    }
   }
 
   @media (max-width: 480px) {
@@ -469,7 +491,9 @@
             .filter((addon: any) => addon && addon.name && addon.price !== undefined)
             .map((addon: any) => {
               const icon = addon.icon ? `${addon.icon} ` : '';
-              const description = addon.description ? `<span class="addon-description">${addon.description}</span>` : '';
+              const description = addon.description 
+                ? `<span class="addon-description">${addon.description}</span>` 
+                : '<span class="addon-description">Complemento adicional para tu servicio</span>';
               return `
                 <label class="addon-item">
                   <input 
@@ -479,11 +503,11 @@
                     data-addon-name="${addon.name}" 
                     data-price="${addon.price}" 
                   />
-                  <span class="addon-info">
+                  <div class="addon-info">
                     <span class="addon-name">${icon}${addon.name}</span>
                     ${description}
-                  </span>
-                  <span class="addon-price">+ $${addon.price.toFixed(2)}</span>
+                  </div>
+                  <span class="addon-price">+$${addon.price.toFixed(2)}</span>
                 </label>
               `;
             })
@@ -613,10 +637,10 @@
 
       // Show success feedback
       if (addToCartBtn) {
-        addToCartBtn.textContent = 'Added! ✓';
+        addToCartBtn.textContent = '¡Agregado! ✓';
         setTimeout(() => {
           closeModal();
-          if (addToCartBtn) addToCartBtn.textContent = 'Add to Cart';
+          if (addToCartBtn) addToCartBtn.textContent = 'Agregar al Carrito';
         }, 1000);
       }
     });
