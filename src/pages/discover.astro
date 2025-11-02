@@ -525,6 +525,9 @@ try {
     const fullService = window.__servicesFromSanity?.find(s => s._id === serviceId);
     
     if (fullService) {
+      // Asegurar que los addons estén disponibles y sean válidos
+      const addons = Array.isArray(fullService.addons) ? fullService.addons.filter(addon => addon && addon.name && addon.price !== undefined) : [];
+      
       servicesDataForModal[serviceId] = {
         _id: fullService._id,
         title: fullService.title,
@@ -533,8 +536,12 @@ try {
         image: card.querySelector('.service-image img')?.getAttribute('src') || '',
         category: fullService.category,
         badge: fullService.category ? fullService.category.charAt(0).toUpperCase() + fullService.category.slice(1) : '',
-        addons: fullService.addons || []
+        addons: addons
       };
+      
+      if (addons.length > 0) {
+        console.log(`Service "${fullService.title}" has ${addons.length} addons:`, addons);
+      }
     }
   });
   

@@ -156,7 +156,7 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    background: #e8e8e8;
+    background: var(--background-light);
     padding: 24px 28px 28px;
   }
 
@@ -170,13 +170,13 @@
   .modal-title {
     font-size: 24px;
     font-weight: 700;
-    color: #000000;
+    color: var(--text-primary);
     margin: 0;
     flex: 1;
   }
 
   .modal-badge {
-    background: #000000;
+    background: var(--accent-color);
     color: white;
     padding: 8px 18px;
     border-radius: 24px;
@@ -190,13 +190,13 @@
   .modal-price {
     font-size: 20px;
     font-weight: 700;
-    color: #000000;
+    color: var(--text-primary);
     margin: 0;
   }
 
   .modal-description {
     font-size: 14px;
-    color: #000000;
+    color: var(--text-secondary);
     line-height: 1.5;
     margin: 0;
   }
@@ -204,7 +204,7 @@
   .addons-section {
     background: transparent;
     padding: 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--secondary-color);
     padding-top: 16px;
   }
 
@@ -212,14 +212,14 @@
     font-size: 16px;
     font-weight: 700;
     margin-bottom: 4px;
-    color: #000000;
+    color: var(--text-primary);
   }
 
   .addons-subtitle {
     font-size: 13px;
-    color: #000000;
+    color: var(--text-secondary);
     margin: 0 0 12px 0;
-    opacity: 0.7;
+    opacity: 0.85;
   }
 
   .addons-list {
@@ -246,7 +246,7 @@
     width: 24px;
     height: 24px;
     cursor: pointer;
-    accent-color: #000000;
+    accent-color: var(--accent-color);
     flex-shrink: 0;
   }
 
@@ -259,20 +259,20 @@
 
   .addon-name {
     font-size: 14px;
-    color: #000000;
+    color: var(--text-primary);
     font-weight: 500;
   }
 
   .addon-description {
     font-size: 12px;
-    color: #666;
+    color: var(--text-secondary);
     font-weight: 400;
   }
 
   .addon-price {
     font-size: 14px;
     font-weight: 600;
-    color: #000000;
+    color: var(--accent-color);
   }
 
   .modal-subtotal {
@@ -280,14 +280,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px 0;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--secondary-color);
     font-size: 16px;
     font-weight: 700;
     margin-top: 8px;
+    color: var(--text-primary);
   }
 
   .subtotal-amount {
-    color: #000000;
+    color: var(--accent-color);
     font-size: 16px;
     font-weight: 700;
   }
@@ -303,7 +304,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    background: #000000;
+    background: var(--accent-color);
     padding: 12px 20px;
     border-radius: 28px;
   }
@@ -348,7 +349,7 @@
   .add-to-cart-modal-btn {
     flex: 1;
     padding: 16px 40px;
-    background: #000000;
+    background: var(--dark-bg);
     color: white;
     border: none;
     border-radius: 28px;
@@ -359,7 +360,7 @@
   }
 
   .add-to-cart-modal-btn:hover {
-    background: #1a1a1a;
+    background: var(--text-primary);
     transform: scale(1.02);
   }
 
@@ -462,8 +463,10 @@
 
       // Render add-ons dynamically
       if (addonsList && addonsSection) {
-        if (service.addons && service.addons.length > 0) {
+        if (service.addons && Array.isArray(service.addons) && service.addons.length > 0) {
+          console.log('Rendering addons:', service.addons);
           addonsList.innerHTML = service.addons
+            .filter((addon: any) => addon && addon.name && addon.price !== undefined)
             .map((addon: any) => {
               const icon = addon.icon ? `${addon.icon} ` : '';
               const description = addon.description ? `<span class="addon-description">${addon.description}</span>` : '';
@@ -472,7 +475,7 @@
                   <input 
                     type="checkbox" 
                     class="addon-checkbox" 
-                    data-addon-id="${addon._id}"
+                    data-addon-id="${addon._id || ''}"
                     data-addon-name="${addon.name}" 
                     data-price="${addon.price}" 
                   />
@@ -487,6 +490,7 @@
             .join('');
           addonsSection.style.display = 'block';
         } else {
+          console.log('No addons found for service:', service.title);
           addonsSection.style.display = 'none';
         }
       }
