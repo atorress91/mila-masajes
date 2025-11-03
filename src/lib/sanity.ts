@@ -220,16 +220,35 @@ export async function getFeaturedServices(): Promise<Service[]> {
 }
 
 export async function getGalleryImages(): Promise<GalleryImage[]> {
-  const query = `*[_type == "galleryImage"] | order(order asc) {
-    _id,
-    title,
-    image,
-    category,
-    description,
-    featured,
-    order
-  }`;
-  return await sanityClient.fetch(query);
+  try {
+    const query = `*[_type == "galleryImage"] | order(order asc) {
+      _id,
+      title,
+      image {
+        asset-> {
+          _id,
+          url
+        },
+        alt
+      },
+      category,
+      description,
+      featured,
+      order
+    }`;
+
+    const images = await sanityClient.fetch(query);
+    console.log(`[Sanity] Fetched ${images.length} gallery images`);
+
+    if (images.length > 0) {
+      console.log('[Sanity] First gallery image:', JSON.stringify(images[0], null, 2));
+    }
+
+    return images;
+  } catch (error) {
+    console.error('[Sanity] Error fetching gallery images:', error);
+    return [];
+  }
 }
 
 export async function getAddons(): Promise<Addon[]> {

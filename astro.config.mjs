@@ -8,6 +8,14 @@ export default defineConfig({
     inlineStylesheets: 'auto',
   },
   image: {
+    // Permitir imágenes remotas de Sanity CDN
+    domains: ['cdn.sanity.io'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+      },
+    ],
     // Deshabilitar optimización automática para evitar problemas de memoria
     service: {
       entrypoint: 'astro/assets/services/noop',
