@@ -86,7 +86,9 @@ h6 {
   background: #1a2524;
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(45, 62, 60, 0.3);
-} /* Responsive */
+}
+
+/* Responsive */
 @media (max-width: 1200px) {
   .container {
     padding: 0 60px;
@@ -97,11 +99,95 @@ h6 {
   .container {
     padding: 0 40px;
   }
+
+  h1 {
+    font-size: 36px;
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+
+  h3 {
+    font-size: 22px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 32px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 768px) {
   .container {
     padding: 0 20px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
+
+  h3 {
+    font-size: 20px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 28px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  h3 {
+    font-size: 18px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 10px 24px;
+    font-size: 14px;
+    width: 100%;
+  }
+}
+
+/* Prevent horizontal scroll */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Ensure images are responsive */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Touch-friendly buttons on mobile */
+@media (max-width: 768px) {
+  button,
+  a,
+  .icon-btn {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 

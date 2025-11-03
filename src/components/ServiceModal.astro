@@ -377,6 +377,7 @@
   @media (max-width: 968px) {
     .modal-content {
       max-width: 95%;
+      max-height: 95vh;
     }
 
     .modal-image {
@@ -412,6 +413,38 @@
     }
   }
 
+  @media (max-width: 768px) {
+    .modal-content {
+      max-width: 100%;
+      max-height: 100vh;
+      border-radius: 0;
+      margin: 0;
+    }
+
+    .modal-image {
+      height: 180px;
+    }
+
+    .modal-close {
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+    }
+
+    .modal-info {
+      padding: 18px 20px 20px;
+    }
+
+    .modal-section {
+      margin-bottom: 20px;
+    }
+
+    .addons-grid {
+      gap: 10px;
+    }
+  }
+
   @media (max-width: 480px) {
     .modal-actions {
       flex-direction: column;
@@ -425,6 +458,38 @@
 
     .add-to-cart-modal-btn {
       width: 100%;
+    }
+
+    .modal-image {
+      height: 160px;
+    }
+
+    .modal-info {
+      padding: 16px 18px 18px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+    }
+
+    .modal-price {
+      font-size: 16px;
+    }
+
+    .modal-description {
+      font-size: 12px;
+    }
+
+    .section-title {
+      font-size: 14px;
+    }
+
+    .addon-item {
+      padding: 10px;
+    }
+
+    .addon-price {
+      font-size: 13px;
     }
   }
 </style>

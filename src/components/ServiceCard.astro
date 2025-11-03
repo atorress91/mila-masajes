@@ -159,12 +159,58 @@ const { service } = Astro.props;
       height: 220px;
     }
 
+    .service-info {
+      padding: 20px;
+    }
+
     .service-title {
       font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .service-description {
+      font-size: 13px;
+      margin-bottom: 16px;
     }
 
     .service-price {
       font-size: 24px;
+    }
+
+    .add-btn {
+      width: 42px;
+      height: 42px;
+    }
+
+    /* Show quick view button by default on mobile for easier access */
+    .quick-view-btn {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      padding: 10px 24px;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .service-image {
+      height: 200px;
+    }
+
+    .service-title {
+      font-size: 18px;
+    }
+
+    .service-description {
+      font-size: 12px;
+    }
+
+    .service-price {
+      font-size: 22px;
+    }
+
+    .add-btn {
+      width: 40px;
+      height: 40px;
     }
   }
 </style>

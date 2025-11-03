@@ -63,14 +63,28 @@
         <span class="cart-badge hidden" id="cartBadge">0</span>
       </a>
 
-      <button class="icon-btn menu-btn" aria-label="Menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <button class="icon-btn menu-btn" aria-label="Menu" id="menuToggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="menu-icon">
           <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="close-icon" style="display: none;">
+          <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
       </button>
     </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <nav class="mobile-nav">
+      <a href="/" class="mobile-nav-link">HOME</a>
+      <a href="/discover" class="mobile-nav-link">SERVICES</a>
+      <a href="/gallery" class="mobile-nav-link">GALLERY</a>
+      <a href="/contact" class="mobile-nav-link">CONTACT</a>
+    </nav>
   </div>
 </header>
 
@@ -195,8 +209,66 @@
     display: none;
   }
 
+  /* Mobile Menu Styles */
+  .mobile-menu {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background-color: var(--white);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 999;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+
+  .mobile-menu.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .mobile-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+  }
+
+  .mobile-nav-link {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 16px;
+    padding: 16px 40px;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+  }
+
+  .mobile-nav-link:hover,
+  .mobile-nav-link:active {
+    background-color: var(--primary-color);
+    color: var(--accent-color);
+    border-left-color: var(--accent-color);
+  }
+
+  .menu-btn {
+    display: none;
+  }
+
   @media (max-width: 968px) {
     .nav {
+      display: none;
+    }
+
+    .menu-btn {
+      display: block;
+    }
+
+    .search-btn {
       display: none;
     }
   }
@@ -209,6 +281,38 @@
     .logo svg {
       width: 32px;
       height: 32px;
+    }
+
+    .mobile-nav-link {
+      padding: 16px 30px;
+      font-size: 15px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .logo-title {
+      font-size: 16px;
+    }
+
+    .logo-subtitle {
+      font-size: 10px;
+    }
+
+    .logo svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .header-icons {
+      gap: 8px;
+    }
+
+    .icon-btn {
+      padding: 6px;
+    }
+
+    .mobile-nav-link {
+      padding: 14px 20px;
     }
   }
 </style>
@@ -229,8 +333,59 @@
     }
   }
 
+  // Mobile menu toggle
+  function setupMobileMenu() {
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuIcon = menuToggle?.querySelector('.menu-icon') as HTMLElement;
+    const closeIcon = menuToggle?.querySelector('.close-icon') as HTMLElement;
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        const isActive = mobileMenu.classList.contains('active');
+        
+        if (isActive) {
+          mobileMenu.classList.remove('active');
+          if (menuIcon) menuIcon.style.display = 'block';
+          if (closeIcon) closeIcon.style.display = 'none';
+          document.body.style.overflow = '';
+        } else {
+          mobileMenu.classList.add('active');
+          if (menuIcon) menuIcon.style.display = 'none';
+          if (closeIcon) closeIcon.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        }
+      });
+
+      // Close menu when clicking on a link
+      mobileNavLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.remove('active');
+          if (menuIcon) menuIcon.style.display = 'block';
+          if (closeIcon) closeIcon.style.display = 'none';
+          document.body.style.overflow = '';
+        });
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (mobileMenu.classList.contains('active') && 
+            !mobileMenu.contains(target) && 
+            !menuToggle.contains(target)) {
+          mobileMenu.classList.remove('active');
+          if (menuIcon) menuIcon.style.display = 'block';
+          if (closeIcon) closeIcon.style.display = 'none';
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  }
+
   // Initialize on load
   updateCartBadge();
+  setupMobileMenu();
 
   // Listen for cart updates
   window.addEventListener('cartUpdated', () => {
@@ -241,5 +396,6 @@
   // Re-initialize when navigating between pages (Astro View Transitions)
   document.addEventListener('astro:page-load', () => {
     updateCartBadge();
+    setupMobileMenu();
   });
 </script>
