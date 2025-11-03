@@ -576,28 +576,35 @@ import Footer from '../components/Footer.astro';
 
   // Render cart
   function renderCart() {
+    console.log('Cart: Rendering cart with', cart.length, 'items');
+    
     const cartItemsContainer = document.getElementById('cartItems');
     const emptyCartMessage = document.getElementById('emptyCart');
     const cartSummary = document.getElementById('cartSummary');
     const cartOptions = document.getElementById('cartOptions');
     const cartActions = document.getElementById('cartActions');
 
-    if (!cartItemsContainer || !emptyCartMessage) return;
-
-    if (cart.length === 0) {
-      cartItemsContainer.style.display = 'none';
-      emptyCartMessage.style.display = 'flex';
-      cartSummary!.style.display = 'none';
-      cartOptions!.style.display = 'none';
-      cartActions!.style.display = 'none';
+    if (!cartItemsContainer || !emptyCartMessage) {
+      console.error('Cart: Required DOM elements not found');
       return;
     }
 
+    if (cart.length === 0) {
+      console.log('Cart: Cart is empty, showing empty message');
+      cartItemsContainer.style.display = 'none';
+      emptyCartMessage.style.display = 'flex';
+      if (cartSummary) cartSummary.style.display = 'none';
+      if (cartOptions) cartOptions.style.display = 'none';
+      if (cartActions) cartActions.style.display = 'none';
+      return;
+    }
+
+    console.log('Cart: Displaying cart items');
     cartItemsContainer.style.display = 'flex';
     emptyCartMessage.style.display = 'none';
-    cartSummary!.style.display = 'block';
-    cartOptions!.style.display = 'flex';
-    cartActions!.style.display = 'flex';
+    if (cartSummary) cartSummary.style.display = 'block';
+    if (cartOptions) cartOptions.style.display = 'flex';
+    if (cartActions) cartActions.style.display = 'flex';
 
     // Render items
     cartItemsContainer.innerHTML = cart
@@ -650,9 +657,15 @@ import Footer from '../components/Footer.astro';
 
     // Update summary
     const { subtotal, tax, total } = calculateTotals();
-    document.getElementById('summarySubtotal')!.textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('summaryTax')!.textContent = `$${tax.toFixed(2)}`;
-    document.getElementById('summaryTotal')!.textContent = `$${total.toFixed(2)}`;
+    const summarySubtotal = document.getElementById('summarySubtotal');
+    const summaryTax = document.getElementById('summaryTax');
+    const summaryTotal = document.getElementById('summaryTotal');
+    
+    if (summarySubtotal) summarySubtotal.textContent = `$${subtotal.toFixed(2)}`;
+    if (summaryTax) summaryTax.textContent = `$${tax.toFixed(2)}`;
+    if (summaryTotal) summaryTotal.textContent = `$${total.toFixed(2)}`;
+
+    console.log('Cart: Summary updated - Subtotal:', subtotal, 'Tax:', tax, 'Total:', total);
 
     // Attach event listeners
     attachEventListeners();
@@ -696,29 +709,66 @@ import Footer from '../components/Footer.astro';
   }
 
   // Setup button listeners
-  const backBtn = document.getElementById('backBtn');
-  const continueBtn = document.getElementById('continueShoppingBtn');
-  const proceedBtn = document.getElementById('proceedPaymentBtn');
+  function setupButtonListeners() {
+    const backBtn = document.getElementById('backBtn');
+    const continueBtn = document.getElementById('continueShoppingBtn');
+    const proceedBtn = document.getElementById('proceedPaymentBtn');
 
-  backBtn?.addEventListener('click', () => {
-    window.history.back();
+    backBtn?.addEventListener('click', () => {
+      window.history.back();
+    });
+
+    continueBtn?.addEventListener('click', () => {
+      window.location.href = '/discover';
+    });
+
+    proceedBtn?.addEventListener('click', () => {
+      const { total } = calculateTotals();
+      const giftWrapping = (document.getElementById('giftWrapping') as HTMLInputElement)?.checked;
+      const newsletter = (document.getElementById('newsletter') as HTMLInputElement)?.checked;
+
+      alert(
+        `Payment Page\n\nTotal: $${total.toFixed(2)}\nGift Wrapping: ${giftWrapping ? 'Yes' : 'No'}\nNewsletter: ${newsletter ? 'Yes' : 'No'}\n\n(Payment integration coming soon!)`
+      );
+    });
+  }
+
+  // Initialize cart
+  function initializeCart() {
+    console.log('Cart: Initializing cart page');
+    loadCart();
+    renderCart();
+    setupButtonListeners();
+  }
+
+  // Initialize on first load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeCart);
+  } else {
+    initializeCart();
+  }
+
+  // Re-initialize when navigating with Astro View Transitions
+  document.addEventListener('astro:page-load', () => {
+    console.log('Cart: Page loaded via Astro navigation, re-initializing');
+    // Use a small timeout to ensure DOM is ready
+    setTimeout(() => {
+      initializeCart();
+    }, 50);
   });
 
-  continueBtn?.addEventListener('click', () => {
-    window.location.href = '/discover';
+  // Also listen for astro:after-swap
+  document.addEventListener('astro:after-swap', () => {
+    console.log('Cart: After swap event, re-initializing');
+    setTimeout(() => {
+      initializeCart();
+    }, 50);
   });
 
-  proceedBtn?.addEventListener('click', () => {
-    const { total } = calculateTotals();
-    const giftWrapping = (document.getElementById('giftWrapping') as HTMLInputElement)?.checked;
-    const newsletter = (document.getElementById('newsletter') as HTMLInputElement)?.checked;
-
-    alert(
-      `Payment Page\n\nTotal: $${total.toFixed(2)}\nGift Wrapping: ${giftWrapping ? 'Yes' : 'No'}\nNewsletter: ${newsletter ? 'Yes' : 'No'}\n\n(Payment integration coming soon!)`
-    );
+  // Listen for cart updates from other pages
+  window.addEventListener('cartUpdated', () => {
+    console.log('Cart: Cart updated event received');
+    loadCart();
+    renderCart();
   });
-
-  // Initialize
-  loadCart();
-  renderCart();
 </script>

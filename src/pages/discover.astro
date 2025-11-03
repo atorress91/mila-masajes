@@ -648,4 +648,77 @@ try {
   // Book button functionality - SE REMOVIÓ porque el modal ya maneja los clicks con event delegation
   // Los botones .book-btn ya son manejados por el ServiceModal.astro
   console.log('Discover page: Setup complete. Modal will handle book button clicks.');
+
+  // Re-initialize on Astro page navigation
+  document.addEventListener('astro:page-load', () => {
+    console.log('Discover page: Re-initializing after navigation');
+    
+    // Re-query elements
+    const newFilterButtons = document.querySelectorAll('.filter-btn');
+    const newServiceCards = document.querySelectorAll('.service-card-wrapper');
+    const newSearchInput = document.getElementById('searchInput');
+    
+    // Re-setup filter buttons
+    newFilterButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        newFilterButtons.forEach((btn) => btn.classList.remove('active'));
+        this.classList.add('active');
+        const filter = this.getAttribute('data-filter');
+        
+        newServiceCards.forEach((card) => {
+          const category = card.getAttribute('data-category');
+          if (filter === 'all' || category === filter) {
+            card.style.display = 'block';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+              card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, 50);
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+    
+    // Re-setup search
+    newSearchInput?.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      newServiceCards.forEach((card) => {
+        const title = card.querySelector('.service-title')?.textContent?.toLowerCase() || '';
+        const description = card.querySelector('.service-description')?.textContent?.toLowerCase() || '';
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+    
+    // Re-prepare services data
+    const newServicesDataForModal = {};
+    newServiceCards.forEach((wrapper) => {
+      const card = wrapper.querySelector('.service-card');
+      if (!card) return;
+      const serviceId = card.getAttribute('data-service-id');
+      if (!serviceId) return;
+      const fullService = window.__servicesFromSanity?.find(s => s._id === serviceId);
+      if (fullService) {
+        const addons = Array.isArray(fullService.addons) ? fullService.addons.filter(addon => addon && addon.name && addon.price !== undefined) : [];
+        newServicesDataForModal[serviceId] = {
+          _id: fullService._id,
+          title: fullService.title,
+          description: fullService.description,
+          price: fullService.price,
+          image: card.querySelector('.service-image img')?.getAttribute('src') || '',
+          category: fullService.category,
+          badge: fullService.category ? fullService.category.charAt(0).toUpperCase() + fullService.category.slice(1) : '',
+          addons: addons
+        };
+      }
+    });
+    window.servicesData = newServicesDataForModal;
+  });
 </script>
