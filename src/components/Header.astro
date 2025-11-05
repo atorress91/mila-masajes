@@ -103,9 +103,14 @@
   }
 
   .logo-image {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .logo:hover .logo-image {
+    transform: scale(1.05);
   }
 
   .logo-text {
@@ -115,14 +120,14 @@
   }
 
   .logo-title {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
     margin: 0;
     line-height: 1;
   }
 
   .logo-subtitle {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 400;
     color: var(--text-secondary);
     margin: 0;
@@ -271,16 +276,16 @@
 
   @media (max-width: 768px) {
     .logo-image {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
     }
 
     .logo-title {
-      font-size: 18px;
+      font-size: 20px;
     }
 
     .logo-subtitle {
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .mobile-nav-link {
@@ -291,16 +296,16 @@
 
   @media (max-width: 480px) {
     .logo-image {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
     }
 
     .logo-title {
-      font-size: 16px;
+      font-size: 18px;
     }
 
     .logo-subtitle {
-      font-size: 10px;
+      font-size: 11px;
     }
 
     .header-icons {
@@ -344,7 +349,7 @@
     if (menuToggle && mobileMenu) {
       menuToggle.addEventListener('click', () => {
         const isActive = mobileMenu.classList.contains('active');
-        
+
         if (isActive) {
           mobileMenu.classList.remove('active');
           if (menuIcon) menuIcon.style.display = 'block';
@@ -371,8 +376,8 @@
       // Close menu when clicking outside
       document.addEventListener('click', (e) => {
         const target = e.target as HTMLElement;
-        if (mobileMenu.classList.contains('active') && 
-            !mobileMenu.contains(target) && 
+        if (mobileMenu.classList.contains('active') &&
+            !mobileMenu.contains(target) &&
             !menuToggle.contains(target)) {
           mobileMenu.classList.remove('active');
           if (menuIcon) menuIcon.style.display = 'block';
@@ -399,3 +404,4 @@
     setupMobileMenu();
   });
 </script>
+
