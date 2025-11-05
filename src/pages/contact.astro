@@ -255,7 +255,7 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
   .contact-page {
     min-height: calc(100vh - 200px);
     padding: 80px 0 100px;
-    background: var(--background-light);
+    background: linear-gradient(135deg, var(--blanco-calido) 0%, var(--beige-arena) 100%);
   }
 
   .contact-grid {
@@ -268,12 +268,13 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
 
   /* Contact Info Card */
   .contact-info-card {
-    background: #d9d9d9;
+    background: white;
     border-radius: 25px;
     padding: 50px 40px;
     display: flex;
     flex-direction: column;
     gap: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   }
 
   .contact-title {
@@ -363,7 +364,7 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
   }
 
   .social-link:hover {
-    color: var(--accent-color);
+    color: var(--coral-rosado);
     transform: translateY(-3px);
   }
 
@@ -374,9 +375,10 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
 
   /* Contact Form Card */
   .contact-form-card {
-    background: var(--text-primary);
+    background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--coral-rosado) 100%);
     border-radius: 25px;
     padding: 50px 40px;
+    box-shadow: 0 10px 40px rgba(168, 197, 190, 0.25);
   }
 
   .form-title {
@@ -439,13 +441,13 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
   }
 
   .btn-submit {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: white;
+    border: 2px solid white;
     border-radius: 12px;
     padding: 15px 40px;
     font-size: 18px;
     font-weight: 600;
-    color: white;
+    color: var(--verde-salvia);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -454,12 +456,15 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
     transition: all 0.3s ease;
     margin-top: 10px;
     font-family: 'Poppins', sans-serif;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
   }
 
   .btn-submit:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: white;
-    transform: translateY(-2px);
+    background: var(--blanco-calido);
+    border-color: var(--blanco-calido);
+    color: var(--texto-principal);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
   }
 
   .btn-submit svg {

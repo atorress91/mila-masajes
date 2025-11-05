@@ -1,17 +1,35 @@
-/* CSS Variables */
+/* CSS Variables - MIA Massage & Wellness Brand Colors */
 :root {
-  /* Nueva paleta de colores spa */
-  --primary-color: #e8f4f0;
-  --secondary-color: #d4e7e1;
-  --accent-color: #7ba89a;
-  --accent-secondary: #c9b8a8;
-  --text-primary: #2d3e3c;
-  --text-secondary: #5a6c69;
-  --background-light: #e8f4f0;
-  --background-cards: #fafafa;
-  --emphasis-color: #b8a693;
-  --white: #fafafa;
-  --dark-bg: #2d3e3c;
+  /* Colores del Logo (Base) */
+  --coral-rosado: #E8B4A8;      /* Pétalos de loto */
+  --verde-salvia: #A8C5BE;      /* Manos */
+
+  /* Fondo y espacios neutros */
+  --beige-arena: #F5F0EB;       /* Fondos principales */
+  --blanco-calido: #FDFBF9;     /* Fondos alternos */
+  --gris-perla: #E8E4DF;        /* Secciones alternas */
+
+  /* Acentos y elementos interactivos */
+  --terracota-suave: #D4998D;   /* Hover de botones primarios */
+  --verde-menta: #C7DED9;       /* Hover de botones secundarios */
+  --lavanda-pastel: #E5D9E8;    /* Detalles decorativos */
+
+  /* Tipografía */
+  --texto-principal: #5A5552;   /* Gris cálido oscuro */
+  --texto-secundario: #8B8380;  /* Gris medio */
+
+  /* Variables de uso general (mapped to brand colors) */
+  --primary-color: #E8B4A8;     /* Coral rosado */
+  --secondary-color: #A8C5BE;   /* Verde salvia */
+  --accent-color: #A8C5BE;      /* Verde salvia */
+  --accent-secondary: #E8B4A8;  /* Coral rosado */
+  --text-primary: #5A5552;      /* Texto principal */
+  --text-secondary: #8B8380;    /* Texto secundario */
+  --background-light: #F5F0EB;  /* Beige arena */
+  --background-cards: #FDFBF9;  /* Blanco cálido */
+  --emphasis-color: #D4998D;    /* Terracota suave */
+  --white: #FDFBF9;             /* Blanco cálido */
+  --dark-bg: #5A5552;           /* Gris cálido oscuro */
 }
 
 /* Reset */
@@ -51,7 +69,7 @@ h6 {
 
 /* Buttons */
 .btn-primary {
-  background: var(--accent-color);
+  background: var(--coral-rosado);
   color: white;
   padding: 15px 40px;
   border: none;
@@ -61,16 +79,17 @@ h6 {
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Poppins', sans-serif;
+  box-shadow: 0 2px 10px rgba(232, 180, 168, 0.2);
 }
 
 .btn-primary:hover {
-  background: #6a9688;
+  background: var(--terracota-suave);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(123, 168, 154, 0.4);
+  box-shadow: 0 4px 20px rgba(212, 153, 141, 0.4);
 }
 
 .btn-secondary {
-  background: var(--dark-bg);
+  background: var(--verde-salvia);
   color: white;
   padding: 15px 40px;
   border: none;
@@ -80,12 +99,13 @@ h6 {
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Poppins', sans-serif;
+  box-shadow: 0 2px 10px rgba(168, 197, 190, 0.2);
 }
 
 .btn-secondary:hover {
-  background: #1a2524;
+  background: var(--verde-menta);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(45, 62, 60, 0.3);
+  box-shadow: 0 4px 20px rgba(199, 222, 217, 0.4);
 }
 
 /* Responsive */

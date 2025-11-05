@@ -41,10 +41,10 @@ import Footer from '../components/Footer.astro';
         <!-- Empty Cart Message -->
         <div class="empty-cart" id="emptyCart" style="display: none;">
           <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-            <circle cx="40" cy="40" r="38" stroke="#C9B8A8" stroke-width="4"></circle>
+            <circle cx="40" cy="40" r="38" stroke="var(--coral-rosado)" stroke-width="4"></circle>
             <path
               d="M30 40L38 48L50 32"
-              stroke="#7BA89A"
+              stroke="var(--verde-salvia)"
               stroke-width="4"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -100,7 +100,7 @@ import Footer from '../components/Footer.astro';
 
 <style>
   .promo-banner {
-    background: linear-gradient(135deg, var(--background-light) 0%, var(--accent-secondary) 100%);
+    background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--coral-rosado) 100%);
     padding: 12px 0;
     text-align: center;
   }
@@ -108,14 +108,14 @@ import Footer from '../components/Footer.astro';
   .promo-banner p {
     font-size: 16px;
     font-weight: 400;
-    color: var(--text-primary);
+    color: white;
     margin: 0;
   }
 
   .cart-page {
     min-height: calc(100vh - 200px);
     padding: 60px 0 80px;
-    background: var(--background-light);
+    background: linear-gradient(135deg, var(--blanco-calido) 0%, var(--beige-arena) 100%);
   }
 
   .back-btn {
@@ -135,7 +135,7 @@ import Footer from '../components/Footer.astro';
   }
 
   .back-btn:hover {
-    color: var(--accent-color);
+    color: var(--coral-rosado);
   }
 
   .back-btn svg {
@@ -200,7 +200,7 @@ import Footer from '../components/Footer.astro';
 
   :global(.cart-item-price) {
     display: inline-block;
-    background: var(--text-primary);
+    background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--coral-rosado) 100%);
     color: white;
     padding: 6px 14px;
     border-radius: 8px;
@@ -227,7 +227,7 @@ import Footer from '../components/Footer.astro';
     content: '•';
     position: absolute;
     left: 6px;
-    color: var(--accent-color);
+    color: var(--coral-rosado);
   }
 
   :global(.cart-item-quantity) {
@@ -256,7 +256,7 @@ import Footer from '../components/Footer.astro';
     height: 32px;
     border-radius: 50%;
     border: none;
-    background: var(--accent-color);
+    background: var(--verde-salvia);
     color: white;
     font-size: 20px;
     display: flex;
@@ -267,12 +267,12 @@ import Footer from '../components/Footer.astro';
   }
 
   :global(.qty-cart-btn:hover) {
-    background: var(--text-primary);
+    background: var(--verde-menta);
     transform: scale(1.1);
   }
 
   :global(.qty-cart-btn:disabled) {
-    background: #ccc;
+    background: var(--gris-perla);
     cursor: not-allowed;
   }
 
@@ -398,7 +398,7 @@ import Footer from '../components/Footer.astro';
   .checkmark {
     width: 24px;
     height: 24px;
-    border: 2px solid var(--accent-color);
+    border: 2px solid var(--verde-salvia);
     border-radius: 6px;
     background: white;
     position: relative;
@@ -407,8 +407,8 @@ import Footer from '../components/Footer.astro';
   }
 
   .checkbox-option input[type='checkbox']:checked + .checkmark {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
+    background: var(--verde-salvia);
+    border-color: var(--verde-salvia);
   }
 
   .checkbox-option input[type='checkbox']:checked + .checkmark::after {

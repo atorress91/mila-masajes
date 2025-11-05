@@ -374,7 +374,7 @@ const servicesData = featuredServices && featuredServices.length > 0
   .hero-buttons .btn-primary {
     padding: 14px 40px;
     font-size: 15px;
-    background: #1a1a1a;
+    background: var(--coral-rosado);
     color: white;
     border-radius: 50px;
     text-decoration: none;
@@ -384,9 +384,9 @@ const servicesData = featuredServices && featuredServices.length > 0
   }
 
   .hero-buttons .btn-primary:hover {
-    background: #333;
+    background: var(--terracota-suave);
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 30px rgba(232, 180, 168, 0.3);
   }
 
   /* Right side - Two stacked images */
@@ -428,7 +428,7 @@ const servicesData = featuredServices && featuredServices.length > 0
   /* Benefits Section */
   .benefits-section {
     padding: 100px 0;
-    background: linear-gradient(135deg, var(--white) 0%, var(--primary-color) 100%);
+    background: linear-gradient(135deg, var(--blanco-calido) 0%, var(--beige-arena) 100%);
     position: relative;
     overflow: hidden;
   }
@@ -440,7 +440,7 @@ const servicesData = featuredServices && featuredServices.length > 0
     right: -20%;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(123, 168, 154, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(168, 197, 190, 0.08) 0%, transparent 70%);
     border-radius: 50%;
   }
 
@@ -451,7 +451,7 @@ const servicesData = featuredServices && featuredServices.length > 0
     left: -10%;
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(201, 184, 168, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(232, 180, 168, 0.08) 0%, transparent 70%);
     border-radius: 50%;
   }
 
@@ -492,7 +492,7 @@ const servicesData = featuredServices && featuredServices.length > 0
 
   .benefit-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 12px 40px rgba(123, 168, 154, 0.15);
+    box-shadow: 0 12px 40px rgba(168, 197, 190, 0.2);
   }
 
   .benefit-card:hover::before {
@@ -563,11 +563,11 @@ const servicesData = featuredServices && featuredServices.length > 0
 
   /* Benefits CTA */
   .benefits-cta {
-    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-secondary) 100%);
+    background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--coral-rosado) 100%);
     border-radius: 24px;
     padding: 60px 40px;
     text-align: center;
-    box-shadow: 0 10px 40px rgba(123, 168, 154, 0.2);
+    box-shadow: 0 10px 40px rgba(168, 197, 190, 0.25);
     position: relative;
     overflow: hidden;
   }
@@ -606,21 +606,23 @@ const servicesData = featuredServices && featuredServices.length > 0
 
   .benefits-cta .btn-primary {
     background: white;
-    color: var(--accent-color);
+    color: var(--verde-salvia);
     font-size: 18px;
     padding: 18px 45px;
     display: inline-block;
     text-decoration: none;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
   }
 
   .benefits-cta .btn-primary:hover {
-    background: var(--background-light);
+    background: var(--blanco-calido);
     transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
   }
 
   .services-preview {
     padding: 100px 0;
-    background: #FAF8F5;
+    background: linear-gradient(135deg, var(--blanco-calido) 0%, var(--beige-arena) 100%);
   }
 
   .section-title {
@@ -653,9 +655,10 @@ const servicesData = featuredServices && featuredServices.length > 0
     display: flex;
     flex-direction: column;
     gap: 0;
-    background: #F5F0EB;
+    background: white;
     border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   }
 
   .service-item {
@@ -668,7 +671,7 @@ const servicesData = featuredServices && featuredServices.length > 0
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: left;
-    color: #4A4A4A;
+    color: var(--texto-principal);
     font-family: inherit;
     position: relative;
   }
@@ -688,11 +691,11 @@ const servicesData = featuredServices && featuredServices.length > 0
   }
 
   .service-item:hover {
-    background: rgba(201, 184, 168, 0.15);
+    background: var(--lavanda-pastel);
   }
 
   .service-item.active {
-    background: #D4A574;
+    background: var(--verde-salvia);
     color: white;
   }
 
@@ -749,13 +752,16 @@ const servicesData = featuredServices && featuredServices.length > 0
     display: flex;
     flex-direction: column;
     gap: 24px;
-    padding-top: 20px;
+    padding: 30px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   }
 
   .service-showcase-title {
     font-size: 42px;
     font-weight: 600;
-    color: #2C2C2C;
+    color: var(--texto-principal);
     line-height: 1.2;
     letter-spacing: -0.5px;
     margin: 0;
@@ -765,7 +771,7 @@ const servicesData = featuredServices && featuredServices.length > 0
   .service-showcase-description {
     font-size: 16px;
     line-height: 1.75;
-    color: #6B6B6B;
+    color: var(--texto-secundario);
     margin: 0;
   }
 
@@ -790,7 +796,7 @@ const servicesData = featuredServices && featuredServices.length > 0
 
   .benefits-column li {
     font-size: 15px;
-    color: #6B6B6B;
+    color: var(--texto-secundario);
     padding-left: 28px;
     position: relative;
     line-height: 1.5;
@@ -800,7 +806,7 @@ const servicesData = featuredServices && featuredServices.length > 0
     content: '•';
     position: absolute;
     left: 10px;
-    color: #D4A574;
+    color: var(--coral-rosado);
     font-size: 20px;
     font-weight: bold;
   }
@@ -815,19 +821,19 @@ const servicesData = featuredServices && featuredServices.length > 0
   .service-price {
     font-size: 32px;
     font-weight: 700;
-    color: #2C2C2C;
+    color: var(--texto-principal);
   }
 
   .service-duration {
     font-size: 16px;
-    color: #6B6B6B;
+    color: var(--texto-secundario);
     font-weight: 500;
   }
 
   .btn-learn-more {
     display: inline-block;
     padding: 16px 50px;
-    background: #D4A574;
+    background: var(--coral-rosado);
     color: white;
     text-decoration: none;
     border-radius: 8px;
@@ -836,14 +842,14 @@ const servicesData = featuredServices && featuredServices.length > 0
     letter-spacing: 1.5px;
     text-transform: uppercase;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 20px rgba(212, 165, 116, 0.3);
+    box-shadow: 0 4px 20px rgba(232, 180, 168, 0.3);
     margin-top: 10px;
   }
 
   .btn-learn-more:hover {
-    background: #C89560;
+    background: var(--terracota-suave);
     transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(212, 165, 116, 0.4);
+    box-shadow: 0 6px 30px rgba(212, 153, 141, 0.4);
   }
 
   .no-services {
