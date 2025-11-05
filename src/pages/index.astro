@@ -22,6 +22,18 @@ try {
   console.error('Error fetching from Sanity:', error);
   // Usar valores por defecto si Sanity falla
 }
+
+// Preparar datos de servicios para el script del cliente
+const servicesData = featuredServices && featuredServices.length > 0
+  ? featuredServices.map((s: any) => ({
+      title: s.title,
+      description: s.description,
+      price: s.price,
+      duration: s.duration,
+      image: s.image ? urlFor(s.image).width(600).height(700).format('webp').url() : '/assets/service-1.jpg',
+      benefits: s.benefits || []
+    }))
+  : [];
 ---
 
 <Layout 
@@ -141,46 +153,139 @@ try {
         <h2 class="section-title">Featured Services</h2>
         <p class="section-subtitle">Discover our most popular massage therapies</p>
         
-        <div class="services-grid">
-          {featuredServices && featuredServices.length > 0 ? (
-            featuredServices.map((service: any) => (
-              <div class="service-card">
-                <div class="service-image">
-                  {service.image ? (
-                    <img 
-                      src={urlFor(service.image).width(500).height(350).format('webp').url()} 
-                      alt={service.image.alt || service.title} 
-                    />
-                  ) : (
-                    <img src="/assets/service-placeholder.jpg" alt={service.title} />
-                  )}
-                </div>
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
-                <div class="service-details">
-                  <span class="price">${service.price}</span>
-                  <span class="duration">{service.duration} min</span>
-                </div>
-              </div>
-            ))
-          ) : (
-            <!-- Fallback si no hay servicios en Sanity -->
-            <div class="service-card">
-              <div class="service-image">
-                <img src="/assets/service-1.jpg" alt="Service" />
-              </div>
-              <h3>No services loaded</h3>
-              <p>Add services in Sanity Studio at http://localhost:3333</p>
-              <span class="price">$0</span>
+        {featuredServices && featuredServices.length > 0 ? (
+          <div class="services-showcase">
+            <!-- Left: Services List -->
+            <div class="services-list">
+              {featuredServices.map((service: any, index: number) => (
+                <button
+                  class={`service-item ${index === 0 ? 'active' : ''}`}
+                  data-service-index={index}
+                >
+                  <span class="service-icon">
+                    {service.icon ? (
+                      <span set:html={service.icon} />
+                    ) : (
+                      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                        <path d="M20 5L25 15H35L27 22L30 32L20 26L10 32L13 22L5 15H15L20 5Z" fill="currentColor"/>
+                      </svg>
+                    )}
+                  </span>
+                  <span class="service-name">{service.title}</span>
+                </button>
+              ))}
             </div>
-          )}
-        </div>
 
-        <div class="cta-center">
-          <a href="/discover" class="btn-primary">View All Services</a>
-        </div>
+            <!-- Center: Service Image -->
+            <div class="service-showcase-image">
+              {featuredServices[0]?.image ? (
+                <img
+                  id="showcase-image"
+                  src={urlFor(featuredServices[0].image).width(600).height(700).format('webp').url()}
+                  alt={featuredServices[0].image.alt || featuredServices[0].title}
+                />
+              ) : (
+                <img id="showcase-image" src="/assets/service-1.jpg" alt="Service" />
+              )}
+            </div>
+
+            <!-- Right: Service Details -->
+            <div class="service-showcase-details">
+              <h3 id="service-title" class="service-showcase-title">{featuredServices[0]?.title || 'MYOFACIAL MASSAGE'}</h3>
+              <p id="service-description" class="service-showcase-description">
+                {featuredServices[0]?.description || 'Myofascial therapy among other massages works the broader network of muscles that might be causing your pain and distress. Its purpose is for the treatment of body stress or pain:'}
+              </p>
+
+              <div class="service-benefits" id="service-benefits">
+                <div class="benefits-columns" id="benefits-columns">
+                  {featuredServices[0]?.benefits && featuredServices[0].benefits.length > 0 ? (
+                    <>
+                      <ul class="benefits-column">
+                        {featuredServices[0].benefits.slice(0, Math.ceil(featuredServices[0].benefits.length / 2)).map((benefit: string) => (
+                          <li>{benefit}</li>
+                        ))}
+                      </ul>
+                      <ul class="benefits-column">
+                        {featuredServices[0].benefits.slice(Math.ceil(featuredServices[0].benefits.length / 2)).map((benefit: string) => (
+                          <li>{benefit}</li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+
+              <div class="service-meta">
+                <span class="service-price" id="service-price">${featuredServices[0]?.price || '0'}</span>
+                <span class="service-duration" id="service-duration">{featuredServices[0]?.duration || '60'} min</span>
+              </div>
+
+              <a href="/discover" class="btn-learn-more">LEARN MORE</a>
+            </div>
+          </div>
+        ) : (
+          <!-- Fallback si no hay servicios en Sanity -->
+          <div class="no-services">
+            <p>No services loaded. Add services in Sanity Studio at http://localhost:3333</p>
+          </div>
+        )}
       </div>
     </section>
+
+    <script define:vars={{ servicesData }}>
+      // Interactive service showcase
+      document.addEventListener('DOMContentLoaded', () => {
+        const serviceItems = document.querySelectorAll('.service-item');
+        const showcaseImage = document.getElementById('showcase-image');
+        const serviceTitle = document.getElementById('service-title');
+        const serviceDescription = document.getElementById('service-description');
+        const servicePrice = document.getElementById('service-price');
+        const serviceDuration = document.getElementById('service-duration');
+        const benefitsColumns = document.getElementById('benefits-columns');
+
+        function updateBenefits(benefits) {
+          if (!benefitsColumns) return;
+
+          if (!benefits || benefits.length === 0) {
+            benefitsColumns.innerHTML = '';
+            return;
+          }
+
+          const midPoint = Math.ceil(benefits.length / 2);
+          const leftBenefits = benefits.slice(0, midPoint);
+          const rightBenefits = benefits.slice(midPoint);
+
+          benefitsColumns.innerHTML = `
+            <ul class="benefits-column">
+              ${leftBenefits.map(b => `<li>${b}</li>`).join('')}
+            </ul>
+            <ul class="benefits-column">
+              ${rightBenefits.map(b => `<li>${b}</li>`).join('')}
+            </ul>
+          `;
+        }
+
+        serviceItems.forEach((item, index) => {
+          item.addEventListener('click', () => {
+            // Remove active class from all items
+            serviceItems.forEach(i => i.classList.remove('active'));
+            // Add active class to clicked item
+            item.classList.add('active');
+
+            // Update showcase content
+            const service = servicesData[index];
+            if (service) {
+              if (showcaseImage) showcaseImage.src = service.image;
+              if (serviceTitle) serviceTitle.textContent = service.title;
+              if (serviceDescription) serviceDescription.textContent = service.description;
+              if (servicePrice) servicePrice.textContent = `$${service.price}`;
+              if (serviceDuration) serviceDuration.textContent = `${service.duration} min`;
+              updateBenefits(service.benefits);
+            }
+          });
+        });
+      });
+    </script>
   </main>
 
   <Footer />
@@ -514,8 +619,8 @@ try {
   }
 
   .services-preview {
-    padding: 80px 0;
-    background: var(--background-light);
+    padding: 100px 0;
+    background: #FAF8F5;
   }
 
   .section-title {
@@ -530,81 +635,243 @@ try {
     font-size: 18px;
     color: var(--text-secondary);
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 80px;
   }
 
-  .services-grid {
+  /* Services Showcase Layout */
+  .services-showcase {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
-    margin-bottom: 60px;
+    grid-template-columns: 300px 1fr 400px;
+    gap: 60px;
+    align-items: start;
+    max-width: 1400px;
+    margin: 0 auto;
   }
 
-  .service-card {
-    background: white;
-    border-radius: 20px;
+  /* Left: Services List */
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background: #F5F0EB;
+    border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .service-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 28px;
+    background: transparent;
+    border: none;
     cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    color: #4A4A4A;
+    font-family: inherit;
+    position: relative;
   }
 
-  .service-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  .service-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 28px;
+    right: 28px;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
   }
 
-  .service-image {
+  .service-item:last-child::after {
+    display: none;
+  }
+
+  .service-item:hover {
+    background: rgba(201, 184, 168, 0.15);
+  }
+
+  .service-item.active {
+    background: #D4A574;
+    color: white;
+  }
+
+  .service-item.active::after {
+    display: none;
+  }
+
+  .service-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: currentColor;
+  }
+
+  .service-icon svg {
     width: 100%;
-    height: 250px;
-    overflow: hidden;
+    height: 100%;
   }
 
-  .service-image img {
+  .service-name {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  /* Center: Service Image */
+  .service-showcase-image {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+    aspect-ratio: 3/4;
+    max-height: 700px;
+  }
+
+  .service-showcase-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s ease;
   }
 
-  .service-card:hover .service-image img {
-    transform: scale(1.1);
+  .service-showcase-image:hover img {
+    transform: scale(1.05);
   }
 
-  .service-card h3 {
-    font-size: 24px;
-    font-weight: 600;
-    padding: 20px 20px 10px;
-    color: var(--text-primary);
-  }
-
-  .service-card p {
-    font-size: 16px;
-    color: var(--text-secondary);
-    padding: 0 20px 15px;
-  }
-
-  .service-details {
+  /* Right: Service Details */
+  .service-showcase-details {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px 30px;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 20px;
   }
 
-  .service-card .price {
-    font-size: 28px;
+  .service-showcase-title {
+    font-size: 42px;
+    font-weight: 600;
+    color: #2C2C2C;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .service-showcase-description {
+    font-size: 16px;
+    line-height: 1.75;
+    color: #6B6B6B;
+    margin: 0;
+  }
+
+  .service-benefits {
+    margin: 10px 0;
+  }
+
+  .benefits-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .benefits-column {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .benefits-column li {
+    font-size: 15px;
+    color: #6B6B6B;
+    padding-left: 28px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .benefits-column li::before {
+    content: '•';
+    position: absolute;
+    left: 10px;
+    color: #D4A574;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .service-meta {
+    display: flex;
+    gap: 30px;
+    align-items: baseline;
+    margin-top: 10px;
+  }
+
+  .service-price {
+    font-size: 32px;
     font-weight: 700;
-    color: var(--accent-color);
+    color: #2C2C2C;
   }
 
-  .service-card .duration {
-    font-size: 14px;
-    color: var(--text-secondary);
+  .service-duration {
+    font-size: 16px;
+    color: #6B6B6B;
     font-weight: 500;
+  }
+
+  .btn-learn-more {
+    display: inline-block;
+    padding: 16px 50px;
+    background: #D4A574;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(212, 165, 116, 0.3);
+    margin-top: 10px;
+  }
+
+  .btn-learn-more:hover {
+    background: #C89560;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(212, 165, 116, 0.4);
+  }
+
+  .no-services {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6B6B6B;
   }
 
   .cta-center {
     display: flex;
     justify-content: center;
+  }
+
+  @media (max-width: 1200px) {
+    .services-showcase {
+      grid-template-columns: 1fr;
+      gap: 50px;
+    }
+
+    .services-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .service-showcase-details {
+      max-width: 600px;
+      margin: 0 auto;
+    }
   }
 
   @media (max-width: 968px) {

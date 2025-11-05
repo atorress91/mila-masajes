@@ -27,6 +27,13 @@ export default {
       validation: Rule => Rule.required().max(300),
     },
     {
+      name: 'icon',
+      title: 'Icon SVG',
+      type: 'text',
+      description: 'Paste SVG code for the service icon (optional)',
+      rows: 3,
+    },
+    {
       name: 'price',
       title: 'Price (USD)',
       type: 'number',
