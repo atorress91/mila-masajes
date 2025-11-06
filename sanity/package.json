@@ -1,7 +1,7 @@
 {
-  "name": "massage-bliss-sanity",
+  "name": "mia-massage-wellness-sanity",
   "version": "1.0.0",
-  "description": "Sanity Studio for Massage Bliss",
+  "description": "Sanity Studio for MIA Massage & Wellness",
   "main": "package.json",
   "scripts": {
     "dev": "sanity dev",

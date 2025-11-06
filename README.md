@@ -1,8 +1,8 @@
-# Massage Bliss - Astro + Sanity CMS
+# MIA Massage & Wellness - Astro + Sanity CMS
 
 ## 🚀 Proyecto Astro con CMS Headless
 
-Este es el proyecto Massage Bliss construido con **Astro** (frontend) y **Sanity CMS** (gestión de contenido) para máximo rendimiento y flexibilidad.
+Este es el proyecto MIA Massage & Wellness construido con **Astro** (frontend) y **Sanity CMS** (gestión de contenido) para máximo rendimiento y flexibilidad.
 
 ## ⚡ Características
 

@@ -5,7 +5,7 @@ import { schemaTypes } from './schemas';
 
 export default defineConfig({
   name: 'default',
-  title: 'Massage Bliss CMS',
+  title: 'MIA Massage & Wellness CMS',
 
   projectId: '6z0ec6tg',
   dataset: 'production',
