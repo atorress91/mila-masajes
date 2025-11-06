@@ -45,7 +45,7 @@ const categories = [
       <div class="container">
         <div class="filter-tabs">
           {
-            categories.map((cat) => (
+            categories.map(cat => (
               <button class={`filter-tab ${cat.id === 'all' ? 'active' : ''}`} data-filter={cat.id}>
                 {cat.name}
               </button>
@@ -58,70 +58,70 @@ const categories = [
     <!-- Gallery Grid -->
     <section class="gallery-section">
       <div class="container">
-        {galleryImages && galleryImages.length > 0 ? (
-          <div class="gallery-masonry">
-            {galleryImages.map((image: any, index: number) => {
-              const thumbnailUrl = image.image 
-                ? urlFor(image.image).width(600).height(600).format('webp').quality(80).url() 
-                : '';
-              const fullSizeUrl = image.image 
-                ? urlFor(image.image).width(1920).height(1920).format('webp').quality(90).url() 
-                : '';
-              
-              return (
-                <div 
-                  class="gallery-item" 
-                  data-category={image.category} 
-                  data-index={index}
-                  data-title={image.title}
-                  data-description={image.description || ''}
-                  data-full-url={fullSizeUrl}
-                >
-                  <div class="gallery-item-inner">
-                    {image.image ? (
-                      <img 
-                        src={thumbnailUrl}
-                        alt={image.image.alt || image.title} 
-                        loading="lazy" 
-                      />
-                    ) : (
-                      <div class="gallery-placeholder">
-                        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                          <rect x="10" y="10" width="40" height="40" rx="4" stroke="currentColor" stroke-width="2" />
-                          <circle cx="22" cy="22" r="4" fill="currentColor" />
-                          <path d="M10 40l10-10 8 8 12-12 10 8" stroke="currentColor" stroke-width="2" />
-                        </svg>
+        {
+          galleryImages && galleryImages.length > 0 ? (
+            <div class="gallery-masonry">
+              {galleryImages.map((image: any, index: number) => {
+                const thumbnailUrl = image.image
+                  ? urlFor(image.image).width(600).height(600).format('webp').quality(80).url()
+                  : '';
+                const fullSizeUrl = image.image
+                  ? urlFor(image.image).width(1920).height(1920).format('webp').quality(90).url()
+                  : '';
+
+                return (
+                  <div
+                    class="gallery-item"
+                    data-category={image.category}
+                    data-index={index}
+                    data-title={image.title}
+                    data-description={image.description || ''}
+                    data-full-url={fullSizeUrl}
+                  >
+                    <div class="gallery-item-inner">
+                      {image.image ? (
+                        <img src={thumbnailUrl} alt={image.image.alt || image.title} loading="lazy" />
+                      ) : (
+                        <div class="gallery-placeholder">
+                          <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                            <rect x="10" y="10" width="40" height="40" rx="4" stroke="currentColor" stroke-width="2" />
+                            <circle cx="22" cy="22" r="4" fill="currentColor" />
+                            <path d="M10 40l10-10 8 8 12-12 10 8" stroke="currentColor" stroke-width="2" />
+                          </svg>
+                        </div>
+                      )}
+                      <div class="gallery-overlay">
+                        <div class="gallery-info">
+                          <h3 class="gallery-title">{image.title}</h3>
+                          <p class="gallery-category">
+                            {categories.find((c: any) => c.id === image.category)?.name || image.category}
+                          </p>
+                        </div>
+                        <button class="view-btn" aria-label="View image">
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path
+                              d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"
+                              stroke="white"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </button>
                       </div>
-                    )}
-                    <div class="gallery-overlay">
-                      <div class="gallery-info">
-                        <h3 class="gallery-title">{image.title}</h3>
-                        <p class="gallery-category">
-                          {categories.find((c: any) => c.id === image.category)?.name || image.category}
-                        </p>
-                      </div>
-                      <button class="view-btn" aria-label="View image">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                          <path
-                            d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"
-                            stroke="white"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                          />
-                        </svg>
-                      </button>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div class="no-images">
-            <h3>No gallery images available</h3>
-            <p>Add images in Sanity Studio at <a href="http://localhost:3333">http://localhost:3333</a></p>
-          </div>
-        )}
+                );
+              })}
+            </div>
+          ) : (
+            <div class="no-images">
+              <h3>No gallery images available</h3>
+              <p>
+                Add images in Sanity Studio at <a href="http://localhost:3333">http://localhost:3333</a>
+              </p>
+            </div>
+          )
+        }
 
         <!-- Load More Button -->
         <div class="load-more-container">
@@ -150,12 +150,12 @@ const categories = [
     <button class="lightbox-close" aria-label="Close lightbox">&times;</button>
     <button class="lightbox-prev" aria-label="Previous image">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-        <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
     </button>
     <button class="lightbox-next" aria-label="Next image">
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-        <path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
     </button>
     <div class="lightbox-content">
@@ -171,588 +171,16 @@ const categories = [
 </Layout>
 
 <style>
-  .gallery-page {
-    background: linear-gradient(135deg, var(--blanco-calido) 0%, var(--beige-arena) 100%);
-  }
-
-  /* Hero Section */
-  .gallery-hero {
-    padding: 80px 0 60px;
-    text-align: center;
-  }
-
-  .gallery-hero-content {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .gallery-hero-title {
-    font-size: 72px;
-    font-weight: 400;
-    color: var(--text-primary);
-    margin: 0 0 20px;
-    letter-spacing: -1px;
-  }
-
-  .gallery-hero-subtitle {
-    font-size: 20px;
-    color: var(--text-secondary);
-    line-height: 1.8;
-    margin: 0;
-  }
-
-  /* Filter Tabs */
-  .gallery-filters {
-    padding: 30px 0;
-    background: transparent;
-  }
-
-  .filter-tabs {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .filter-tab {
-    padding: 12px 28px;
-    background: white;
-    border: 2px solid var(--verde-salvia);
-    border-radius: 30px;
-    color: var(--verde-salvia);
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
-
-  .filter-tab:hover {
-    background: var(--lavanda-pastel);
-    border-color: var(--verde-menta);
-    color: var(--verde-salvia);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(168, 197, 190, 0.15);
-  }
-
-  .filter-tab.active {
-    background: var(--verde-salvia);
-    border-color: var(--verde-salvia);
-    color: white;
-    box-shadow: 0 4px 15px rgba(168, 197, 190, 0.3);
-  }
-
-  /* Gallery Section */
-  .gallery-section {
-    padding: 60px 0 40px;
-    background: transparent;
-  }
-
-  .gallery-masonry {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 25px;
-    grid-auto-flow: dense;
-  }
-
-  .gallery-item {
-    position: relative;
-    overflow: hidden;
-    border-radius: 20px;
-    background: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  }
-
-  .gallery-item:hover {
-    box-shadow: 0 8px 30px rgba(168, 197, 190, 0.2);
-    transform: translateY(-5px);
-  }
-
-  .gallery-item.wide {
-    grid-column: span 2;
-  }
-
-  .gallery-item.tall {
-    grid-row: span 2;
-  }
-
-  .gallery-item.hidden {
-    display: none;
-  }
-
-  .gallery-item-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 350px;
-    cursor: pointer;
-  }
-
-  .gallery-item.tall .gallery-item-inner {
-    min-height: 725px;
-  }
-
-  .gallery-item.wide .gallery-item-inner {
-    min-height: 350px;
-  }
-
-  .gallery-item-inner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease;
-  }
-
-  .gallery-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 30px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .gallery-item:hover .gallery-overlay {
-    opacity: 1;
-  }
-
-  .gallery-item:hover img {
-    transform: scale(1.05);
-  }
-
-  .gallery-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-
-  .gallery-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: white;
-    margin: 0 0 8px;
-  }
-
-  .gallery-category {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0;
-  }
-
-  .view-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 48px;
-    height: 48px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .view-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-  }
-
-  /* Gallery Placeholder */
-  .gallery-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--beige-arena) 0%, var(--gris-perla) 100%);
-    color: var(--texto-secundario);
-  }
-
-  .gallery-placeholder svg {
-    opacity: 0.5;
-  }
-
-  /* No Images Message */
-  .no-images {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 100px 20px;
-    background: white;
-    border-radius: 20px;
-  }
-
-  .no-images h3 {
-    font-size: 32px;
-    color: var(--text-primary);
-    margin: 0 0 15px;
-    font-weight: 600;
-  }
-
-  .no-images p {
-    font-size: 18px;
-    color: var(--text-secondary);
-    margin: 0;
-  }
-
-  .no-images a {
-    color: var(--accent-color);
-    text-decoration: underline;
-  }
-
-  .no-images a:hover {
-    opacity: 0.8;
-  }
-
-  /* Load More */
-  .load-more-container {
-    text-align: center;
-    margin-top: 40px;
-  }
-
-  .load-more-btn {
-    padding: 15px 50px;
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .load-more-btn:hover {
-    background: var(--verde-menta);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(168, 197, 190, 0.3);
-  }
-
-  /* CTA Section */
-  .gallery-cta {
-    background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--coral-rosado) 100%);
-    padding: 80px 0;
-    margin-top: 0;
-    box-shadow: 0 10px 40px rgba(168, 197, 190, 0.2);
-  }
-
-  .cta-content {
-    text-align: center;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .cta-title {
-    font-size: 48px;
-    font-weight: 700;
-    color: white;
-    margin: 0 0 20px;
-  }
-
-  .cta-subtitle {
-    font-size: 20px;
-    color: rgba(255, 255, 255, 0.9);
-    margin: 0 0 40px;
-    line-height: 1.6;
-  }
-
-  .cta-buttons {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  .cta-btn-primary,
-  .cta-btn-secondary {
-    padding: 15px 40px;
-    border-radius: 12px;
-    font-size: 18px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: 'Poppins', sans-serif;
-    text-decoration: none;
-    display: inline-block;
-  }
-
-  .cta-btn-primary {
-    background: white;
-    color: var(--verde-salvia);
-    border: 2px solid white;
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
-  }
-
-  .cta-btn-primary:hover {
-    background: var(--blanco-calido);
-    color: var(--texto-principal);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
-  }
-
-  .cta-btn-secondary {
-    background: transparent;
-    color: white;
-    border: 2px solid white;
-  }
-
-  .cta-btn-secondary:hover {
-    background: white;
-    color: var(--verde-salvia);
-    transform: translateY(-3px);
-  }
-
-  /* Lightbox */
-  .lightbox {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
-    padding: 40px;
-  }
-
-  .lightbox.active {
-    display: flex;
-  }
-
-  .lightbox-close {
-    position: absolute;
-    top: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    color: white;
-    font-size: 32px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-  }
-
-  .lightbox-close:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(90deg);
-  }
-
-  .lightbox-prev,
-  .lightbox-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .lightbox-prev {
-    left: 30px;
-  }
-
-  .lightbox-next {
-    right: 30px;
-  }
-
-  .lightbox-prev:hover,
-  .lightbox-next:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  .lightbox-content {
-    max-width: 90%;
-    max-height: 90%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .lightbox-image {
-    max-width: 100%;
-    max-height: calc(90vh - 100px);
-    object-fit: contain;
-    border-radius: 10px;
-    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
-  }
-
-  .lightbox-info {
-    margin-top: 30px;
-    text-align: center;
-  }
-
-  .lightbox-title {
-    font-size: 28px;
-    font-weight: 600;
-    color: white;
-    margin: 0 0 10px;
-  }
-
-  .lightbox-category {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-  }
-
-  /* Responsive Design */
-  @media (max-width: 1200px) {
-    .gallery-masonry {
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    }
-  }
-
-  @media (max-width: 968px) {
-    .gallery-hero-title {
-      font-size: 56px;
-    }
-
-    .gallery-masonry {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .gallery-item.wide {
-      grid-column: span 1;
-    }
-
-    .cta-title {
-      font-size: 40px;
-    }
-
-    .filter-tabs {
-      overflow-x: auto;
-      justify-content: flex-start;
-      padding-bottom: 10px;
-    }
-
-    .filter-tab {
-      flex-shrink: 0;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .gallery-hero {
-      padding: 60px 0 40px;
-    }
-
-    .gallery-hero-title {
-      font-size: 42px;
-    }
-
-    .gallery-hero-subtitle {
-      font-size: 18px;
-    }
-
-    .gallery-masonry {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
-
-    .gallery-item.wide,
-    .gallery-item.tall {
-      grid-column: span 1;
-      grid-row: span 1;
-    }
-
-    .gallery-item-inner,
-    .gallery-item.tall .gallery-item-inner,
-    .gallery-item.wide .gallery-item-inner {
-      min-height: 300px;
-    }
-
-    .cta-title {
-      font-size: 32px;
-    }
-
-    .cta-subtitle {
-      font-size: 18px;
-    }
-
-    .cta-buttons {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .lightbox {
-      padding: 20px;
-    }
-
-    .lightbox-close,
-    .lightbox-prev,
-    .lightbox-next {
-      width: 40px;
-      height: 40px;
-    }
-
-    .lightbox-prev {
-      left: 10px;
-    }
-
-    .lightbox-next {
-      right: 10px;
-    }
-
-    .lightbox-close {
-      top: 10px;
-      right: 10px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .gallery-hero-title {
-      font-size: 32px;
-    }
-
-    .filter-tab {
-      padding: 10px 20px;
-      font-size: 14px;
-    }
-
-    .gallery-title {
-      font-size: 20px;
-    }
-
-    .cta-title {
-      font-size: 28px;
-    }
-  }
+  @import '../styles/gallery.css';
 </style>
 
 <script>
   function initGallery() {
     console.log('Initializing gallery...');
-    
+
     let currentImageIndex = 0;
     let visibleItems: HTMLElement[] = [];
-    
+
     const lightbox = document.getElementById('lightbox');
     const lightboxImage = lightbox?.querySelector('.lightbox-image') as HTMLImageElement;
     const lightboxTitle = lightbox?.querySelector('.lightbox-title') as HTMLElement;
@@ -763,25 +191,25 @@ const categories = [
     const galleryItems = document.querySelectorAll('.gallery-item');
 
     // Initialize visible items
-    visibleItems = Array.from(galleryItems).filter((item) => {
+    visibleItems = Array.from(galleryItems).filter(item => {
       const el = item as HTMLElement;
       return !el.classList.contains('hidden');
     }) as HTMLElement[];
 
-    filterTabs.forEach((tab) => {
+    filterTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const filter = tab.getAttribute('data-filter');
 
         // Update active tab
-        filterTabs.forEach((t) => t.classList.remove('active'));
+        filterTabs.forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
 
         // Filter gallery items and update visible items
         visibleItems = [];
-        galleryItems.forEach((item) => {
+        galleryItems.forEach(item => {
           const el = item as HTMLElement;
           const category = el.getAttribute('data-category');
-          
+
           if (filter === 'all' || category === filter) {
             el.classList.remove('hidden');
             el.classList.add('fade-in');
@@ -804,27 +232,30 @@ const categories = [
       if (lightboxImage && lightbox && fullUrl) {
         lightboxImage.src = fullUrl;
         lightboxImage.alt = title || 'Gallery image';
-        
+
         if (lightboxTitle) {
           lightboxTitle.textContent = title || '';
         }
-        
+
         if (lightboxCategory) {
           // Find category name from categories
-          const categoryName = {
-            'massage': 'Massage Therapy',
-            'spa': 'Spa Facilities', 
-            'rooms': 'Treatment Rooms',
-            'relaxation': 'Relaxation Areas',
-            'staff': 'Staff'
-          }[category || ''] || category || '';
-          
+          const categoryName =
+            {
+              massage: 'Massage Therapy',
+              spa: 'Spa Facilities',
+              rooms: 'Treatment Rooms',
+              relaxation: 'Relaxation Areas',
+              staff: 'Staff',
+            }[category || ''] ||
+            category ||
+            '';
+
           lightboxCategory.textContent = categoryName;
         }
-        
+
         lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
-        
+
         currentImageIndex = visibleItems.indexOf(item);
         console.log('Opened lightbox for image:', title, 'URL:', fullUrl);
       }
@@ -852,7 +283,7 @@ const categories = [
     }
 
     // Event listeners for gallery items
-    galleryItems.forEach((item) => {
+    galleryItems.forEach(item => {
       const el = item as HTMLElement;
       el.addEventListener('click', () => {
         openLightbox(el);
@@ -865,24 +296,24 @@ const categories = [
     const nextBtn = lightbox?.querySelector('.lightbox-next');
 
     closeBtn?.addEventListener('click', closeLightbox);
-    prevBtn?.addEventListener('click', (e) => {
+    prevBtn?.addEventListener('click', e => {
       e.stopPropagation();
       showPrevImage();
     });
-    nextBtn?.addEventListener('click', (e) => {
+    nextBtn?.addEventListener('click', e => {
       e.stopPropagation();
       showNextImage();
     });
 
     // Close on overlay click
-    lightbox?.addEventListener('click', (e) => {
+    lightbox?.addEventListener('click', e => {
       if (e.target === lightbox) {
         closeLightbox();
       }
     });
 
     // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       if (!lightbox?.classList.contains('active')) return;
 
       if (e.key === 'Escape') {
