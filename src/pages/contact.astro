@@ -9,240 +9,256 @@ const contactInfo = await getContactInfo();
 
 // Fallback data if Sanity content is not available
 const fallbackContact = {
-  phone: '+987 654 321 012',
-  email: 'info@massagebliss.com',
-  address: '123 Serenity Lane, Relax City, CA 94012',
+  phone: '(555) 123-BLISS, (555) 123-2547',
+  email: 'info@massagebliss.com, bookings@massagebliss.com',
+  address: '123 Wellness Boulevard, Relaxation District, Peaceful City, PC 12345',
   mapEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52901.38783909427!2d-122.41941550000001!3d37.7749295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80859a6d00690021%3A0x4a501367f076adff!2sSan%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1698857612345!5m2!1sen!2sus',
   socialMedia: {
     instagram: 'https://instagram.com',
     twitter: 'https://twitter.com',
   },
-  hours: []
+  hours: [
+    { days: 'Monday - Friday', hours: '9:00 AM - 8:00 PM' },
+    { days: 'Saturday', hours: '8:00 AM - 6:00 PM' },
+    { days: 'Sunday', hours: '10:00 AM - 5:00 PM' },
+    { days: 'Holidays', hours: 'By Appointment' }
+  ]
 };
 
 const contact = contactInfo || fallbackContact;
 
-// Split phone numbers if multiple are provided (separated by comma or newline)
+// Split phone numbers and emails if multiple are provided
 const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string) => p.trim()).filter(Boolean) : [];
+const emails = contact.email ? contact.email.split(/[,\n]/).map((e: string) => e.trim()).filter(Boolean) : [];
+const addressLines = contact.address ? contact.address.split(/[,\n]/).map((a: string) => a.trim()).filter(Boolean) : [];
+
+// Special offers
+const specialOffers = [
+  {
+    title: 'First Visit Discount',
+    description: 'Get 20% off your first massage session'
+  },
+  {
+    title: 'Couples Package',
+    description: 'Book together and save 15% on couples massage'
+  },
+  {
+    title: 'Monthly Membership',
+    description: 'Unlimited massages starting at $149/month'
+  }
+];
 ---
 
-<Layout title="Contact Us - Massage Bliss">
+<Layout title="Contact Massage Bliss - MIA Massage & Wellness">
   <Header />
 
   <main class="contact-page">
     <div class="container">
-      <div class="contact-grid">
-        <!-- Contact Information Card -->
-        <div class="contact-info-card">
-          <h1 class="contact-title">Contact Us</h1>
+      <!-- Hero Section -->
+      <div class="contact-hero">
+        <h1 class="contact-main-title">Contact Massage Bliss</h1>
+        <p class="contact-subtitle">Get in touch to book your relaxation session</p>
+      </div>
 
-          <div class="info-sections">
-            <!-- Phone Section -->
-            <div class="info-section">
-              <div class="info-header">
-                <svg class="info-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M18.3 14.5C17.1 14.5 15.9 14.3 14.8 13.9C14.5 13.8 14.1 13.9 13.9 14.1L12.2 16.2C9.4 14.9 5.1 10.6 3.8 7.8L5.9 6C6.1 5.8 6.2 5.4 6.1 5.1C5.7 4 5.5 2.8 5.5 1.6C5.5 1.1 5.1 0.7 4.6 0.7H1.6C1.1 0.7 0.5 0.9 0.5 1.6C0.5 11.4 8.6 19.5 18.4 19.5C19 19.5 19.3 18.9 19.3 18.4V15.4C19.3 14.9 18.9 14.5 18.3 14.5Z"
-                    fill="currentColor"
-                  />
+      <!-- Two Column Layout -->
+      <div class="contact-layout">
+        <!-- Left Column -->
+        <div class="left-column">
+          <!-- Visit Our Spa Card -->
+          <div class="info-card">
+            <h2 class="card-title">Visit Our Spa</h2>
+            
+            <!-- Address -->
+            <div class="info-block">
+              <div class="icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2ZM12 11.5C10.62 11.5 9.5 10.38 9.5 9C9.5 7.62 10.62 6.5 12 6.5C13.38 6.5 14.5 7.62 14.5 9C14.5 10.38 13.38 11.5 12 11.5Z" fill="white"/>
                 </svg>
-                <h3 class="info-title">Phone</h3>
               </div>
-              {phoneNumbers.length > 0 ? (
-                phoneNumbers.map((phone: string) => (
-                  <p class="info-text">{phone}</p>
-                ))
-              ) : (
-                <p class="info-text">{contact.phone}</p>
-              )}
-            </div>
-
-            <!-- Email Section -->
-            <div class="info-section">
-              <div class="info-header">
-                <svg class="info-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M18 4H2C1.45 4 1 4.45 1 5V15C1 15.55 1.45 16 2 16H18C18.55 16 19 15.55 19 15V5C19 4.45 18.55 4 18 4ZM17.5 6.5L10 10.75L2.5 6.5V5.5L10 9.75L17.5 5.5V6.5Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                <h3 class="info-title">E-mail</h3>
-              </div>
-              <p class="info-text">{contact.email}</p>
-            </div>
-
-            <!-- Address Section -->
-            <div class="info-section">
-              <div class="info-header">
-                <svg class="info-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M10 2C6.69 2 4 4.69 4 8C4 12.5 10 18 10 18C10 18 16 12.5 16 8C16 4.69 13.31 2 10 2ZM10 10.5C8.62 10.5 7.5 9.38 7.5 8C7.5 6.62 8.62 5.5 10 5.5C11.38 5.5 12.5 6.62 12.5 8C12.5 9.38 11.38 10.5 10 10.5Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                <h3 class="info-title">Address</h3>
-              </div>
-              {contact.address.split(',').map((line: string) => (
-                <p class="info-text">{line.trim()}</p>
-              ))}
-            </div>
-
-            <!-- Hours Section -->
-            {contact.hours && contact.hours.length > 0 && (
-              <div class="info-section">
-                <div class="info-header">
-                  <svg class="info-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d="M10 2C5.58 2 2 5.58 2 10C2 14.42 5.58 18 10 18C14.42 18 18 14.42 18 10C18 5.58 14.42 2 10 2ZM10 16C6.69 16 4 13.31 4 10C4 6.69 6.69 4 10 4C13.31 4 16 6.69 16 10C16 13.31 13.31 16 10 16ZM10.5 6H9V11L13.25 13.52L14 12.27L10.5 10.25V6Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  <h3 class="info-title">Business Hours</h3>
-                </div>
-                {contact.hours.map((hour: any) => (
-                  <div class="hours-row">
-                    <span class="hours-days">{hour.days}</span>
-                    <span class="hours-time">{hour.hours}</span>
-                  </div>
+              <div>
+                <h3 class="info-label">Address</h3>
+                {addressLines.map((line: string) => (
+                  <p class="info-value">{line}</p>
                 ))}
               </div>
-            )}
+            </div>
 
-            <!-- Follow Us Section -->
-            <div class="info-section">
-              <div class="info-header">
-                <svg class="info-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M8 10C8 8.9 8.9 8 10 8C11.1 8 12 8.9 12 10C12 11.1 11.1 12 10 12C8.9 12 8 11.1 8 10ZM17 6V14C17 15.1 16.1 16 15 16H5C3.9 16 3 15.1 3 14V6C3 4.9 3.9 4 5 4H15C16.1 4 17 4.9 17 6ZM14 10C14 7.79 12.21 6 10 6C7.79 6 6 7.79 6 10C6 12.21 7.79 14 10 14C12.21 14 14 12.21 14 10Z"
-                    fill="currentColor"
-                  />
+            <!-- Phone -->
+            <div class="info-block">
+              <div class="icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20.01 15.38C18.78 15.38 17.59 15.18 16.48 14.82C16.13 14.7 15.74 14.79 15.47 15.06L13.9 17.03C11.07 15.68 8.42 13.13 7.01 10.2L8.96 8.54C9.23 8.26 9.31 7.87 9.2 7.52C8.83 6.41 8.64 5.22 8.64 3.99C8.64 3.45 8.19 3 7.65 3H4.19C3.65 3 3 3.24 3 3.99C3 13.28 10.73 21 20.01 21C20.72 21 21 20.37 21 19.82V16.37C21 15.83 20.55 15.38 20.01 15.38Z" fill="white"/>
                 </svg>
-                <h3 class="info-title">Follow Us</h3>
               </div>
-              <div class="social-icons">
-                {contact.socialMedia?.instagram && (
-                  <a href={contact.socialMedia.instagram} target="_blank" rel="noopener noreferrer" class="social-link">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
-                      ></path>
-                    </svg>
-                  </a>
-                )}
-                {contact.socialMedia?.twitter && (
-                  <a href={contact.socialMedia.twitter} target="_blank" rel="noopener noreferrer" class="social-link">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"
-                      ></path>
-                    </svg>
-                  </a>
-                )}
-                {contact.socialMedia?.facebook && (
-                  <a href={contact.socialMedia.facebook} target="_blank" rel="noopener noreferrer" class="social-link">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-                      ></path>
-                    </svg>
-                  </a>
-                )}
-                {contact.socialMedia?.linkedin && (
-                  <a href={contact.socialMedia.linkedin} target="_blank" rel="noopener noreferrer" class="social-link">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-                      ></path>
-                    </svg>
-                  </a>
-                )}
+              <div>
+                <h3 class="info-label">Phone</h3>
+                {phoneNumbers.map((phone: string) => (
+                  <p class="info-value">{phone}</p>
+                ))}
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="info-block">
+              <div class="icon-box">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="white"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="info-label">Email</h3>
+                {emails.map((email: string) => (
+                  <p class="info-value">{email}</p>
+                ))}
               </div>
             </div>
           </div>
 
-          <!-- Map -->
-          {contact.mapEmbed && (
+          <!-- Business Hours Card -->
+          <div class="info-card">
+            <h2 class="card-title">Business Hours</h2>
+            {contact.hours && contact.hours.map((hour: any) => (
+              <div class="hours-row">
+                <span class="hours-day">{hour.days}</span>
+                <span class="hours-time">{hour.hours}</span>
+              </div>
+            ))}
+          </div>
+
+          <!-- Special Offers Card -->
+          <div class="offers-card">
+            <h2 class="card-title-white">Special Offers</h2>
+            {specialOffers.map((offer) => (
+              <div class="offer-item">
+                <h4 class="offer-title">{offer.title}</h4>
+                <p class="offer-description">{offer.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Right Column - Contact Form -->
+        <div class="right-column">
+          <div class="form-card">
+            <h2 class="card-title">Send Us a Message</h2>
+            
+            <form id="contactForm" class="contact-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="fullName" class="form-label">Full Name *</label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    placeholder="Enter your full name"
+                    class="form-input"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="email" class="form-label">Email Address *</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    class="form-input"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="phone" class="form-label">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    placeholder="(555) 123-4567"
+                    class="form-input"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="service" class="form-label">Service Interest</label>
+                  <select id="service" name="service" class="form-select">
+                    <option value="">Select a service</option>
+                    <option value="swedish">Masaje Sueco</option>
+                    <option value="deep-tissue">Masaje Tejido Profundo</option>
+                    <option value="hot-stone">Masaje Piedras Calientes</option>
+                    <option value="aromatherapy">Aromaterapia</option>
+                    <option value="couples">Masaje en Pareja</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="message" class="form-label">Message *</label>
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="5"
+                  class="form-textarea"
+                  required
+                ></textarea>
+              </div>
+
+              <div class="checkbox-group">
+                <input type="checkbox" id="consent" name="consent" required />
+                <label for="consent" class="checkbox-label">
+                  I agree to the privacy policy and terms of service. I consent to being contacted about my inquiry.
+                </label>
+              </div>
+
+              <button type="submit" class="btn-submit-form">
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Find Us Section -->
+      <div class="map-section">
+        <h2 class="section-title">Find Us</h2>
+        {contact.mapEmbed && (
+          <div class="map-wrapper">
             <div class="map-container">
               <iframe
                 src={contact.mapEmbed}
                 width="100%"
-                height="280"
-                style="border:0; border-radius: 15px;"
+                height="100%"
+                style="border:0; border-radius: 8px;"
                 allowfullscreen=""
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"
               ></iframe>
             </div>
-          )}
-        </div>
-
-        <!-- Contact Form Card -->
-        <div class="contact-form-card">
-          <h2 class="form-title">Get in Touch</h2>
-
-          <form id="contactForm" class="contact-form">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="firstName" class="form-label">Your Name</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Jordan"
-                  class="form-input"
-                  required
-                />
+            <div class="map-overlay">
+              <div class="map-icon">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path d="M16 2C11.03 2 7 6.03 7 11C7 17.25 16 28 16 28C16 28 25 17.25 25 11C25 6.03 20.97 2 16 2ZM16 14C14.34 14 13 12.66 13 11C13 9.34 14.34 8 16 8C17.66 8 19 9.34 19 11C19 12.66 17.66 14 16 14Z" fill="white"/>
+                </svg>
               </div>
-
-              <div class="form-group">
-                <label for="lastName" class="form-label">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  placeholder="Smith"
-                  class="form-input"
-                  required
-                />
-              </div>
+              <h3 class="map-title">Interactive Map</h3>
+              <p class="map-description">Click to view our location on Google Maps</p>
+              <a href="#" class="btn-map">View on Google Maps</a>
             </div>
+          </div>
+        )}
+      </div>
 
-            <div class="form-group">
-              <label for="email" class="form-label">E-mail</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="yourname@domain.com"
-                class="form-input"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="message" class="form-label">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                placeholder="Write your message"
-                class="form-textarea"
-                rows="5"
-                required></textarea>
-            </div>
-
-            <button type="submit" class="btn-submit">
-              <span>Send</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M8 4L14 10L8 16"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </button>
-          </form>
+      <!-- CTA Section -->
+      <div class="cta-section">
+        <h2 class="cta-title">Ready to Relax?</h2>
+        <p class="cta-description">
+          Book your appointment today and experience the ultimate in relaxation and wellness. Our expert therapists are ready to help you unwind.
+        </p>
+        <div class="cta-buttons">
+          <a href="/discover" class="btn-cta-primary">Book Online Now</a>
+          <a href="tel:5551232547" class="btn-cta-secondary">Call (555) 123-BLISS</a>
         </div>
       </div>
     </div>
@@ -253,289 +269,520 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
 
 <style>
   .contact-page {
-    min-height: calc(100vh - 200px);
+    min-height: 100vh;
+    background: var(--blanco-calido);
     padding: 80px 0 60px;
-    background: linear-gradient(135deg, var(--blanco-calido) 0%, var(--beige-arena) 100%);
   }
 
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    max-width: 1400px;
-    margin: 0 auto;
+  /* Hero Section */
+  .contact-hero {
+    text-align: center;
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 2px solid var(--gris-perla);
   }
 
-  /* Contact Info Card */
-  .contact-info-card {
-    background: white;
-    border-radius: 25px;
-    padding: 50px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  }
-
-  .contact-title {
+  .contact-main-title {
     font-size: 48px;
     font-weight: 700;
-    color: var(--text-primary);
-    margin: 0 0 20px;
+    color: var(--texto-principal);
+    margin: 0 0 16px;
+    font-family: 'Poppins', sans-serif;
   }
 
-  .info-sections {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-  }
-
-  .info-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .info-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
-  .info-icon {
-    width: 20px;
-    height: 20px;
-    color: var(--text-primary);
-  }
-
-  .info-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-primary);
+  .contact-subtitle {
+    font-size: 24px;
+    color: var(--texto-secundario);
+    font-family: 'Poppins', sans-serif;
     margin: 0;
   }
 
-  .info-text {
-    font-size: 16px;
-    color: var(--text-primary);
-    margin: 0;
-    padding-left: 30px;
+  /* Two Column Layout */
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 580px 1fr;
+    gap: 64px;
+    max-width: 1271px;
+    margin: 0 auto 60px;
   }
 
-  .social-icons {
+  /* Left Column */
+  .left-column {
     display: flex;
-    gap: 15px;
-    padding-left: 30px;
+    flex-direction: column;
+    gap: 32px;
   }
 
-  .social-link {
-    width: 36px;
-    height: 36px;
+  /* Info Cards */
+  .info-card {
+    background: var(--blanco-calido);
+    border: 2px solid var(--gris-perla);
+    border-radius: 12px;
+    padding: 33px;
+    box-shadow: 0 2px 8px rgba(90, 85, 82, 0.08);
+  }
+
+  .card-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--texto-principal);
+    margin: 0 0 32px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .info-block {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .info-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .icon-box {
+    width: 48px;
+    height: 48px;
+    background: var(--verde-salvia);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-primary);
+    flex-shrink: 0;
     transition: all 0.3s ease;
   }
 
+  .info-block:hover .icon-box {
+    background: var(--verde-menta);
+    transform: scale(1.05);
+  }
+
+  .info-label {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--texto-principal);
+    margin: 0 0 8px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .info-value {
+    font-size: 16px;
+    color: var(--texto-secundario);
+    margin: 4px 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Business Hours */
   .hours-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    padding-left: 30px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--gris-perla);
   }
 
   .hours-row:last-child {
     border-bottom: none;
   }
 
-  .hours-days {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--text-primary);
+  .hours-day {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--texto-principal);
+    font-family: 'Poppins', sans-serif;
   }
 
   .hours-time {
-    font-size: 15px;
-    color: var(--text-secondary);
+    font-size: 16px;
+    color: var(--texto-secundario);
+    font-family: 'Poppins', sans-serif;
   }
 
-  .social-link:hover {
-    color: var(--coral-rosado);
-    transform: translateY(-3px);
+  /* Special Offers Card */
+  .offers-card {
+    background: linear-gradient(135deg, var(--coral-rosado) 0%, var(--verde-salvia) 100%);
+    border-radius: 12px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 16px rgba(232, 180, 168, 0.3);
   }
 
-  .map-container {
-    width: 100%;
-    margin-top: 10px;
-  }
-
-  /* Contact Form Card */
-  .contact-form-card {
-    background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--coral-rosado) 100%);
-    border-radius: 25px;
-    padding: 50px 40px;
-    box-shadow: 0 10px 40px rgba(168, 197, 190, 0.25);
-  }
-
-  .form-title {
-    font-size: 48px;
+  .card-title-white {
+    font-size: 32px;
     font-weight: 700;
     color: white;
-    margin: 0 0 40px;
+    margin: 0 0 24px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .offer-item {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .offer-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .offer-item:hover {
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(232, 180, 168, 0.2);
+  }
+
+  .offer-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--texto-principal);
+    margin: 0 0 8px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .offer-description {
+    font-size: 14px;
+    color: var(--texto-secundario);
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Right Column - Form */
+  .right-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-card {
+    background: var(--blanco-calido);
+    border: 2px solid var(--gris-perla);
+    border-radius: 12px;
+    padding: 33px;
+    box-shadow: 0 2px 8px rgba(90, 85, 82, 0.08);
   }
 
   .contact-form {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 24px;
   }
 
   .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 24px;
   }
 
   .form-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
   }
 
   .form-label {
     font-size: 16px;
-    font-weight: 400;
-    color: white;
+    font-weight: 500;
+    color: var(--texto-principal);
+    margin-bottom: 8px;
+    font-family: 'Poppins', sans-serif;
   }
 
   .form-input,
+  .form-select,
   .form-textarea {
-    background: transparent;
-    border: none;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-    padding: 12px 0;
+    background: white;
+    border: 2px solid var(--gris-perla);
+    border-radius: 8px;
+    padding: 13px 16px;
     font-size: 16px;
-    color: white;
+    color: var(--texto-principal);
     font-family: 'Poppins', sans-serif;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
   }
 
-  .form-input::placeholder,
-  .form-textarea::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+  .form-input::placeholder {
+    color: var(--texto-secundario);
+    opacity: 0.6;
   }
 
   .form-input:focus,
+  .form-select:focus,
   .form-textarea:focus {
     outline: none;
-    border-bottom-color: white;
+    border-color: var(--verde-salvia);
+    box-shadow: 0 0 0 3px rgba(168, 197, 190, 0.1);
+  }
+
+  .form-select {
+    background: var(--beige-arena);
+    appearance: none;
+    background-image: url("data:svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%235A5552' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+    cursor: pointer;
   }
 
   .form-textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 146px;
   }
 
-  .btn-submit {
-    background: white;
-    border: 2px solid white;
-    border-radius: 12px;
-    padding: 15px 40px;
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--verde-salvia);
+  /* Checkbox */
+  .checkbox-group {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--verde-salvia);
+    border-radius: 3px;
+    margin-top: 2px;
     cursor: pointer;
-    display: inline-flex;
+    accent-color: var(--verde-salvia);
+  }
+
+  .checkbox-label {
+    font-size: 14px;
+    color: var(--texto-secundario);
+    line-height: 1.5;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+  }
+
+  /* Submit Button */
+  .btn-submit-form {
+    background: var(--coral-rosado);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 4px 12px rgba(232, 180, 168, 0.3);
+  }
+
+  .btn-submit-form:hover {
+    background: var(--terracota-suave);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 153, 141, 0.4);
+  }
+
+  /* Map Section */
+  .map-section {
+    background: var(--beige-arena);
+    border-radius: 12px;
+    padding: 60px 32px;
+    margin-bottom: 60px;
+  }
+
+  .section-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--texto-principal);
+    text-align: center;
+    margin: 0 0 32px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .map-wrapper {
+    max-width: 1159px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .map-container {
+    background: white;
+    border-radius: 8px;
+    height: 400px;
+    overflow: hidden;
+    border: 2px solid var(--gris-perla);
+  }
+
+  .map-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+    background: rgba(253, 251, 249, 0.95);
+    padding: 24px 32px;
+    border-radius: 12px;
+    border: 2px solid var(--gris-perla);
+  }
+
+  .map-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--verde-salvia);
+    border-radius: 50%;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+    margin: 0 auto 16px;
   }
 
-  .btn-submit:hover {
-    background: var(--blanco-calido);
-    border-color: var(--blanco-calido);
+  .map-title {
+    font-size: 20px;
+    font-weight: 700;
     color: var(--texto-principal);
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+    margin: 0 0 8px;
+    font-family: 'Poppins', sans-serif;
   }
 
-  .btn-submit svg {
-    width: 20px;
-    height: 20px;
+  .map-description {
+    font-size: 16px;
+    color: var(--texto-secundario);
+    margin: 0 0 16px;
+    font-family: 'Poppins', sans-serif;
   }
 
-  /* Responsive Design */
+  .btn-map {
+    display: inline-block;
+    background: var(--coral-rosado);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    pointer-events: all;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 2px 8px rgba(232, 180, 168, 0.3);
+  }
+
+  .btn-map:hover {
+    background: var(--terracota-suave);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 153, 141, 0.4);
+  }
+
+  /* CTA Section */
+  .cta-section {
+    text-align: center;
+    padding: 60px 0;
+    border-top: 2px solid var(--gris-perla);
+  }
+
+  .cta-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--texto-principal);
+    margin: 0 0 24px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .cta-description {
+    font-size: 18px;
+    color: var(--texto-secundario);
+    line-height: 1.5;
+    max-width: 672px;
+    margin: 0 auto 32px;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-cta-primary {
+    background: var(--coral-rosado);
+    color: white;
+    padding: 18px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(232, 180, 168, 0.3);
+  }
+
+  .btn-cta-primary:hover {
+    background: var(--terracota-suave);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 153, 141, 0.4);
+  }
+
+  .btn-cta-secondary {
+    background: white;
+    color: var(--verde-salvia);
+    padding: 18px 32px;
+    border: 2px solid var(--verde-salvia);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    display: inline-block;
+  }
+
+  .btn-cta-secondary:hover {
+    background: var(--verde-salvia);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(168, 197, 190, 0.3);
+  }
+
+  /* Responsive */
   @media (max-width: 1200px) {
-    .contact-grid {
-      gap: 30px;
-    }
-
-    .contact-info-card,
-    .contact-form-card {
-      padding: 40px 30px;
+    .contact-layout {
+      grid-template-columns: 1fr;
+      gap: 40px;
     }
   }
 
-  @media (max-width: 968px) {
-    .contact-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 768px) {
+    .contact-main-title {
+      font-size: 36px;
     }
 
-    .contact-title,
-    .form-title {
-      font-size: 40px;
+    .contact-subtitle {
+      font-size: 18px;
     }
 
     .form-row {
       grid-template-columns: 1fr;
     }
-  }
 
-  @media (max-width: 768px) {
-    .contact-page {
-      padding: 60px 0 80px;
+    .cta-buttons {
+      flex-direction: column;
+      align-items: center;
     }
 
-    .contact-title,
-    .form-title {
-      font-size: 36px;
-      margin-bottom: 30px;
-    }
-
-    .contact-info-card,
-    .contact-form-card {
-      padding: 35px 25px;
-    }
-
-    .info-sections {
-      gap: 25px;
+    .btn-cta-primary,
+    .btn-cta-secondary {
+      width: 100%;
+      max-width: 320px;
     }
   }
 
   @media (max-width: 480px) {
-    .contact-title,
-    .form-title {
+    .contact-main-title {
       font-size: 28px;
-      margin-bottom: 25px;
     }
 
-    .contact-info-card,
-    .contact-form-card {
-      padding: 30px 20px;
-      border-radius: 20px;
+    .card-title,
+    .card-title-white,
+    .section-title,
+    .cta-title {
+      font-size: 24px;
     }
 
-    .btn-submit {
-      width: 100%;
-      padding: 15px 30px;
+    .info-card,
+    .form-card {
+      padding: 24px;
     }
   }
 </style>
@@ -554,12 +801,21 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
         firstName: formData.get('firstName'),
         lastName: formData.get('lastName'),
         email: formData.get('email'),
+        phone: formData.get('phone'),
+        service: formData.get('service'),
         message: formData.get('message'),
+        consent: formData.get('consent')
       };
+
+      // Validate consent checkbox
+      if (!data.consent) {
+        alert('Por favor, acepta recibir comunicaciones para continuar.');
+        return;
+      }
 
       // Show success message (you can integrate with a real backend here)
       alert(
-        `Thank you, ${data.firstName}! Your message has been sent.\n\nWe'll get back to you at ${data.email} soon.`
+        `¡Gracias, ${data.firstName}! Tu mensaje ha sido enviado.\n\nTe responderemos pronto a ${data.email}.`
       );
 
       // Reset form
@@ -571,6 +827,13 @@ const phoneNumbers = contact.phone ? contact.phone.split(/[,\n]/).map((p: string
       //   headers: { 'Content-Type': 'application/json' },
       //   body: JSON.stringify(data)
       // })
+      //   .then(response => response.json())
+      //   .then(result => {
+      //     console.log('Success:', result);
+      //   })
+      //   .catch(error => {
+      //     console.error('Error:', error);
+      //   });
     });
   }
 </script>
