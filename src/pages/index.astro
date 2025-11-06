@@ -2,11 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { 
-  getPageContent, 
-  getFeaturedServices, 
+import {
+  getPageContent,
+  getFeaturedServices,
   getBenefits,
-  urlFor 
+  urlFor
 } from '../lib/sanity';
 
 // Obtener datos de Sanity
@@ -36,12 +36,12 @@ const servicesData = featuredServices && featuredServices.length > 0
   : [];
 ---
 
-<Layout 
-  title={pageData?.title || 'Massage Bliss - Professional Spa & Massage Therapy'}
+<Layout
+  title={pageData?.title || 'MLA Massage & Wellness'}
   description={pageData?.description || 'Experience ultimate relaxation with our professional massage therapy services'}
 >
   <Header />
-  
+
   <main>
     <!-- Hero Section -->
     <section class="hero">
@@ -50,15 +50,15 @@ const servicesData = featuredServices && featuredServices.length > 0
           {/* Background image */}
           <div class="hero-background">
             {pageData?.heroImage ? (
-              <img 
-                src={urlFor(pageData.heroImage).width(1400).height(900).format('webp').url()} 
-                alt={pageData.heroImage.alt || 'Relaxing spa atmosphere'} 
+              <img
+                src={urlFor(pageData.heroImage).width(1400).height(900).format('webp').url()}
+                alt={pageData.heroImage.alt || 'Relaxing spa atmosphere'}
               />
             ) : (
               <img src="/assets/hero-massage.jpg" alt="Relaxing massage therapy" />
             )}
           </div>
-          
+
           {/* Text overlay */}
           <div class="hero-text">
             <h1 class="hero-title">{pageData?.heroTitle || 'Relax and Unwind!'}</h1>
@@ -68,14 +68,14 @@ const servicesData = featuredServices && featuredServices.length > 0
             </div>
           </div>
         </div>
-        
+
         <!-- Right side images -->
         <div class="hero-images-side">
           {pageData?.heroImageTopRight ? (
             <div class="hero-image-small">
-              <img 
-                src={urlFor(pageData.heroImageTopRight).width(800).height(800).format('webp').url()} 
-                alt={pageData.heroImageTopRight.alt || 'Essential oils and aromatherapy'} 
+              <img
+                src={urlFor(pageData.heroImageTopRight).width(800).height(800).format('webp').url()}
+                alt={pageData.heroImageTopRight.alt || 'Essential oils and aromatherapy'}
               />
             </div>
           ) : (
@@ -83,12 +83,12 @@ const servicesData = featuredServices && featuredServices.length > 0
               <img src="/assets/service-1.jpg" alt="Essential oils" />
             </div>
           )}
-          
+
           {pageData?.heroImageBottomRight ? (
             <div class="hero-image-small">
-              <img 
-                src={urlFor(pageData.heroImageBottomRight).width(800).height(800).format('webp').url()} 
-                alt={pageData.heroImageBottomRight.alt || 'Spa products and ambiance'} 
+              <img
+                src={urlFor(pageData.heroImageBottomRight).width(800).height(800).format('webp').url()}
+                alt={pageData.heroImageBottomRight.alt || 'Spa products and ambiance'}
               />
             </div>
           ) : (
@@ -105,7 +105,7 @@ const servicesData = featuredServices && featuredServices.length > 0
       <div class="container">
         <h2 class="section-title">Benefits of Our Massage Therapies</h2>
         <p class="section-subtitle">Discover how our professional treatments can transform your well-being</p>
-        
+
         <div class="benefits-grid">
           {benefits && benefits.length > 0 ? (
             benefits.map((benefit) => (
@@ -152,7 +152,7 @@ const servicesData = featuredServices && featuredServices.length > 0
       <div class="container">
         <h2 class="section-title">Featured Services</h2>
         <p class="section-subtitle">Discover our most popular massage therapies</p>
-        
+
         {featuredServices && featuredServices.length > 0 ? (
           <div class="services-showcase">
             <!-- Left: Services List -->
