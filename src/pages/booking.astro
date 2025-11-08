@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getServiceBySlug } from '../lib/sanity';
 
 // NOTA: Reemplaza 'tu-usuario' con tu username real de Cal.com
 // Solo necesitas UN evento en Cal.com llamado "masajes"
@@ -12,18 +13,77 @@ const calEventSlug = 'masajes'; // El slug de tu evento en Cal.com
 const url = Astro.url;
 const serviceParam = url.searchParams.get('service') || '';
 
-// Mapeo de servicios solo para mostrar información al cliente
-const serviceInfo: Record<string, { title: string; duration: string; price: number }> = {
-  'masaje-sueco': { title: 'Masaje Sueco', duration: '90 min', price: 85 },
-  'masaje-profundo': { title: 'Masaje Tejido Profundo', duration: '75 min', price: 95 },
-  'piedras-calientes': { title: 'Masaje Piedras Calientes', duration: '105 min', price: 110 },
-  aromaterapia: { title: 'Aromaterapia', duration: '80 min', price: 90 },
-  'masaje-pareja': { title: 'Masaje en Pareja', duration: '90 min', price: 180 },
+type ServiceDisplayInfo = {
+  title: string;
+  duration: string;
+  price: number | null;
+  calLabel: string;
 };
 
-const selectedServiceInfo = serviceInfo[serviceParam] || null;
+// Mapeo de respaldo para mostrar información si Sanity no devuelve datos
+const fallbackServiceInfo: Record<string, ServiceDisplayInfo> = {
+  'masaje-sueco': {
+    title: 'Masaje Sueco',
+    duration: '90 min',
+    price: 85,
+    calLabel: 'Masaje Sueco (90 min)',
+  },
+  'masaje-profundo': {
+    title: 'Masaje Tejido Profundo',
+    duration: '75 min',
+    price: 95,
+    calLabel: 'Masaje Tejido Profundo (75 min)',
+  },
+  'piedras-calientes': {
+    title: 'Masaje Piedras Calientes',
+    duration: '105 min',
+    price: 110,
+    calLabel: 'Masaje Piedras Calientes (105 min)',
+  },
+  aromaterapia: {
+    title: 'Aromaterapia',
+    duration: '80 min',
+    price: 90,
+    calLabel: 'Aromaterapia (80 min)',
+  },
+  'masaje-pareja': {
+    title: 'Masaje en Pareja',
+    duration: '90 min',
+    price: 180,
+    calLabel: 'Masaje en Pareja (90 min)',
+  },
+};
+
+const serviceFromSanity = serviceParam ? await getServiceBySlug(serviceParam) : null;
+
+const sanityServiceInfo: ServiceDisplayInfo | null = serviceFromSanity
+  ? {
+      title: serviceFromSanity.title,
+      duration: serviceFromSanity.duration ? `${serviceFromSanity.duration} min` : 'Duración personalizada',
+      price: serviceFromSanity.price ?? null,
+      calLabel: serviceFromSanity.duration
+        ? `${serviceFromSanity.title} (${serviceFromSanity.duration} min)`
+        : serviceFromSanity.title,
+    }
+  : null;
+
+const selectedServiceInfo = sanityServiceInfo ?? fallbackServiceInfo[serviceParam] ?? null;
+const selectedServiceSummary = selectedServiceInfo
+  ? [
+      selectedServiceInfo.title,
+      selectedServiceInfo.duration || null,
+      typeof selectedServiceInfo.price === 'number' ? `$${selectedServiceInfo.price}` : null,
+    ]
+      .filter(Boolean)
+      .join(' - ')
+  : '';
 const pageTitle = selectedServiceInfo ? `Reservar ${selectedServiceInfo.title}` : 'Reserva tu Masaje';
-const calEmbedUrl = `https://cal.com/${calUsername}/${calEventSlug}?embed=inline&theme=light&primaryColor=667eea&hideEventTypeDetails=1`;
+const baseCalUrl = `https://cal.com/${calUsername}/${calEventSlug}`;
+const calBaseParams = 'embed=inline&theme=light&primaryColor=667eea&hideEventTypeDetails=1';
+const servicePrefillParam = selectedServiceInfo
+  ? `&prefill[customAnswers][service]=${encodeURIComponent(selectedServiceInfo.calLabel)}`
+  : '';
+const calEmbedUrl = `${baseCalUrl}?${calBaseParams}${servicePrefillParam}`;
 ---
 
 <Layout title={`${pageTitle} | MIA Massage & Wellness`}>
@@ -40,9 +100,7 @@ const calEmbedUrl = `https://cal.com/${calUsername}/${calEventSlug}?embed=inline
           <h1 class="booking-hero-title">Reserva tu Cita</h1>
           {
             selectedServiceInfo ? (
-              <p class="booking-hero-subtitle">
-                {selectedServiceInfo.title} - {selectedServiceInfo.duration} - ${selectedServiceInfo.price}
-              </p>
+              <p class="booking-hero-subtitle">{selectedServiceSummary}</p>
             ) : (
               <p class="booking-hero-subtitle">Elige tu servicio, fecha y horario preferido</p>
             )

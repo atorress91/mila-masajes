@@ -40,6 +40,7 @@ export interface Addon {
 
 export interface Service {
   _id: string;
+  slug: { current: string };
   title: string;
   description: string;
   price: number;
@@ -117,6 +118,7 @@ export interface ContactInfo {
 export async function getServices(): Promise<Service[]> {
   const query = `*[_type == "service"] | order(order asc) {
     _id,
+    slug,
     title,
     description,
     price,
@@ -141,6 +143,7 @@ export async function getServices(): Promise<Service[]> {
 export async function getServiceById(id: string): Promise<Service> {
   const query = `*[_type == "service" && _id == $id][0] {
     _id,
+    slug,
     title,
     description,
     price,
@@ -160,6 +163,31 @@ export async function getServiceById(id: string): Promise<Service> {
     }[isActive == true] | order(order asc)
   }`;
   return await sanityClient.fetch(query, { id });
+}
+
+export async function getServiceBySlug(slug: string): Promise<Service | null> {
+  const query = `*[_type == "service" && slug.current == $slug][0] {
+    _id,
+    slug,
+    title,
+    description,
+    price,
+    duration,
+    image,
+    benefits,
+    category,
+    featured,
+    "addons": addons[]->{ 
+      _id, 
+      name, 
+      description, 
+      price, 
+      icon, 
+      isActive, 
+      order 
+    }[isActive == true] | order(order asc)
+  }`;
+  return await sanityClient.fetch(query, { slug });
 }
 
 export async function getBenefits(): Promise<Benefit[]> {
@@ -207,6 +235,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
 export async function getFeaturedServices(): Promise<Service[]> {
   const query = `*[_type == "service" && featured == true] | order(order asc) [0...3] {
     _id,
+    slug,
     title,
     description,
     price,
@@ -214,7 +243,16 @@ export async function getFeaturedServices(): Promise<Service[]> {
     image,
     benefits,
     category,
-    featured
+    featured,
+    "addons": addons[]->{ 
+      _id, 
+      name, 
+      description, 
+      price, 
+      icon, 
+      isActive, 
+      order 
+    }[isActive == true] | order(order asc)
   }`;
   return await sanityClient.fetch(query);
 }
