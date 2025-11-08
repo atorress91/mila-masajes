@@ -12,21 +12,15 @@ const { service } = Astro.props;
   <div class="service-image">
     <img src={service.image} alt={service.title} />
     {service.badge && <span class="service-badge">{service.badge}</span>}
-    <button class="quick-view-btn" data-service-id={service.id}>
-      Quick View
-    </button>
+    <button class="quick-view-btn" data-service-id={service.id}> Quick View </button>
   </div>
-  
+
   <div class="service-info">
     <h3 class="service-title">{service.title}</h3>
     <p class="service-description">{service.description}</p>
     <div class="service-footer">
       <span class="service-price">${service.price.toFixed(2)}</span>
-      <button class="add-btn" data-service-id={service.id}>
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M10 4V16M4 10H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-        </svg>
-      </button>
+      <a href={`/booking?service=${service.id}`} class="book-btn" data-astro-prefetch="false"> Book Now </a>
     </div>
   </div>
 </div>
@@ -135,23 +129,24 @@ const { service } = Astro.props;
     color: var(--accent-color);
   }
 
-  .add-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+  .book-btn {
     background: var(--accent-color);
     color: white;
     border: none;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
   }
 
-  .add-btn:hover {
+  .book-btn:hover {
     background: var(--verde-menta);
-    transform: scale(1.1);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   @media (max-width: 768px) {
@@ -177,9 +172,9 @@ const { service } = Astro.props;
       font-size: 24px;
     }
 
-    .add-btn {
-      width: 42px;
-      height: 42px;
+    .book-btn {
+      padding: 10px 24px;
+      font-size: 13px;
     }
 
     /* Show quick view button by default on mobile for easier access */
@@ -208,9 +203,9 @@ const { service } = Astro.props;
       font-size: 22px;
     }
 
-    .add-btn {
-      width: 40px;
-      height: 40px;
+    .book-btn {
+      padding: 10px 20px;
+      font-size: 12px;
     }
   }
 </style>
