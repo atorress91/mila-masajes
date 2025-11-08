@@ -550,33 +550,46 @@
 
       // Render add-ons dynamically
       if (addonsList && addonsSection) {
+        addonsList.textContent = '';
+
         if (service.addons && Array.isArray(service.addons) && service.addons.length > 0) {
           console.log('Rendering addons:', service.addons);
-          addonsList.innerHTML = service.addons
+
+          service.addons
             .filter((addon: any) => addon && addon.name && addon.price !== undefined)
-            .map((addon: any) => {
-              const icon = addon.icon ? `${addon.icon} ` : '';
-              const description = addon.description 
-                ? `<span class="addon-description">${addon.description}</span>` 
-                : '<span class="addon-description">Complemento adicional para tu servicio</span>';
-              return `
-                <label class="addon-item">
-                  <input 
-                    type="checkbox" 
-                    class="addon-checkbox" 
-                    data-addon-id="${addon._id || ''}"
-                    data-addon-name="${addon.name}" 
-                    data-price="${addon.price}" 
-                  />
-                  <div class="addon-info">
-                    <span class="addon-name">${icon}${addon.name}</span>
-                    ${description}
-                  </div>
-                  <span class="addon-price">+$${addon.price.toFixed(2)}</span>
-                </label>
-              `;
-            })
-            .join('');
+            .forEach((addon: any) => {
+              const label = document.createElement('label');
+              label.className = 'addon-item';
+
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.className = 'addon-checkbox';
+              checkbox.dataset.addonId = addon._id || '';
+              checkbox.dataset.addonName = addon.name;
+              checkbox.dataset.price = String(addon.price);
+
+              const addonInfo = document.createElement('div');
+              addonInfo.className = 'addon-info';
+
+              const addonName = document.createElement('span');
+              addonName.className = 'addon-name';
+              addonName.textContent = addon.icon ? `${addon.icon} ${addon.name}` : addon.name;
+              addonInfo.appendChild(addonName);
+
+              const descriptionText = addon.description || 'Complemento adicional para tu servicio';
+              const addonDescription = document.createElement('span');
+              addonDescription.className = 'addon-description';
+              addonDescription.textContent = descriptionText;
+              addonInfo.appendChild(addonDescription);
+
+              const addonPrice = document.createElement('span');
+              addonPrice.className = 'addon-price';
+              addonPrice.textContent = `+$${addon.price.toFixed(2)}`;
+
+              label.append(checkbox, addonInfo, addonPrice);
+              addonsList.appendChild(label);
+            });
+
           addonsSection.style.display = 'block';
         } else {
           console.log('No addons found for service:', service.title);
@@ -586,7 +599,7 @@
 
       // Reset form
       if (qtyInput) qtyInput.value = '1';
-      
+
       updateSubtotal();
 
       modal?.classList.add('active');
@@ -643,7 +656,7 @@
     qtyInput?.addEventListener('input', updateSubtotal);
 
     // Add-ons change - Using event delegation since add-ons are dynamic
-    addonsList?.addEventListener('change', (e) => {
+    addonsList?.addEventListener('change', e => {
       const target = e.target as HTMLElement;
       if (target.classList.contains('addon-checkbox')) {
         updateSubtotal();
@@ -681,7 +694,7 @@
 
       // Get cart from localStorage
       const cart = JSON.parse(localStorage.getItem('massageBlissCart') || '[]');
-      
+
       // Check if item already exists
       const existingIndex = cart.findIndex(
         (item: any) => item.title === cartItem.title && JSON.stringify(item.addons) === JSON.stringify(cartItem.addons)
@@ -713,16 +726,16 @@
     // Guardar las funciones en window para que sean accesibles globalmente
     (window as any).__modalOpen = openModal;
     (window as any).__modalClose = closeModal;
-    
+
     return { modal, modalOverlay, modalClose };
   }
 
   // Prevenir múltiples event listeners
   if (!(window as any).__modalListenersAdded) {
     (window as any).__modalListenersAdded = true;
-    
+
     // Listen for quick view and add button clicks - SOLO UNA VEZ
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       const target = e.target as HTMLElement;
       const btn = target.closest('.quick-view-btn, .add-btn, .book-btn') as HTMLElement;
       if (btn) {
@@ -734,7 +747,7 @@
     });
 
     // ESC key to close - SOLO UNA VEZ
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       const modal = document.getElementById('serviceModal');
       if (e.key === 'Escape' && modal?.classList.contains('active')) {
         if ((window as any).__modalClose) {

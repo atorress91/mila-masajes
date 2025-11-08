@@ -246,23 +246,28 @@ const servicesData = featuredServices && featuredServices.length > 0
         function updateBenefits(benefits) {
           if (!benefitsColumns) return;
 
+          benefitsColumns.replaceChildren();
+
           if (!benefits || benefits.length === 0) {
-            benefitsColumns.innerHTML = '';
             return;
           }
 
           const midPoint = Math.ceil(benefits.length / 2);
-          const leftBenefits = benefits.slice(0, midPoint);
-          const rightBenefits = benefits.slice(midPoint);
+          const createColumn = items => {
+            const list = document.createElement('ul');
+            list.className = 'benefits-column';
 
-          benefitsColumns.innerHTML = `
-            <ul class="benefits-column">
-              ${leftBenefits.map(b => `<li>${b}</li>`).join('')}
-            </ul>
-            <ul class="benefits-column">
-              ${rightBenefits.map(b => `<li>${b}</li>`).join('')}
-            </ul>
-          `;
+            items.forEach(benefit => {
+              const listItem = document.createElement('li');
+              listItem.textContent = benefit;
+              list.appendChild(listItem);
+            });
+
+            return list;
+          };
+
+          benefitsColumns.appendChild(createColumn(benefits.slice(0, midPoint)));
+          benefitsColumns.appendChild(createColumn(benefits.slice(midPoint)));
         }
 
         serviceItems.forEach((item, index) => {

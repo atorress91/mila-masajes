@@ -20,3 +20,8 @@
     paths = [
       "node_modules/.cache"
     ]
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+  Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.sanity.io; connect-src 'self' https://apicdn.sanity.io https://cdn.sanity.io; frame-src 'self' https://app.cal.com https://cal.com https://www.google.com; frame-ancestors 'self'; form-action 'self'; object-src 'none'; base-uri 'self'; require-trusted-types-for 'script'; trusted-types default;"
