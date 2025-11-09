@@ -22,18 +22,6 @@ try {
   console.error('Error fetching from Sanity:', error);
   // Usar valores por defecto si Sanity falla
 }
-
-// Preparar datos de servicios para el script del cliente
-const servicesData = featuredServices && featuredServices.length > 0
-  ? featuredServices.map((s: any) => ({
-      title: s.title,
-      description: s.description,
-      price: s.price,
-      duration: s.duration,
-      image: s.image ? urlFor(s.image).width(600).height(700).format('webp').url() : '/assets/service-1.jpg',
-      benefits: s.benefits || []
-    }))
-  : [];
 ---
 
 <Layout
@@ -148,97 +136,47 @@ const servicesData = featuredServices && featuredServices.length > 0
     </section>
 
     <!-- Services Preview -->
-    <section class="services-preview">
+    <section class="quick-services-preview">
       <div class="container">
-        <h2 class="section-title">Featured Services</h2>
-        <p class="section-subtitle">Discover our most popular massage therapies</p>
+        <div class="quick-services-header">
+          <span class="quick-eyebrow">Our Expertise</span>
+          <h2 class="quick-services-title">Featured Services</h2>
+          <p class="quick-services-tagline">Professional massage therapies tailored to your needs</p>
+        </div>
 
-        {featuredServices && featuredServices.length > 0 ? (
-          <div class="services-showcase">
-            <!-- Left: Services List -->
-            <div class="services-list">
-              {featuredServices.map((service: any, index: number) => (
-                <button
-                  class={`service-item ${index === 0 ? 'active' : ''}`}
-                  data-service-index={index}
-                >
-                  <span class="service-icon">
-                    {service.icon ? (
-                      <span set:html={service.icon} />
-                    ) : (
-                      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-                        <path d="M20 5L25 15H35L27 22L30 32L20 26L10 32L13 22L5 15H15L20 5Z" fill="currentColor"/>
-                      </svg>
-                    )}
-                  </span>
-                  <span class="service-name">{service.title}</span>
-                </button>
-              ))}
-            </div>
-
-            <!-- Center: Service Image -->
-            <div class="service-showcase-image">
-              {featuredServices[0]?.image ? (
-                <img
-                  id="showcase-image"
-                  src={urlFor(featuredServices[0].image).width(600).height(700).format('webp').url()}
-                  alt={featuredServices[0].image.alt || featuredServices[0].title}
-                />
-              ) : (
-                <img id="showcase-image" src="/assets/service-1.jpg" alt="Service" />
-              )}
-            </div>
-
-            <!-- Right: Service Details -->
-            <div class="service-showcase-details">
-              <h3 id="service-title" class="service-showcase-title">{featuredServices[0]?.title || 'MYOFACIAL MASSAGE'}</h3>
-              <p id="service-description" class="service-showcase-description">
-                {featuredServices[0]?.description || 'Myofascial therapy among other massages works the broader network of muscles that might be causing your pain and distress. Its purpose is for the treatment of body stress or pain:'}
-              </p>
-
-              <div class="service-benefits" id="service-benefits">
-                <div class="benefits-columns" id="benefits-columns">
-                  {featuredServices[0]?.benefits && featuredServices[0].benefits.length > 0 ? (
-                    <>
-                      <ul class="benefits-column">
-                        {featuredServices[0].benefits.slice(0, Math.ceil(featuredServices[0].benefits.length / 2)).map((benefit: string) => (
-                          <li>{benefit}</li>
-                        ))}
-                      </ul>
-                      <ul class="benefits-column">
-                        {featuredServices[0].benefits.slice(Math.ceil(featuredServices[0].benefits.length / 2)).map((benefit: string) => (
-                          <li>{benefit}</li>
-                        ))}
-                      </ul>
-                    </>
-                  ) : null}
+        <div class="quick-services-grid">
+          {featuredServices && featuredServices.length > 0 ? (
+            featuredServices.slice(0, 4).map((service: any) => (
+              <a href="/discover" class="quick-service-card">
+                <div class="quick-service-image">
+                  {service.image ? (
+                    <img
+                      src={urlFor(service.image).width(500).height(600).format('webp').url()}
+                      alt={service.image.alt || service.title}
+                    />
+                  ) : (
+                    <img src="/assets/service-1.jpg" alt={service.title} />
+                  )}
+                  <div class="quick-service-overlay">
+                    <span class="quick-service-cta">Explore</span>
+                  </div>
                 </div>
-              </div>
-
-              <div class="service-meta">
-                <span class="service-price" id="service-price">${featuredServices[0]?.price || '0'}</span>
-                <span class="service-duration" id="service-duration">{featuredServices[0]?.duration || '60'} min</span>
-              </div>
-
-              <a href="/discover" class="btn-learn-more">LEARN MORE</a>
-            </div>
-          </div>
-        ) : (
-          <!-- Fallback si no hay servicios en Sanity -->
-          <div class="no-services">
-            <p>No services loaded. Add services in Sanity Studio at http://localhost:3333</p>
-          </div>
-        )}
+                <div class="quick-service-content">
+                  <h3 class="quick-service-title">{service.title}</h3>
+                  <p class="quick-service-snippet">
+                    {service.description?.substring(0, 85)}...
+                  </p>
+                  <div class="quick-service-footer">
+                    <span class="quick-service-price">${service.price}</span>
+                    <span class="quick-service-duration">{service.duration} min</span>
+                  </div>
+                </div>
+              </a>
+            ))
+          ) : null}
+        </div>
       </div>
     </section>
-
-    <script define:vars={{ servicesData }}>
-      import { setupServiceShowcase } from '../logic/index.js';
-      
-      document.addEventListener('DOMContentLoaded', () => {
-        setupServiceShowcase(servicesData);
-      });
-    </script>
   </main>
 
   <Footer />
