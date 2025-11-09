@@ -19,25 +19,6 @@ export function urlFor(source: SanityImageSource) {
 }
 
 // Tipos de datos
-export interface HeroImage {
-  _id: string;
-  title: string;
-  image: any;
-  position: 'top' | 'bottom-left' | 'bottom-right';
-  order: number;
-  isActive: boolean;
-}
-
-export interface Addon {
-  _id: string;
-  name: string;
-  description?: string;
-  price: number;
-  icon?: string;
-  isActive: boolean;
-  order: number;
-}
-
 export interface Service {
   _id: string;
   slug: { current: string };
@@ -46,12 +27,10 @@ export interface Service {
   price: number;
   duration: number;
   image: any;
-  benefits: string[];
-  category: string;
   color?: string;
   rating?: number;
   featured: boolean;
-  addons?: Addon[];
+  order: number;
 }
 
 export interface Benefit {
@@ -75,16 +54,6 @@ export interface PageContent {
   heroImageBottomRight?: any;
   ogImage: any;
   keywords: string[];
-}
-
-export interface Testimonial {
-  _id: string;
-  name: string;
-  rating: number;
-  comment: string;
-  service: string;
-  date: string;
-  image: any;
 }
 
 export interface GalleryImage {
@@ -112,7 +81,6 @@ export interface ContactInfo {
     linkedin?: string;
   };
   mapEmbed?: string;
-  contactImage?: any;
 }
 
 export interface Package {
@@ -125,7 +93,6 @@ export interface Package {
   originalPrice: number;
   color: string;
   featured: boolean;
-  services?: Service[];
   order: number;
   isActive: boolean;
 }
@@ -147,20 +114,10 @@ export async function getServices(): Promise<Service[]> {
     price,
     duration,
     image,
-    benefits,
-    category,
     color,
     rating,
     featured,
-    "addons": addons[]->{ 
-      _id, 
-      name, 
-      description, 
-      price, 
-      icon, 
-      isActive, 
-      order 
-    }[isActive == true] | order(order asc)
+    order
   }`;
   return await sanityClient.fetch(query);
 }
@@ -174,20 +131,10 @@ export async function getServiceById(id: string): Promise<Service> {
     price,
     duration,
     image,
-    benefits,
-    category,
     color,
     rating,
     featured,
-    "addons": addons[]->{ 
-      _id, 
-      name, 
-      description, 
-      price, 
-      icon, 
-      isActive, 
-      order 
-    }[isActive == true] | order(order asc)
+    order
   }`;
   return await sanityClient.fetch(query, { id });
 }
@@ -201,20 +148,10 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
     price,
     duration,
     image,
-    benefits,
-    category,
     color,
     rating,
     featured,
-    "addons": addons[]->{ 
-      _id, 
-      name, 
-      description, 
-      price, 
-      icon, 
-      isActive, 
-      order 
-    }[isActive == true] | order(order asc)
+    order
   }`;
   return await sanityClient.fetch(query, { slug });
 }
@@ -248,19 +185,6 @@ export async function getPageContent(pageType: string): Promise<PageContent> {
   return await sanityClient.fetch(query, { pageType });
 }
 
-export async function getTestimonials(): Promise<Testimonial[]> {
-  const query = `*[_type == "testimonial"] | order(date desc) {
-    _id,
-    name,
-    rating,
-    comment,
-    service,
-    date,
-    image
-  }`;
-  return await sanityClient.fetch(query);
-}
-
 export async function getFeaturedServices(): Promise<Service[]> {
   const query = `*[_type == "service" && featured == true] | order(order asc) [0...3] {
     _id,
@@ -270,20 +194,10 @@ export async function getFeaturedServices(): Promise<Service[]> {
     price,
     duration,
     image,
-    benefits,
-    category,
     color,
     rating,
     featured,
-    "addons": addons[]->{ 
-      _id, 
-      name, 
-      description, 
-      price, 
-      icon, 
-      isActive, 
-      order 
-    }[isActive == true] | order(order asc)
+    order
   }`;
   return await sanityClient.fetch(query);
 }
@@ -320,31 +234,6 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
   }
 }
 
-export async function getAddons(): Promise<Addon[]> {
-  const query = `*[_type == "addon" && isActive == true] | order(order asc) {
-    _id,
-    name,
-    description,
-    price,
-    icon,
-    isActive,
-    order
-  }`;
-  return await sanityClient.fetch(query);
-}
-
-export async function getHeroImages(): Promise<HeroImage[]> {
-  const query = `*[_type == "heroImage" && isActive == true] | order(order asc) {
-    _id,
-    title,
-    image,
-    position,
-    order,
-    isActive
-  }`;
-  return await sanityClient.fetch(query);
-}
-
 export async function getGalleryImagesByCategory(category: string): Promise<GalleryImage[]> {
   const query = `*[_type == "galleryImage" && category == $category] | order(order asc) {
     _id,
@@ -361,15 +250,12 @@ export async function getGalleryImagesByCategory(category: string): Promise<Gall
 export async function getContactInfo(): Promise<ContactInfo> {
   const query = `*[_type == "contactInfo"][0] {
     _id,
-    title,
-    subtitle,
     email,
     phone,
     address,
     hours,
     socialMedia,
-    mapEmbed,
-    contactImage
+    mapEmbed
   }`;
   return await sanityClient.fetch(query);
 }
@@ -386,12 +272,7 @@ export async function getPackages(): Promise<Package[]> {
     color,
     featured,
     order,
-    isActive,
-    "services": services[]->{ 
-      _id, 
-      title, 
-      slug 
-    }
+    isActive
   }`;
   return await sanityClient.fetch(query);
 }

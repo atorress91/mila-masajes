@@ -65,18 +65,6 @@ export default {
       initialValue: false,
     },
     {
-      name: 'services',
-      title: 'Included Services',
-      type: 'array',
-      of: [
-        {
-          type: 'reference',
-          to: [{ type: 'service' }],
-        },
-      ],
-      description: 'Services included in this package',
-    },
-    {
       name: 'order',
       title: 'Display Order',
       type: 'number',

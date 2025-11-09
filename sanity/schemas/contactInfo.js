@@ -4,18 +4,6 @@ export default {
   type: 'document',
   fields: [
     {
-      name: 'title',
-      title: 'Page Title',
-      type: 'string',
-      validation: Rule => Rule.required(),
-    },
-    {
-      name: 'subtitle',
-      title: 'Page Subtitle',
-      type: 'text',
-      rows: 2,
-    },
-    {
       name: 'email',
       title: 'Email Address',
       type: 'string',
@@ -91,25 +79,10 @@ export default {
       type: 'url',
       description: 'Paste the embed URL from Google Maps',
     },
-    {
-      name: 'contactImage',
-      title: 'Contact Page Image',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-      fields: [
-        {
-          name: 'alt',
-          title: 'Alt Text',
-          type: 'string',
-        },
-      ],
-    },
   ],
   preview: {
     select: {
-      title: 'title',
+      title: 'phone',
       subtitle: 'email',
     },
   },

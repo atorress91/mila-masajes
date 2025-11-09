@@ -27,13 +27,6 @@ export default {
       validation: Rule => Rule.required().max(300),
     },
     {
-      name: 'icon',
-      title: 'Icon SVG',
-      type: 'text',
-      description: 'Paste SVG code for the service icon (optional)',
-      rows: 3,
-    },
-    {
       name: 'price',
       title: 'Price (USD)',
       type: 'number',
@@ -59,27 +52,6 @@ export default {
           type: 'string',
         },
       ],
-    },
-    {
-      name: 'benefits',
-      title: 'Benefits',
-      type: 'array',
-      of: [{ type: 'string' }],
-      description: 'List of benefits for this service',
-    },
-    {
-      name: 'category',
-      title: 'Category',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Relaxation', value: 'relaxation' },
-          { title: 'Therapeutic', value: 'therapeutic' },
-          { title: 'Sports', value: 'sports' },
-          { title: 'Hot Stone', value: 'hotstone' },
-          { title: 'Specialty', value: 'specialty' },
-        ],
-      },
     },
     {
       name: 'color',
@@ -113,18 +85,6 @@ export default {
       type: 'number',
       description: 'Order in which this service appears',
       initialValue: 0,
-    },
-    {
-      name: 'addons',
-      title: 'Available Add-ons',
-      type: 'array',
-      of: [
-        {
-          type: 'reference',
-          to: [{ type: 'addon' }],
-        },
-      ],
-      description: 'Select which add-ons are available for this service',
     },
   ],
   preview: {
