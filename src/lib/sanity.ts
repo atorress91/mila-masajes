@@ -130,6 +130,12 @@ export interface Package {
   isActive: boolean;
 }
 
+export interface BookingInfo {
+  _id: string;
+  importantInfo: Array<{ text: string }>;
+  faqs: Array<{ question: string; answer: string }>;
+}
+
 // Funciones para obtener datos
 
 export async function getServices(): Promise<Service[]> {
@@ -386,6 +392,15 @@ export async function getPackages(): Promise<Package[]> {
       title, 
       slug 
     }
+  }`;
+  return await sanityClient.fetch(query);
+}
+
+export async function getBookingInfo(): Promise<BookingInfo | null> {
+  const query = `*[_type == "bookingInfo"][0] {
+    _id,
+    importantInfo,
+    faqs
   }`;
   return await sanityClient.fetch(query);
 }

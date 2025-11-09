@@ -48,6 +48,10 @@ const addressLines = contact.address
       .filter(Boolean)
   : [];
 
+// Get first phone number for tel: link (remove non-numeric characters)
+const primaryPhone = phoneNumbers[0] || '';
+const primaryPhoneTel = primaryPhone.replace(/[^0-9]/g, '');
+
 // Special offers
 const specialOffers = [
   {
@@ -244,21 +248,6 @@ const specialOffers = [
                   referrerpolicy="no-referrer-when-downgrade"
                 />
               </div>
-              {/* <div class="map-overlay">
-                <div class="map-icon">
-                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <path
-                      d="M16 2C11.03 2 7 6.03 7 11C7 17.25 16 28 16 28C16 28 25 17.25 25 11C25 6.03 20.97 2 16 2ZM16 14C14.34 14 13 12.66 13 11C13 9.34 14.34 8 16 8C17.66 8 19 9.34 19 11C19 12.66 17.66 14 16 14Z"
-                      fill="white"
-                    />
-                  </svg>
-                </div>
-                <h3 class="map-title">Interactive Map</h3>
-                <p class="map-description">Click to view our location on Google Maps</p>
-                <a href="#" class="btn-map">
-                  View on Google Maps
-                </a>
-              </div> */}
             </div>
           )
         }
@@ -273,7 +262,7 @@ const specialOffers = [
         </p>
         <div class="cta-buttons">
           <a href="/discover" class="btn-cta-primary">Book Online Now</a>
-          <a href="tel:5551232547" class="btn-cta-secondary">Call (555) 123-BLISS</a>
+          <a href={`tel:${primaryPhoneTel}`} class="btn-cta-secondary">Call {primaryPhone}</a>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import galleryImage from './galleryImage.js';
 import contactInfo from './contactInfo.js';
 import addon from './addon.js';
 import packageSchema from './package.js';
+import bookingInfo from './bookingInfo.js';
 
 export const schemaTypes = [
   service,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   contactInfo,
   addon,
   packageSchema,
+  bookingInfo,
 ];

@@ -1,0 +1,46 @@
+export default {
+  name: 'bookingInfo',
+  title: 'Booking Page Info',
+  type: 'document',
+  fields: [
+    {
+      name: 'importantInfo',
+      title: 'Important Information',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'text',
+              title: 'Info Text',
+              type: 'string',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'faqs',
+      title: 'Frequently Asked Questions',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'question',
+              title: 'Question',
+              type: 'string',
+            },
+            {
+              name: 'answer',
+              title: 'Answer',
+              type: 'text',
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};

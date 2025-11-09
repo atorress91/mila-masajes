@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { getServiceBySlug } from '../lib/sanity';
+import { getServiceBySlug, getBookingInfo } from '../lib/sanity';
 
 // NOTA: Reemplaza 'tu-usuario' con tu username real de Cal.com
 // Solo necesitas UN evento en Cal.com llamado "masajes"
@@ -12,6 +12,9 @@ const calEventSlug = 'masajes'; // El slug de tu evento en Cal.com
 // Obtener parámetro de servicio de la URL para mostrar información
 const url = Astro.url;
 const serviceParam = url.searchParams.get('service') || '';
+
+// Obtener información de booking desde Sanity
+const bookingInfo = await getBookingInfo();
 
 type ServiceDisplayInfo = {
   title: string;
@@ -23,34 +26,34 @@ type ServiceDisplayInfo = {
 // Mapeo de respaldo para mostrar información si Sanity no devuelve datos
 const fallbackServiceInfo: Record<string, ServiceDisplayInfo> = {
   'masaje-sueco': {
-    title: 'Masaje Sueco',
+    title: 'Swedish Massage',
     duration: '90 min',
     price: 85,
-    calLabel: 'Masaje Sueco (90 min)',
+    calLabel: 'Swedish Massage (90 min)',
   },
   'masaje-profundo': {
-    title: 'Masaje Tejido Profundo',
+    title: 'Deep Tissue Massage',
     duration: '75 min',
     price: 95,
-    calLabel: 'Masaje Tejido Profundo (75 min)',
+    calLabel: 'Deep Tissue Massage (75 min)',
   },
   'piedras-calientes': {
-    title: 'Masaje Piedras Calientes',
+    title: 'Hot Stone Massage',
     duration: '105 min',
     price: 110,
-    calLabel: 'Masaje Piedras Calientes (105 min)',
+    calLabel: 'Hot Stone Massage (105 min)',
   },
   aromaterapia: {
-    title: 'Aromaterapia',
+    title: 'Aromatherapy',
     duration: '80 min',
     price: 90,
-    calLabel: 'Aromaterapia (80 min)',
+    calLabel: 'Aromatherapy (80 min)',
   },
   'masaje-pareja': {
-    title: 'Masaje en Pareja',
+    title: 'Couples Massage',
     duration: '90 min',
     price: 180,
-    calLabel: 'Masaje en Pareja (90 min)',
+    calLabel: 'Couples Massage (90 min)',
   },
 };
 
@@ -59,7 +62,7 @@ const serviceFromSanity = serviceParam ? await getServiceBySlug(serviceParam) : 
 const sanityServiceInfo: ServiceDisplayInfo | null = serviceFromSanity
   ? {
       title: serviceFromSanity.title,
-      duration: serviceFromSanity.duration ? `${serviceFromSanity.duration} min` : 'Duración personalizada',
+      duration: serviceFromSanity.duration ? `${serviceFromSanity.duration} min` : 'Custom duration',
       price: serviceFromSanity.price ?? null,
       calLabel: serviceFromSanity.duration
         ? `${serviceFromSanity.title} (${serviceFromSanity.duration} min)`
@@ -77,13 +80,44 @@ const selectedServiceSummary = selectedServiceInfo
       .filter(Boolean)
       .join(' - ')
   : '';
-const pageTitle = selectedServiceInfo ? `Reservar ${selectedServiceInfo.title}` : 'Reserva tu Masaje';
+const pageTitle = selectedServiceInfo ? `Book ${selectedServiceInfo.title}` : 'Book Your Massage';
 const baseCalUrl = `https://cal.com/${calUsername}/${calEventSlug}`;
 const calBaseParams = 'embed=inline&theme=light&primaryColor=667eea&hideEventTypeDetails=1';
 const servicePrefillParam = selectedServiceInfo
   ? `&prefill[customAnswers][service]=${encodeURIComponent(selectedServiceInfo.calLabel)}`
   : '';
 const calEmbedUrl = `${baseCalUrl}?${calBaseParams}${servicePrefillParam}`;
+
+// Fallback data for important info and FAQs
+const fallbackImportantInfo = [
+  { text: 'Please arrive 10 minutes early' },
+  { text: '24-hour cancellation notice required' },
+  { text: "You'll receive email confirmation" },
+  { text: 'Wear comfortable clothing' },
+];
+
+const fallbackFaqs = [
+  {
+    question: 'What should I bring to my appointment?',
+    answer:
+      'You just need to come in comfortable clothing. We provide towels, robes and everything needed for your treatment.',
+  },
+  {
+    question: 'Can I reschedule my appointment?',
+    answer: 'Yes, you can reschedule your appointment with at least 24 hours notice at no additional cost.',
+  },
+  {
+    question: 'Do you offer parking?',
+    answer: 'Yes, we have free parking available for our clients on the premises.',
+  },
+  {
+    question: 'Do you accept gift cards?',
+    answer: 'Yes, we accept gift cards and you can also purchase one as a gift.',
+  },
+];
+
+const importantInfo = bookingInfo?.importantInfo || fallbackImportantInfo;
+const faqs = bookingInfo?.faqs || fallbackFaqs;
 ---
 
 <Layout title={`${pageTitle} | MIA Massage & Wellness`}>
@@ -97,12 +131,12 @@ const calEmbedUrl = `${baseCalUrl}?${calBaseParams}${servicePrefillParam}`;
     <section class="booking-hero">
       <div class="container">
         <div class="booking-hero-content">
-          <h1 class="booking-hero-title">Reserva tu Cita</h1>
+          <h1 class="booking-hero-title">Book Your Appointment</h1>
           {
             selectedServiceInfo ? (
               <p class="booking-hero-subtitle">{selectedServiceSummary}</p>
             ) : (
-              <p class="booking-hero-subtitle">Elige tu servicio, fecha y horario preferido</p>
+              <p class="booking-hero-subtitle">Choose your service, date and preferred time</p>
             )
           }
           <div class="booking-info">
@@ -111,7 +145,7 @@ const calEmbedUrl = `${baseCalUrl}?${calBaseParams}${servicePrefillParam}`;
                 <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
                 <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
               </svg>
-              <span>Duración según servicio elegido</span>
+              <span>Duration based on chosen service</span>
             </div>
             <div class="info-item">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -122,7 +156,7 @@ const calEmbedUrl = `${baseCalUrl}?${calBaseParams}${servicePrefillParam}`;
                   stroke-linecap="round"
                   stroke-linejoin="round"></path>
               </svg>
-              <span>Elige tu horario disponible</span>
+              <span>Choose your available time</span>
             </div>
           </div>
         </div>
@@ -136,7 +170,7 @@ const calEmbedUrl = `${baseCalUrl}?${calBaseParams}${servicePrefillParam}`;
           <!-- Cal.com iframe embed - evita cargar scripts adicionales -->
           <iframe
             src={calEmbedUrl}
-            title="Agenda tu cita"
+            title="Schedule your appointment"
             class="cal-iframe"
             loading="lazy"
             allow="camera;microphone;fullscreen"></iframe>
@@ -145,65 +179,37 @@ const calEmbedUrl = `${baseCalUrl}?${calBaseParams}${servicePrefillParam}`;
         <!-- Información adicional -->
         <div class="booking-sidebar">
           <div class="info-card">
-            <h3>Información Importante</h3>
+            <h3>Important Information</h3>
             <ul>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M20 6L9 17l-5-5"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"></path>
-                </svg>
-                Por favor llega 10 minutos antes
-              </li>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M20 6L9 17l-5-5"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"></path>
-                </svg>
-                Cancelaciones con 24h de anticipación
-              </li>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M20 6L9 17l-5-5"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"></path>
-                </svg>
-                Recibirás confirmación por email
-              </li>
-              <li>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M20 6L9 17l-5-5"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"></path>
-                </svg>
-                Traer ropa cómoda
-              </li>
+              {
+                importantInfo.map(info => (
+                  <li>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M20 6L9 17l-5-5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    {info.text}
+                  </li>
+                ))
+              }
             </ul>
           </div>
 
           <div class="info-card">
-            <h3>¿Necesitas Ayuda?</h3>
-            <p>Si tienes alguna pregunta o necesitas asistencia especial, contáctanos.</p>
-            <a href="/contact" class="contact-btn">Contáctanos</a>
+            <h3>Need Help?</h3>
+            <p>If you have any questions or need special assistance, contact us.</p>
+            <a href="/contact" class="contact-btn">Contact Us</a>
           </div>
 
           <div class="info-card">
-            <h3>Otros Servicios</h3>
-            <p>¿Buscas algo diferente? Explora todos nuestros tratamientos disponibles.</p>
-            <a href="/discover" class="services-btn">Ver Servicios</a>
+            <h3>Other Services</h3>
+            <p>Looking for something different? Explore all our available treatments.</p>
+            <a href="/discover" class="services-btn">View Services</a>
           </div>
         </div>
       </div>
@@ -212,27 +218,16 @@ const calEmbedUrl = `${baseCalUrl}?${calBaseParams}${servicePrefillParam}`;
     <!-- FAQ Section -->
     <section class="booking-faq">
       <div class="container">
-        <h2>Preguntas Frecuentes</h2>
+        <h2>Frequently Asked Questions</h2>
         <div class="faq-grid">
-          <div class="faq-item">
-            <h4>¿Qué debo traer a mi cita?</h4>
-            <p>
-              Solo necesitas venir con ropa cómoda. Proporcionamos toallas, batas y todo lo necesario para tu
-              tratamiento.
-            </p>
-          </div>
-          <div class="faq-item">
-            <h4>¿Puedo cambiar mi cita?</h4>
-            <p>Sí, puedes reprogramar tu cita con al menos 24 horas de anticipación sin costo adicional.</p>
-          </div>
-          <div class="faq-item">
-            <h4>¿Ofrecen estacionamiento?</h4>
-            <p>Sí, contamos con estacionamiento gratuito para nuestros clientes en las instalaciones.</p>
-          </div>
-          <div class="faq-item">
-            <h4>¿Aceptan tarjetas de regalo?</h4>
-            <p>Sí, aceptamos tarjetas de regalo y también puedes comprar una para regalar.</p>
-          </div>
+          {
+            faqs.map(faq => (
+              <div class="faq-item">
+                <h4>{faq.question}</h4>
+                <p>{faq.answer}</p>
+              </div>
+            ))
+          }
         </div>
       </div>
     </section>
