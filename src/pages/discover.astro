@@ -48,7 +48,7 @@ const defaultRating = 5.0;
               <div class="service-card">
                 <div
                   class="service-image"
-                  style={`background: linear-gradient(to right, ${service.color || defaultColor}20, ${service.color || defaultColor}10)`}
+                  style={`background-image: url('${getImageUrl(service.image)}'); background-size: cover; background-position: center;`}
                 >
                   <div class="duration-badge" style={`color: ${service.color || defaultColor}`}>
                     {formatDuration(service.duration)}
@@ -87,7 +87,7 @@ const defaultRating = 5.0;
               <div class="service-card-wide">
                 <div
                   class="service-image-wide"
-                  style={`background: linear-gradient(to right, ${service.color || defaultColor}20, ${service.color || defaultColor}10)`}
+                  style={`background-image: url('${getImageUrl(service.image)}'); background-size: cover; background-position: center;`}
                 >
                   <div class="duration-badge" style={`color: ${service.color || defaultColor}`}>
                     {formatDuration(service.duration)}
