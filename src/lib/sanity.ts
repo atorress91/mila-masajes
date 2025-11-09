@@ -48,6 +48,8 @@ export interface Service {
   image: any;
   benefits: string[];
   category: string;
+  color?: string;
+  rating?: number;
   featured: boolean;
   addons?: Addon[];
 }
@@ -113,6 +115,21 @@ export interface ContactInfo {
   contactImage?: any;
 }
 
+export interface Package {
+  _id: string;
+  slug: { current: string };
+  title: string;
+  description: string;
+  icon: string;
+  price: number;
+  originalPrice: number;
+  color: string;
+  featured: boolean;
+  services?: Service[];
+  order: number;
+  isActive: boolean;
+}
+
 // Funciones para obtener datos
 
 export async function getServices(): Promise<Service[]> {
@@ -126,6 +143,8 @@ export async function getServices(): Promise<Service[]> {
     image,
     benefits,
     category,
+    color,
+    rating,
     featured,
     "addons": addons[]->{ 
       _id, 
@@ -151,6 +170,8 @@ export async function getServiceById(id: string): Promise<Service> {
     image,
     benefits,
     category,
+    color,
+    rating,
     featured,
     "addons": addons[]->{ 
       _id, 
@@ -176,6 +197,8 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
     image,
     benefits,
     category,
+    color,
+    rating,
     featured,
     "addons": addons[]->{ 
       _id, 
@@ -243,6 +266,8 @@ export async function getFeaturedServices(): Promise<Service[]> {
     image,
     benefits,
     category,
+    color,
+    rating,
     featured,
     "addons": addons[]->{ 
       _id, 
@@ -339,6 +364,28 @@ export async function getContactInfo(): Promise<ContactInfo> {
     socialMedia,
     mapEmbed,
     contactImage
+  }`;
+  return await sanityClient.fetch(query);
+}
+
+export async function getPackages(): Promise<Package[]> {
+  const query = `*[_type == "package" && isActive == true] | order(order asc) {
+    _id,
+    slug,
+    title,
+    description,
+    icon,
+    price,
+    originalPrice,
+    color,
+    featured,
+    order,
+    isActive,
+    "services": services[]->{ 
+      _id, 
+      title, 
+      slug 
+    }
   }`;
   return await sanityClient.fetch(query);
 }

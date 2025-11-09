@@ -2,106 +2,39 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getServices, getPackages, urlFor } from '../lib/sanity';
 
-// Servicios de ejemplo con la estructura del diseño de Figma
-const services = [
-  {
-    id: 'masaje-sueco',
-    title: 'Masaje Sueco',
-    description:
-      'Técnica clásica de relajación que combina movimientos suaves y profundos para aliviar la tensión muscular',
-    duration: '90 min',
-    price: 85,
-    rating: 4.9,
-    image: '/assets/masaje-sueco.jpg',
-    color: '#8b5a5a', // Color coral-terracota
-  },
-  {
-    id: 'masaje-profundo',
-    title: 'Masaje Tejido Profundo',
-    description:
-      'Tratamiento intensivo que trabaja las capas más profundas del músculo para liberar tensiones crónicas',
-    duration: '75 min',
-    price: 95,
-    rating: 4.8,
-    image: '/assets/masaje-profundo.jpg',
-    color: '#5a7a8b', // Color azul-verde
-  },
-  {
-    id: 'piedras-calientes',
-    title: 'Masaje Piedras Calientes',
-    description: 'Experiencia única que combina calor terapéutico con técnicas de masaje para una relajación profunda',
-    duration: '105 min',
-    price: 110,
-    rating: 5.0,
-    image: '/assets/piedras-calientes.jpg',
-    color: '#8b7a5a', // Color dorado
-  },
-  {
-    id: 'aromaterapia',
-    title: 'Aromaterapia',
-    description: 'Masaje relajante con aceites esenciales naturales que estimulan los sentidos y equilibran la energía',
-    duration: '80 min',
-    price: 90,
-    rating: 4.9,
-    image: '/assets/aromaterapia.jpg',
-    color: '#7a5a8b', // Color lavanda
-  },
-  {
-    id: 'masaje-pareja',
-    title: 'Masaje en Pareja',
-    description: 'Experiencia romántica para dos personas en nuestra suite privada con ambiente íntimo y relajante',
-    duration: '90 min',
-    price: 180,
-    rating: 4.9,
-    image: '/assets/masaje-pareja.jpg',
-    color: '#8b6b5a', // Color tierra
-  },
-];
+// Obtener servicios y paquetes desde Sanity
+const services = await getServices();
+const packages = await getPackages();
 
-const packages = [
-  {
-    id: 1,
-    title: 'Paquete Relajación',
-    description: 'Masaje sueco + aromaterapia + acceso al spa',
-    icon: '🌸',
-    price: 150,
-    originalPrice: 175,
-    color: '#8b5a5a',
-  },
-  {
-    id: 2,
-    title: 'Paquete Premium',
-    description: 'Piedras calientes + tejido profundo + facial',
-    icon: '✨',
-    price: 220,
-    originalPrice: 265,
-    color: '#8b7a5a',
-    featured: true,
-  },
-  {
-    id: 3,
-    title: 'Paquete Romántico',
-    description: 'Masaje en pareja + champagne + pétalos',
-    icon: '💕',
-    price: 250,
-    originalPrice: 290,
-    color: '#8b6b5a',
-  },
-];
+// Función auxiliar para formatear duración
+function formatDuration(minutes: number): string {
+  return `${minutes} min`;
+}
+
+// Función auxiliar para obtener URL de imagen
+function getImageUrl(image: any): string {
+  if (!image) return '/assets/placeholder.jpg';
+  return urlFor(image).width(800).height(600).url();
+}
+
+// Valores por defecto para color y rating
+const defaultColor = '#8b5a5a';
+const defaultRating = 5.0;
 ---
 
-<Layout title="Nuestros Servicios - MIA Massage & Wellness">
+<Layout title="Our Services - MIA Massage & Wellness">
   <Header />
 
   <main class="services-page">
     <!-- Hero Section -->
     <section class="services-hero">
       <div class="container">
-        <h1 class="hero-title">Nuestros Servicios</h1>
+        <h1 class="hero-title">Our Services</h1>
         <div class="title-underline"></div>
         <p class="hero-subtitle">
-          Descubre nuestra gama completa de tratamientos de relajación diseñados para renovar tu cuerpo y mente
+          Discover our complete range of relaxation treatments designed to renew your body and mind
         </p>
       </div>
     </section>
@@ -115,31 +48,31 @@ const packages = [
               <div class="service-card">
                 <div
                   class="service-image"
-                  style={`background: linear-gradient(to right, ${service.color}20, ${service.color}10)`}
+                  style={`background: linear-gradient(to right, ${service.color || defaultColor}20, ${service.color || defaultColor}10)`}
                 >
-                  <div class="duration-badge" style={`color: ${service.color}`}>
-                    {service.duration}
+                  <div class="duration-badge" style={`color: ${service.color || defaultColor}`}>
+                    {formatDuration(service.duration)}
                   </div>
                 </div>
                 <div class="service-content">
                   <h3 class="service-title">{service.title}</h3>
                   <p class="service-description">{service.description}</p>
                   <div class="service-footer">
-                    <span class="service-price" style={`color: ${service.color}`}>
+                    <span class="service-price" style={`color: ${service.color || defaultColor}`}>
                       ${service.price}
                     </span>
                     <div class="service-rating">
                       <span class="stars">★★★★★</span>
-                      <span class="rating-value">({service.rating})</span>
+                      <span class="rating-value">({service.rating || defaultRating})</span>
                     </div>
                   </div>
                   <a
-                    href={`/booking?service=${service.id}`}
+                    href={`/booking?service=${service.slug.current}`}
                     class="book-button"
-                    style={`background-color: ${service.color}`}
+                    style={`background-color: ${service.color || defaultColor}`}
                     data-astro-prefetch="false"
                   >
-                    Reservar Ahora
+                    Book Now
                   </a>
                 </div>
               </div>
@@ -154,31 +87,31 @@ const packages = [
               <div class="service-card-wide">
                 <div
                   class="service-image-wide"
-                  style={`background: linear-gradient(to right, ${service.color}20, ${service.color}10)`}
+                  style={`background: linear-gradient(to right, ${service.color || defaultColor}20, ${service.color || defaultColor}10)`}
                 >
-                  <div class="duration-badge" style={`color: ${service.color}`}>
-                    {service.duration}
+                  <div class="duration-badge" style={`color: ${service.color || defaultColor}`}>
+                    {formatDuration(service.duration)}
                   </div>
                 </div>
                 <div class="service-content">
                   <h3 class="service-title">{service.title}</h3>
                   <p class="service-description">{service.description}</p>
                   <div class="service-footer">
-                    <span class="service-price" style={`color: ${service.color}`}>
+                    <span class="service-price" style={`color: ${service.color || defaultColor}`}>
                       ${service.price}
                     </span>
                     <div class="service-rating">
                       <span class="stars">★★★★★</span>
-                      <span class="rating-value">({service.rating})</span>
+                      <span class="rating-value">({service.rating || defaultRating})</span>
                     </div>
                   </div>
                   <a
-                    href={`/booking?service=${service.id}`}
+                    href={`/booking?service=${service.slug.current}`}
                     class="book-button"
-                    style={`background-color: ${service.color}`}
+                    style={`background-color: ${service.color || defaultColor}`}
                     data-astro-prefetch="false"
                   >
-                    Reservar Ahora
+                    Book Now
                   </a>
                 </div>
               </div>
@@ -192,14 +125,14 @@ const packages = [
     <section class="packages-section">
       <div class="container">
         <div class="packages-wrapper">
-          <h2 class="packages-title">Paquetes Especiales</h2>
+          <h2 class="packages-title">Special Packages</h2>
           <div class="packages-grid">
             {
               packages.map(pkg => (
                 <div class={`package-card ${pkg.featured ? 'featured' : ''}`}>
                   {pkg.featured && (
                     <div class="popular-badge" style={`background-color: ${pkg.color}`}>
-                      MÁS POPULAR
+                      MOST POPULAR
                     </div>
                   )}
                   <div
@@ -217,7 +150,7 @@ const packages = [
                     <span class="package-original-price">${pkg.originalPrice}</span>
                   </div>
                   <button class="package-button" style={`background-color: ${pkg.color}`}>
-                    Elegir Paquete
+                    Choose Package
                   </button>
                 </div>
               ))
@@ -231,12 +164,11 @@ const packages = [
     <section class="cta-section">
       <div class="container">
         <div class="cta-card">
-          <h2 class="cta-title">¿No encuentras lo que buscas?</h2>
+          <h2 class="cta-title">Can't find what you're looking for?</h2>
           <p class="cta-description">
-            Nuestros terapeutas especializados pueden crear un tratamiento personalizado según tus necesidades
-            específicas
+            Our specialized therapists can create a personalized treatment according to your specific needs
           </p>
-          <button class="cta-button"> Consulta Personalizada </button>
+          <button class="cta-button"> Custom Consultation </button>
         </div>
       </div>
     </section>

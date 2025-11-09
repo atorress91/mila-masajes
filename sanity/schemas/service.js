@@ -82,6 +82,25 @@ export default {
       },
     },
     {
+      name: 'color',
+      title: 'Accent Color',
+      type: 'string',
+      description: 'Hex color code for the service card (e.g., #8b5a5a)',
+      validation: Rule =>
+        Rule.regex(/^#[0-9A-Fa-f]{6}$/, {
+          name: 'hex color',
+          invert: false,
+        }),
+    },
+    {
+      name: 'rating',
+      title: 'Rating',
+      type: 'number',
+      description: 'Service rating (0-5)',
+      validation: Rule => Rule.min(0).max(5),
+      initialValue: 5,
+    },
+    {
       name: 'featured',
       title: 'Featured Service',
       type: 'boolean',
