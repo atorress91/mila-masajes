@@ -35,9 +35,9 @@ export function initContactForm() {
     if (!data.consent) {
       Swal.fire({
         icon: 'warning',
-        title: 'Consentimiento Requerido',
-        text: 'Por favor, acepta recibir comunicaciones para continuar.',
-        confirmButtonText: 'Entendido',
+        title: 'Consent Required',
+        text: 'Please accept to receive communications to continue.',
+        confirmButtonText: 'Got it',
         confirmButtonColor: '#fc0038',
       });
       return;
@@ -48,13 +48,13 @@ export function initContactForm() {
     const originalButtonText = submitButton ? submitButton.textContent : '';
     if (submitButton) {
       submitButton.disabled = true;
-      submitButton.textContent = 'Enviando...';
+      submitButton.textContent = 'Sending...';
     }
 
     // Show loading alert
     Swal.fire({
-      title: 'Enviando mensaje...',
-      text: 'Por favor espera un momento',
+      title: 'Sending message...',
+      text: 'Please wait a moment',
       allowOutsideClick: false,
       allowEscapeKey: false,
       didOpen: () => {
@@ -68,9 +68,9 @@ export function initContactForm() {
         from_name: data.fullName,
         from_email: data.email,
         from_phone: data.phone,
-        service: data.service || 'No especificado',
+        service: data.service || 'Not specified',
         message: data.message,
-        to_name: 'Equipo de Masajes',
+        to_name: 'Massage Team',
       };
 
       // Send email using EmailJS
@@ -79,17 +79,17 @@ export function initContactForm() {
       // Show success message
       Swal.fire({
         icon: 'success',
-        title: '¡Mensaje Enviado!',
+        title: 'Message Sent!',
         html: `
           <p style="font-size: 16px; margin-bottom: 12px;">
-            Gracias, <strong>${data.fullName}</strong>!
+            Thank you, <strong>${data.fullName}</strong>!
           </p>
           <p style="font-size: 14px; color: #666;">
-            Tu mensaje ha sido enviado exitosamente.<br>
-            Te responderemos pronto a <strong>${data.email}</strong>
+            Your message has been sent successfully.<br>
+            We'll get back to you soon at <strong>${data.email}</strong>
           </p>
         `,
-        confirmButtonText: 'Perfecto',
+        confirmButtonText: 'Perfect',
         confirmButtonColor: '#fc0038',
         timer: 5000,
       });
@@ -97,13 +97,13 @@ export function initContactForm() {
       // Reset form
       contactForm.reset();
     } catch (error) {
-      let errorTitle = 'Error al Enviar';
-      let errorMessage = 'Hubo un problema al enviar tu mensaje.';
+      let errorTitle = 'Error Sending';
+      let errorMessage = 'There was a problem sending your message.';
 
       if (error.status === 401) {
-        errorMessage = 'Error de autenticación con el servicio de email.';
+        errorMessage = 'Authentication error with email service.';
       } else if (error.status === 404) {
-        errorMessage = 'Servicio de email no encontrado.';
+        errorMessage = 'Email service not found.';
       } else if (error.text) {
         errorMessage = error.text;
       }
@@ -116,10 +116,10 @@ export function initContactForm() {
             ${errorMessage}
           </p>
           <p style="font-size: 13px; color: #666;">
-            Por favor, intenta nuevamente o contáctanos directamente por teléfono.
+            Please try again or contact us directly by phone.
           </p>
         `,
-        confirmButtonText: 'Cerrar',
+        confirmButtonText: 'Close',
         confirmButtonColor: '#fc0038',
       });
     } finally {
