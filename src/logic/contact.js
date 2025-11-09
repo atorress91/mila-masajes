@@ -1,34 +1,24 @@
 import emailjs from '@emailjs/browser';
+import Swal from 'sweetalert2';
 
 // EmailJS Configuration
-// IMPORTANT: Replace these values with your own from https://www.emailjs.com/
 const EMAILJS_CONFIG = {
-  serviceId: 'service_zp6sptz', // e.g., 'service_abc123'
-  templateId: 'template_3u4svuo', // e.g., 'template_xyz789'
-  publicKey: 'mdWzw4JUvsDU4aZiC', // e.g., 'abcdefghijk123456'
+  serviceId: 'service_zp6sptz',
+  templateId: 'template_3u4svuo',
+  publicKey: 'mdWzw4JUvsDU4aZiC',
 };
 
 // Initialize EmailJS with public key
-try {
-  emailjs.init(EMAILJS_CONFIG.publicKey);
-  console.log('✅ EmailJS inicializado correctamente');
-} catch (error) {
-  console.error('❌ Error inicializando EmailJS:', error);
-}
+emailjs.init(EMAILJS_CONFIG.publicKey);
 
 // Form submission handler for contact page
 export function initContactForm() {
   const contactForm = document.getElementById('contactForm');
 
-  if (!contactForm) {
-    console.warn('Contact form not found');
-    return;
-  }
+  if (!contactForm) return;
 
   contactForm.addEventListener('submit', async e => {
     e.preventDefault();
-
-    console.log('🔵 Formulario enviado - Iniciando proceso...');
 
     // Get form data
     const formData = new FormData(contactForm);
@@ -41,12 +31,15 @@ export function initContactForm() {
       consent: formData.get('consent'),
     };
 
-    console.log('📋 Datos del formulario:', data);
-
     // Validate consent checkbox
     if (!data.consent) {
-      console.warn('⚠️ Consentimiento no aceptado');
-      alert('Por favor, acepta recibir comunicaciones para continuar.');
+      Swal.fire({
+        icon: 'warning',
+        title: 'Consentimiento Requerido',
+        text: 'Por favor, acepta recibir comunicaciones para continuar.',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#fc0038',
+      });
       return;
     }
 
@@ -58,11 +51,18 @@ export function initContactForm() {
       submitButton.textContent = 'Enviando...';
     }
 
-    try {
-      console.log('🔧 Configurando EmailJS...');
-      console.log('Service ID:', EMAILJS_CONFIG.serviceId);
-      console.log('Template ID:', EMAILJS_CONFIG.templateId);
+    // Show loading alert
+    Swal.fire({
+      title: 'Enviando mensaje...',
+      text: 'Por favor espera un momento',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
+    try {
       // Prepare template parameters for EmailJS
       const templateParams = {
         from_name: data.fullName,
@@ -73,54 +73,61 @@ export function initContactForm() {
         to_name: 'Equipo de Masajes',
       };
 
-      console.log('📤 Enviando email con parámetros:', templateParams);
-
       // Send email using EmailJS
-      const response = await emailjs.send(
-        EMAILJS_CONFIG.serviceId,
-        EMAILJS_CONFIG.templateId,
-        templateParams,
-        EMAILJS_CONFIG.publicKey
-      );
-
-      console.log('✅ Email enviado exitosamente!', response);
-      console.log('Status:', response.status);
-      console.log('Text:', response.text);
+      await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams, EMAILJS_CONFIG.publicKey);
 
       // Show success message
-      alert(
-        `¡Gracias, ${data.fullName}! Tu mensaje ha sido enviado exitosamente.\n\nTe responderemos pronto a ${data.email}.`
-      );
+      Swal.fire({
+        icon: 'success',
+        title: '¡Mensaje Enviado!',
+        html: `
+          <p style="font-size: 16px; margin-bottom: 12px;">
+            Gracias, <strong>${data.fullName}</strong>!
+          </p>
+          <p style="font-size: 14px; color: #666;">
+            Tu mensaje ha sido enviado exitosamente.<br>
+            Te responderemos pronto a <strong>${data.email}</strong>
+          </p>
+        `,
+        confirmButtonText: 'Perfecto',
+        confirmButtonColor: '#fc0038',
+        timer: 5000,
+      });
 
       // Reset form
       contactForm.reset();
     } catch (error) {
-      console.error('❌ Error completo:', error);
-      console.error('Error status:', error.status);
-      console.error('Error text:', error.text);
-      console.error('Error name:', error.name);
-      console.error('Error message:', error.message);
-
-      let errorMessage = 'Hubo un error al enviar tu mensaje.';
+      let errorTitle = 'Error al Enviar';
+      let errorMessage = 'Hubo un problema al enviar tu mensaje.';
 
       if (error.status === 401) {
-        errorMessage += '\n\n🔑 Error de autenticación. Verifica tu Public Key.';
+        errorMessage = 'Error de autenticación con el servicio de email.';
       } else if (error.status === 404) {
-        errorMessage += '\n\n🔍 Service ID o Template ID no encontrados.';
+        errorMessage = 'Servicio de email no encontrado.';
       } else if (error.text) {
-        errorMessage += `\n\nDetalle: ${error.text}`;
+        errorMessage = error.text;
       }
 
-      errorMessage += '\n\nPor favor, intenta nuevamente o contáctanos directamente por teléfono.';
-
-      alert(errorMessage);
+      Swal.fire({
+        icon: 'error',
+        title: errorTitle,
+        html: `
+          <p style="font-size: 14px; margin-bottom: 12px;">
+            ${errorMessage}
+          </p>
+          <p style="font-size: 13px; color: #666;">
+            Por favor, intenta nuevamente o contáctanos directamente por teléfono.
+          </p>
+        `,
+        confirmButtonText: 'Cerrar',
+        confirmButtonColor: '#fc0038',
+      });
     } finally {
       // Restore button state
       if (submitButton) {
         submitButton.disabled = false;
         submitButton.textContent = originalButtonText;
       }
-      console.log('🔄 Botón restaurado');
     }
   });
 }
