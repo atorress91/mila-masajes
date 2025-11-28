@@ -1,0 +1,86 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getLocations, urlFor } from '../../lib/sanity';
+
+const locations = await getLocations();
+const baseDescription =
+  'Encuentra el mejor servicio de masajes profesionales a domicilio en las principales zonas de Costa Rica.';
+---
+
+<Layout title="Ubicaciones | MLA Massage & Wellness" description={baseDescription}>
+  <Header />
+
+  <main class="location-page locations-overview">
+    <section class="location-hero small">
+      <div class="overlay"></div>
+      <div class="container hero-content">
+        <p class="eyebrow">Cobertura nacional</p>
+        <h1>Masajes a domicilio donde nos necesites</h1>
+        <p class="lead">
+          Atendemos hoteles boutique, villas privadas y residencias en los principales destinos turisticos como Quepos,
+          Tamarindo y San Jose.
+        </p>
+      </div>
+    </section>
+
+    <section class="location-services">
+      <div class="container">
+        <div class="section-heading">
+          <span>Explora</span>
+          <h2>Nuestras ubicaciones activas</h2>
+          <p>Selecciona tu zona para ver disponibilidad de terapeutas, reseñas locales y paquetes sugeridos.</p>
+        </div>
+
+        {
+          locations.length > 0 ? (
+            <div class="service-card-grid">
+              {locations.map(location => (
+                <article class="service-card location-card">
+                  <div class="service-card-image">
+                    <img
+                      src={
+                        location.heroImage
+                          ? urlFor(location.heroImage).width(600).height(400).url()
+                          : '/assets/service-2.jpg'
+                      }
+                      alt={location.heroImage?.alt || location.name}
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="service-card-body">
+                    <div class="service-meta">
+                      <span>{location.serviceAreas?.length || 1} zonas</span>
+                      <span>#{(location.order ?? 0) + 1}</span>
+                    </div>
+                    <h3>{location.name}</h3>
+                    <p>{location.description || location.seoDescription || 'Experiencia spa donde estes.'}</p>
+                    <div class="service-actions">
+                      <a href={`/ubicaciones/${location.slug.current}`} class="btn-primary">
+                        Ver detalles
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p class="empty-state">Aun no hay ubicaciones activas. Vuelve pronto.</p>
+          )
+        }
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  @import '../../styles/locations.css';
+
+  .location-card .service-meta span:last-child {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+</style>

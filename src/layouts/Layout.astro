@@ -7,9 +7,27 @@ import { ViewTransitions } from 'astro:transitions';
 interface Props {
   title: string;
   description?: string;
+  keywords?: string[] | string;
+  canonical?: string;
+  ogImage?: string;
+  structuredData?: Record<string, unknown> | string | null;
 }
 
-const { title, description = 'MLA Massage & Wellness - Professional spa and massage therapy services' } = Astro.props;
+const {
+  title,
+  description = 'MLA Massage & Wellness - Professional spa and massage therapy services',
+  keywords,
+  canonical,
+  ogImage,
+  structuredData,
+} = Astro.props;
+
+const metaKeywords = Array.isArray(keywords) ? keywords.join(', ') : keywords;
+const structuredDataJson = structuredData
+  ? typeof structuredData === 'string'
+    ? structuredData
+    : JSON.stringify(structuredData)
+  : null;
 ---
 
 <!doctype html>
@@ -18,7 +36,12 @@ const { title, description = 'MLA Massage & Wellness - Professional spa and mass
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    {metaKeywords && <meta name="keywords" content={metaKeywords} />}
     <meta name="generator" content={Astro.generator} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {canonical && <link rel="canonical" href={canonical} />}
     <title>{title}</title>
 
     <!-- Google Fonts -->
@@ -27,6 +50,12 @@ const { title, description = 'MLA Massage & Wellness - Professional spa and mass
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
 
     <script src="/js/trusted-types-policy.js" type="module"></script>
+
+    {structuredDataJson && (
+      <script type="application/ld+json">
+        {structuredDataJson}
+      </script>
+    )}
 
     <!-- View Transitions -->
     <ViewTransitions />

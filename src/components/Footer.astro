@@ -3,239 +3,247 @@
 ---
 
 <footer class="footer">
-    <div class="container">
-        <div class="footer-content">
-            <!-- Logo Section -->
-            <div class="footer-section">
-                <a href="/" class="footer-logo">
-                    <img src="/assets/logo.svg" alt="Massage & Wellness Logo" class="logo-image"/>
-                </a>
-            </div>
+  <div class="container">
+    <div class="footer-content">
+      <!-- Logo Section -->
+      <div class="footer-section">
+        <a href="/" class="footer-logo">
+          <img src="/assets/logo.svg" alt="Massage & Wellness Logo" class="logo-image" />
+        </a>
+      </div>
 
-            <!-- Help Links -->
-            <div class="footer-section">
-                <h3>Help</h3>
-                <ul>
-                    <li><a href="#booking">Booking and Cancellation</a></li>
-                    <li><a href="#payment">Payment Options</a></li>
-                    <li><a href="#security">Security</a></li>
-                </ul>
-            </div>
+      <!-- Help Links -->
+      <div class="footer-section">
+        <h3>Help</h3>
+        <ul>
+          <li><a href="#booking">Booking and Cancellation</a></li>
+          <li><a href="#payment">Payment Options</a></li>
+          <li><a href="#security">Security</a></li>
+        </ul>
+      </div>
 
-            <!-- Legal Links -->
-            <div class="footer-section">
-                <h3>Legal</h3>
-                <ul>
-                    <li><a href="#privacy">Privacy Policy</a></li>
-                    <li><a href="#terms">Terms and Conditions</a></li>
-                    <li><a href="#cookie">Cookie Policy</a></li>
-                </ul>
-            </div>
+      <!-- Legal Links -->
+      <div class="footer-section">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="#privacy">Privacy Policy</a></li>
+          <li><a href="#terms">Terms and Conditions</a></li>
+          <li><a href="#cookie">Cookie Policy</a></li>
+        </ul>
+      </div>
 
-            <!-- Company Links -->
-            <div class="footer-section">
-                <h3>Company</h3>
-                <ul>
-                    <li><a href="#about">About Us</a></li>
-                    <li><a href="#contact">Contact Us</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                </ul>
-            </div>
+      <!-- Company Links -->
+      <div class="footer-section">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
 
-            <!-- Social Links -->
-            <div class="footer-section social-section">
-                <h3>Social</h3>
-                <div class="social-icons">
-                    <a href="#facebook" aria-label="Facebook">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-                        </svg>
-                    </a>
-                    <a href="#instagram" aria-label="Instagram">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
+      <!-- Locations -->
+      <div class="footer-section">
+        <h3>Locations</h3>
+        <ul>
+          <li><a href="/ubicaciones/quepos">Quepos &amp; Manuel Antonio</a></li>
+          <li><a href="/ubicaciones/tamarindo">Tamarindo &amp; Guanacaste</a></li>
+          <li><a href="/ubicaciones/san-jose">San Jose Metropolitan Area</a></li>
+        </ul>
+      </div>
+
+      <!-- Social Links -->
+      <div class="footer-section social-section">
+        <h3>Social</h3>
+        <div class="social-icons">
+          <a href="#facebook" aria-label="Facebook">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+          </a>
+          <a href="#instagram" aria-label="Instagram">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
         </div>
-
-        <div class="footer-bottom">
-            <p class="copyright">Copyright © MLA Massage & Wellness 2025</p>
-        </div>
+      </div>
     </div>
+
+    <div class="footer-bottom">
+      <p class="copyright">Copyright © MLA Massage & Wellness 2025</p>
+    </div>
+  </div>
 </footer>
 
 <style>
-    .footer {
-        background: white;
-        color: var(--text-primary);
-        padding: 60px 0 30px;
-        margin-top: 0;
+  .footer {
+    background: white;
+    color: var(--text-primary);
+    padding: 60px 0 30px;
+    margin-top: 0;
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+  }
+
+  .footer-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+  }
+
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-section ul li {
+    margin-bottom: 10px;
+  }
+
+  .footer-section ul li a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.3s ease;
+  }
+
+  .footer-section ul li a:hover {
+    color: var(--text-primary);
+  }
+
+  .footer-logo {
+    display: block;
+  }
+
+  .logo-image {
+    width: 120px;
+    height: auto;
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 16px;
+  }
+
+  .social-icons a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--beige-arena);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .social-icons a:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: translateY(-3px);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .copyright {
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin: 0;
+  }
+
+  @media (max-width: 968px) {
+    .footer-content {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
     }
 
+    .footer {
+      margin-top: 0;
+      padding: 35px 0 20px;
+    }
+  }
+
+  @media (max-width: 768px) {
     .footer-content {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 40px;
-        margin-bottom: 40px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px 20px;
     }
 
     .footer-section h3 {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 20px;
-        color: var(--text-primary);
+      font-size: 14px;
+      margin-bottom: 14px;
     }
-
-    .footer-section ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .footer-section ul li {
-        margin-bottom: 10px;
+    .logo-image {
+      width: 100px;
     }
 
     .footer-section ul li a {
-        color: var(--text-secondary);
-        text-decoration: none;
-        font-size: 13px;
-        transition: color 0.3s ease;
+      font-size: 12px;
     }
 
-    .footer-section ul li a:hover {
-        color: var(--text-primary);
+    .footer-section:first-child {
+      grid-column: 1 / -1;
+      text-align: center;
     }
 
-    .footer-logo {
-        display: block;
-    }
-
-    .logo-image {
-        width: 120px;
-        height: auto;
+    .social-section {
+      grid-column: 1 / -1;
+      text-align: center;
     }
 
     .social-icons {
-        display: flex;
-        gap: 16px;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer-content {
+      grid-template-columns: 1fr;
+      .logo-image {
+        width: 80px;
+      }
+
+      gap: 20px;
+      text-align: center;
     }
 
-    .social-icons a {
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: var(--beige-arena);
-        color: var(--text-primary);
-        transition: all 0.3s ease;
+    .footer {
+      padding: 30px 0 15px;
+      margin-top: 0;
     }
 
-    .social-icons a:hover {
-        background: var(--accent-color);
-        color: white;
-        transform: translateY(-3px);
+    .footer-section:first-child {
+      grid-column: auto;
     }
 
-    .footer-bottom {
-        border-top: 1px solid rgba(0, 0, 0, 0.1);
-        padding-top: 20px;
-        text-align: center;
+    .social-section {
+      grid-column: auto;
+    }
+
+    .footer-logo {
+      display: inline-block;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 8px;
     }
 
     .copyright {
-        color: var(--text-secondary);
-        font-size: 13px;
-        margin: 0;
+      font-size: 12px;
     }
-
-    @media (max-width: 968px) {
-        .footer-content {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-        }
-
-        .footer {
-            margin-top: 0;
-            padding: 35px 0 20px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .footer-content {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px 20px;
-        }
-
-        .footer-section h3 {
-            font-size: 14px;
-            margin-bottom: 14px;
-        }
-        .logo-image {
-            width: 100px;
-        }
-
-
-        .footer-section ul li a {
-            font-size: 12px;
-        }
-
-        .footer-section:first-child {
-            grid-column: 1 / -1;
-            text-align: center;
-        }
-
-        .social-section {
-            grid-column: 1 / -1;
-            text-align: center;
-        }
-
-        .social-icons {
-            justify-content: center;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .footer-content {
-            grid-template-columns: 1fr;
-        .logo-image {
-            width: 80px;
-        }
-
-            gap: 20px;
-            text-align: center;
-        }
-
-        .footer {
-            padding: 30px 0 15px;
-            margin-top: 0;
-        }
-
-        .footer-section:first-child {
-            grid-column: auto;
-        }
-
-        .social-section {
-            grid-column: auto;
-        }
-
-        .footer-logo {
-            display: inline-block;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 8px;
-        }
-
-        .copyright {
-            font-size: 12px;
-        }
-    }
+  }
 </style>

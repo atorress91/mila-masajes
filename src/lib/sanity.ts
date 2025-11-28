@@ -19,6 +19,12 @@ export function urlFor(source: SanityImageSource) {
 }
 
 // Tipos de datos
+export interface LocationSummary {
+  _id: string;
+  name: string;
+  slug: { current: string };
+}
+
 export interface Service {
   _id: string;
   slug: { current: string };
@@ -31,6 +37,7 @@ export interface Service {
   rating?: number;
   featured: boolean;
   order: number;
+  locations?: LocationSummary[];
 }
 
 export interface Benefit {
@@ -54,6 +61,36 @@ export interface PageContent {
   heroImageBottomRight?: any;
   ogImage: any;
   keywords: string[];
+}
+
+export interface LocationTestimonial {
+  quote: string;
+  author: string;
+  context?: string;
+}
+
+export interface LocationFaq {
+  question: string;
+  answer: string;
+}
+
+export interface Location {
+  _id: string;
+  name: string;
+  slug: { current: string };
+  seoTitle?: string;
+  seoDescription?: string;
+  tagline?: string;
+  description?: string;
+  serviceAreas?: string[];
+  keywords?: string[];
+  heroImage?: any;
+  ogImage?: any;
+  ctaLabel?: string;
+  mapEmbed?: string;
+  testimonials?: LocationTestimonial[];
+  faqs?: LocationFaq[];
+  order?: number;
 }
 
 export interface GalleryImage {
@@ -117,7 +154,12 @@ export async function getServices(): Promise<Service[]> {
     color,
     rating,
     featured,
-    order
+    order,
+    locations[]->{
+      _id,
+      name,
+      slug
+    }
   }`;
   return await sanityClient.fetch(query);
 }
@@ -134,7 +176,12 @@ export async function getServiceById(id: string): Promise<Service> {
     color,
     rating,
     featured,
-    order
+    order,
+    locations[]->{
+      _id,
+      name,
+      slug
+    }
   }`;
   return await sanityClient.fetch(query, { id });
 }
@@ -151,7 +198,12 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
     color,
     rating,
     featured,
-    order
+    order,
+    locations[]->{
+      _id,
+      name,
+      slug
+    }
   }`;
   return await sanityClient.fetch(query, { slug });
 }
@@ -197,7 +249,12 @@ export async function getFeaturedServices(): Promise<Service[]> {
     color,
     rating,
     featured,
-    order
+    order,
+    locations[]->{
+      _id,
+      name,
+      slug
+    }
   }`;
   return await sanityClient.fetch(query);
 }
@@ -284,4 +341,77 @@ export async function getBookingInfo(): Promise<BookingInfo | null> {
     faqs
   }`;
   return await sanityClient.fetch(query);
+}
+
+export async function getLocations(): Promise<Location[]> {
+  const query = `*[_type == "location"] | order(order asc) {
+    _id,
+    name,
+    slug,
+    seoTitle,
+    seoDescription,
+    tagline,
+    description,
+    serviceAreas,
+    keywords,
+    heroImage,
+    ogImage,
+    ctaLabel,
+    mapEmbed,
+    testimonials,
+    faqs,
+    order
+  }`;
+  return await sanityClient.fetch(query);
+}
+
+export async function getLocationsSlugs(): Promise<Array<{ slug: { current: string } }>> {
+  const query = `*[_type == "location" && defined(slug.current)] {
+    slug
+  }`;
+  return await sanityClient.fetch(query);
+}
+
+export async function getLocationBySlug(slug: string): Promise<Location | null> {
+  const query = `*[_type == "location" && slug.current == $slug][0] {
+    _id,
+    name,
+    slug,
+    seoTitle,
+    seoDescription,
+    tagline,
+    description,
+    serviceAreas,
+    keywords,
+    heroImage,
+    ogImage,
+    ctaLabel,
+    mapEmbed,
+    testimonials,
+    faqs,
+    order
+  }`;
+  return await sanityClient.fetch(query, { slug });
+}
+
+export async function getServicesByLocation(locationId: string): Promise<Service[]> {
+  const query = `*[_type == "service" && $locationId in locations[]._ref] | order(order asc) {
+    _id,
+    slug,
+    title,
+    description,
+    price,
+    duration,
+    image,
+    color,
+    rating,
+    featured,
+    order,
+    locations[]->{
+      _id,
+      name,
+      slug
+    }
+  }`;
+  return await sanityClient.fetch(query, { locationId });
 }

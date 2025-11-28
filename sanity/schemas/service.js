@@ -73,6 +73,21 @@ export default {
       initialValue: 5,
     },
     {
+      name: 'locations',
+      title: 'Available In (Locations)',
+      type: 'array',
+      of: [
+        {
+          type: 'reference',
+          to: [{ type: 'location' }],
+        },
+      ],
+      options: {
+        layout: 'tags',
+      },
+      description: 'Select the towns or areas where this service is offered to power local SEO pages.',
+    },
+    {
       name: 'featured',
       title: 'Featured Service',
       type: 'boolean',
