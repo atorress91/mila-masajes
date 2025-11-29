@@ -1,12 +1,17 @@
 import { defineConfig } from 'astro/config';
 
+import sitemap from '@astrojs/sitemap';
+
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://milamassage.com',
   output: 'static',
   compressHTML: true,
+
   build: {
     inlineStylesheets: 'auto',
   },
+
   image: {
     // Permitir imágenes remotas de Sanity CDN
     domains: ['cdn.sanity.io'],
@@ -21,6 +26,7 @@ export default defineConfig({
       entrypoint: 'astro/assets/services/noop',
     },
   },
+
   vite: {
     build: {
       // Reducir el límite de chunk para evitar problemas de memoria
@@ -32,4 +38,6 @@ export default defineConfig({
       },
     },
   },
+
+  integrations: [sitemap()],
 });
