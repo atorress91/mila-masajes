@@ -1,0 +1,242 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import { getLocationsSlugs, getLocationBySlug, getServicesByLocation, urlFor } from '../../../lib/sanity';
+import { SUPPORTED_LANGS, getLangFromAstro, withLangParam } from '../../../lib/i18n';
+import { getTranslations } from '../../../lib/translations';
+
+export async function getStaticPaths() {
+  const slugs = await getLocationsSlugs();
+  const paths: { params: { lang: string; slug: string } }[] = [];
+
+  for (const entry of slugs.filter(e => e?.slug?.current)) {
+    for (const lang of SUPPORTED_LANGS) {
+      paths.push({ params: { lang, slug: entry.slug.current } });
+    }
+  }
+
+  return paths;
+}
+
+const { slug } = Astro.params;
+const lang = getLangFromAstro(Astro);
+const copy = getTranslations(lang);
+const localizedHref = (path: string) => withLangParam(path, lang);
+const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+
+const location = await getLocationBySlug(slug, lang);
+
+if (!location) {
+  throw new Error(`Ubicacion no encontrada para el slug ${slug}`);
+}
+
+const services = await getServicesByLocation(location._id, lang);
+const heroImageUrl = location.heroImage
+  ? urlFor(location.heroImage).width(1400).height(880).url()
+  : '/assets/hero-massage.jpg';
+const ogImageUrl = location.ogImage ? urlFor(location.ogImage).width(1200).height(630).url() : undefined;
+const keywordFallback = [
+  copy.locations.detail.keywordMassage.replace('{location}', location.name),
+  copy.locations.detail.keywordSpa.replace('{location}', location.name),
+  `${location.name} massage`,
+];
+const keywordList = location.keywords && location.keywords.length > 0 ? location.keywords : keywordFallback;
+const canonicalPath = localizedHref(`/ubicaciones/${slug}`);
+const toAbsolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+const canonical = toAbsolute(canonicalPath);
+
+const pageTitle = location.seoTitle || copy.locations.detail.fallbackSeoTitle.replace('{location}', location.name);
+const pageDescription =
+  location.seoDescription ||
+  location.description ||
+  copy.locations.detail.fallbackDescription.replace('{location}', location.name);
+const ctaLabel = location.ctaLabel || copy.locations.detail.ctaFallback;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: `MLA Massage & Wellness - ${location.name}`,
+  description: pageDescription,
+  url: canonical,
+  image: heroImageUrl,
+  areaServed: location.serviceAreas && location.serviceAreas.length > 0 ? location.serviceAreas : [location.name],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: location.name,
+    addressCountry: 'CR',
+  },
+  makesOffer: services.map(service => ({
+    '@type': 'Offer',
+    name: service.title,
+    price: service.price,
+    priceCurrency: 'USD',
+    description: service.description,
+    url: toAbsolute(localizedHref(`/booking?service=${service.slug.current}`)),
+  })),
+};
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={keywordList}
+  canonical={canonical}
+  ogImage={ogImageUrl}
+  structuredData={structuredData}
+  lang={lang}
+>
+  <Header lang={lang} copy={copy} currentPath={currentPath} />
+
+  <main class="location-page">
+    <section class="location-hero" style={`background-image: url('${heroImageUrl}');`}>
+      <div class="overlay"></div>
+      <div class="container hero-content">
+        <p class="eyebrow">{copy.locations.detail.heroEyebrow.replace('{location}', location.name)}</p>
+        <h1>{location.tagline || copy.locations.detail.heroTitle.replace('{location}', location.name)}</h1>
+        {
+          (location.description || location.seoDescription) && (
+            <p class="lead">{location.description || location.seoDescription}</p>
+          )
+        }
+        <div class="hero-actions">
+          <a href={localizedHref(`/booking?city=${slug}`)} class="btn-primary" data-astro-prefetch="false">
+            {ctaLabel}
+          </a>
+          <a href="#servicios" class="btn-secondary">{copy.locations.detail.viewServices}</a>
+        </div>
+        {
+          location.serviceAreas && location.serviceAreas.length > 0 && (
+            <div class="service-areas">
+              <span>{copy.locations.detail.serviceAreasLabel}</span>
+              <ul>
+                {location.serviceAreas.map(area => (
+                  <li>{area}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <section id="servicios" class="location-services">
+      <div class="container">
+        <div class="section-heading">
+          <span>{copy.locations.detail.servicesEyebrow}</span>
+          <h2>{copy.locations.detail.servicesTitle.replace('{location}', location.name)}</h2>
+          <p>{copy.locations.detail.servicesDescription}</p>
+        </div>
+
+        {
+          services.length > 0 ? (
+            <div class="service-card-grid">
+              {services.map(service => (
+                <article class="service-card">
+                  <div class="service-card-image">
+                    <img
+                      src={service.image ? urlFor(service.image).width(600).height(400).url() : '/assets/service-1.jpg'}
+                      alt={service.image?.alt || service.title}
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="service-card-body">
+                    <div class="service-meta">
+                      <span class="duration">
+                        {service.duration} {copy.common.minutesSuffix}
+                      </span>
+                      <span class="price">${service.price}</span>
+                    </div>
+                    <h3>{service.title}</h3>
+                    <p>{service.description}</p>
+                    <div class="service-actions">
+                      <a
+                        href={localizedHref(`/booking?service=${service.slug.current}&city=${slug}`)}
+                        class="btn-primary"
+                        data-astro-prefetch="false"
+                      >
+                        {copy.common.bookNow}
+                      </a>
+                      {service.locations && service.locations.length > 0 && (
+                        <span class="tag">
+                          {copy.locations.detail.availableIn} {service.locations.map(loc => loc.name).join(', ')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p class="empty-state">{copy.locations.detail.emptyServices}</p>
+          )
+        }
+      </div>
+    </section>
+
+    {
+      location.testimonials && location.testimonials.length > 0 && (
+        <section class="location-testimonials">
+          <div class="container">
+            <div class="section-heading">
+              <span>{copy.locations.detail.testimonialsEyebrow}</span>
+              <h2>{copy.locations.detail.testimonialsTitle.replace('{location}', location.name)}</h2>
+            </div>
+            <div class="testimonial-grid">
+              {location.testimonials.map(testimonial => (
+                <figure class="testimonial-card">
+                  <blockquote>"{testimonial.quote}"</blockquote>
+                  <figcaption>
+                    <strong>{testimonial.author}</strong>
+                    {testimonial.context && <span>{testimonial.context}</span>}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      location.faqs && location.faqs.length > 0 && (
+        <section class="location-faqs">
+          <div class="container">
+            <div class="section-heading">
+              <span>{copy.locations.detail.faqsEyebrow}</span>
+              <h2>{copy.locations.detail.faqsTitle}</h2>
+            </div>
+            <div class="faq-accordion">
+              {location.faqs.map((faq, index) => (
+                <details open={index === 0}>
+                  <summary>{faq.question}</summary>
+                  <p>{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    {
+      location.mapEmbed && (
+        <section class="location-map">
+          <div class="container">
+            <div class="section-heading">
+              <span>{copy.locations.detail.mapEyebrow}</span>
+              <h2>{copy.locations.detail.mapTitle}</h2>
+            </div>
+            <div class="map-wrapper" set:html={location.mapEmbed} />
+          </div>
+        </section>
+      )
+    }
+  </main>
+
+  <Footer lang={lang} copy={copy} />
+</Layout>
+
+<style>
+  @import '../../../styles/locations.css';
+</style>

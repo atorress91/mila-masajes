@@ -14,7 +14,7 @@ export default {
             {
               name: 'text',
               title: 'Info Text',
-              type: 'string',
+              type: 'localeText',
             },
           ],
         },
@@ -31,12 +31,12 @@ export default {
             {
               name: 'question',
               title: 'Question',
-              type: 'string',
+              type: 'localeString',
             },
             {
               name: 'answer',
               title: 'Answer',
-              type: 'text',
+              type: 'localeText',
             },
           ],
         },

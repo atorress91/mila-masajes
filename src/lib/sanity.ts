@@ -1,6 +1,7 @@
 import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
+import type { Lang } from './i18n';
 
 // Configuración del cliente de Sanity
 export const sanityClient = createClient({
@@ -17,6 +18,59 @@ const builder = imageUrlBuilder(sanityClient);
 export function urlFor(source: SanityImageSource) {
   return builder.image(source);
 }
+
+const localizedField = (fieldPath: string) => `coalesce(${fieldPath}[$lang], ${fieldPath}.en, ${fieldPath}.es)`;
+
+const serviceFields = `
+  _id,
+  slug,
+  "title": ${localizedField('title')},
+  "description": ${localizedField('description')},
+  price,
+  duration,
+  image {
+    ...,
+    "alt": ${localizedField('alt')}
+  },
+  color,
+  rating,
+  featured,
+  order,
+  locations[]->{
+    _id,
+    name,
+    slug
+  }
+`;
+
+const locationFields = `
+  _id,
+  name,
+  slug,
+  "seoTitle": ${localizedField('seoTitle')},
+  "seoDescription": ${localizedField('seoDescription')},
+  "tagline": ${localizedField('tagline')},
+  "description": ${localizedField('description')},
+  serviceAreas,
+  keywords,
+  heroImage {
+    ...,
+    "alt": ${localizedField('alt')}
+  },
+  ogImage,
+  "ctaLabel": ${localizedField('ctaLabel')},
+  mapEmbed,
+  testimonials[]{
+    "quote": ${localizedField('quote')},
+    author,
+    "context": ${localizedField('context')}
+  },
+  faqs[]{
+    "question": ${localizedField('question')},
+    "answer": ${localizedField('answer')}
+  },
+  order
+`;
 
 // Tipos de datos
 export interface LocationSummary {
@@ -142,142 +196,99 @@ export interface BookingInfo {
 
 // Funciones para obtener datos
 
-export async function getServices(): Promise<Service[]> {
+export async function getServices(lang: Lang = 'en'): Promise<Service[]> {
   const query = `*[_type == "service"] | order(order asc) {
-    _id,
-    slug,
-    title,
-    description,
-    price,
-    duration,
-    image,
-    color,
-    rating,
-    featured,
-    order,
-    locations[]->{
-      _id,
-      name,
-      slug
-    }
+    ${serviceFields}
   }`;
-  return await sanityClient.fetch(query);
+  return await sanityClient.fetch(query, { lang });
 }
 
-export async function getServiceById(id: string): Promise<Service> {
+export async function getServiceById(id: string, lang: Lang = 'en'): Promise<Service> {
   const query = `*[_type == "service" && _id == $id][0] {
-    _id,
-    slug,
-    title,
-    description,
-    price,
-    duration,
-    image,
-    color,
-    rating,
-    featured,
-    order,
-    locations[]->{
-      _id,
-      name,
-      slug
-    }
+    ${serviceFields}
   }`;
-  return await sanityClient.fetch(query, { id });
+  return await sanityClient.fetch(query, { id, lang });
 }
 
-export async function getServiceBySlug(slug: string): Promise<Service | null> {
+export async function getServiceBySlug(slug: string, lang: Lang = 'en'): Promise<Service | null> {
   const query = `*[_type == "service" && slug.current == $slug][0] {
-    _id,
-    slug,
-    title,
-    description,
-    price,
-    duration,
-    image,
-    color,
-    rating,
-    featured,
-    order,
-    locations[]->{
-      _id,
-      name,
-      slug
-    }
+    ${serviceFields}
   }`;
-  return await sanityClient.fetch(query, { slug });
+  return await sanityClient.fetch(query, { slug, lang });
 }
 
-export async function getBenefits(): Promise<Benefit[]> {
+export async function getBenefits(lang: Lang = 'en'): Promise<Benefit[]> {
   const query = `*[_type == "benefit"] | order(order asc) {
     _id,
-    title,
-    description,
+    "title": ${localizedField('title')},
+    "description": ${localizedField('description')},
     icon,
-    items,
+    "items": items[]{
+      "value": ${localizedField('@')}
+    },
     order
   }`;
-  return await sanityClient.fetch(query);
+  const benefits = await sanityClient.fetch(query, { lang });
+  return (benefits || []).map((benefit: any) => ({
+    ...benefit,
+    items: (benefit.items || [])
+      .map((item: { value?: string } | null) => item?.value)
+      .filter((v: string | undefined): v is string => typeof v === 'string' && v.length > 0),
+  }));
 }
 
-export async function getPageContent(pageType: string): Promise<PageContent> {
+export async function getPageContent(pageType: string, lang: Lang = 'en'): Promise<PageContent> {
   const query = `*[_type == "pageContent" && pageType == $pageType][0] {
     _id,
     _type,
-    title,
-    description,
-    heroTitle,
-    heroSubtitle,
-    heroImage,
-    heroImageTopRight,
-    heroImageBottomRight,
+    "title": ${localizedField('title')},
+    "description": ${localizedField('description')},
+    "heroTitle": ${localizedField('heroTitle')},
+    "heroSubtitle": ${localizedField('heroSubtitle')},
+    heroImage{
+      ...,
+      "alt": ${localizedField('alt')}
+    },
+    heroImageTopRight{
+      ...,
+      "alt": ${localizedField('alt')}
+    },
+    heroImageBottomRight{
+      ...,
+      "alt": ${localizedField('alt')}
+    },
     ogImage,
     keywords
   }`;
-  return await sanityClient.fetch(query, { pageType });
+  return await sanityClient.fetch(query, { pageType, lang });
 }
 
-export async function getFeaturedServices(): Promise<Service[]> {
+export async function getFeaturedServices(lang: Lang = 'en'): Promise<Service[]> {
   const query = `*[_type == "service" && featured == true] | order(order asc) [0...3] {
-    _id,
-    slug,
-    title,
-    description,
-    price,
-    duration,
-    image,
-    color,
-    rating,
-    featured,
-    order,
-    locations[]->{
-      _id,
-      name,
-      slug
-    }
+    ${serviceFields}
   }`;
-  return await sanityClient.fetch(query);
+  return await sanityClient.fetch(query, { lang });
 }
 
-export async function getGalleryImages(): Promise<GalleryImage[]> {
+export async function getGalleryImages(lang: Lang = 'en'): Promise<GalleryImage[]> {
   try {
     const query = `*[_type == "galleryImage"] | order(order asc) {
       _id,
-      title,
+      "title": ${localizedField('title')},
       image {
         asset-> {
           _id,
           url
         },
-        alt
+        "alt": ${localizedField('alt')}
       },
       category,
-      description,
+      "description": ${localizedField('description')},
       featured,
       order
     }`;
 
-    const images = await sanityClient.fetch(query);
+    const images = await sanityClient.fetch(query, { lang });
     console.log(`[Sanity] Fetched ${images.length} gallery images`);
 
     if (images.length > 0) {
@@ -291,17 +302,20 @@ export async function getGalleryImages(): Promise<GalleryImage[]> {
   }
 }
 
-export async function getGalleryImagesByCategory(category: string): Promise<GalleryImage[]> {
+export async function getGalleryImagesByCategory(category: string, lang: Lang = 'en'): Promise<GalleryImage[]> {
   const query = `*[_type == "galleryImage" && category == $category] | order(order asc) {
     _id,
-    title,
-    image,
+    "title": ${localizedField('title')},
+    image {
+      ...,
+      "alt": ${localizedField('alt')}
+    },
     category,
-    description,
+    "description": ${localizedField('description')},
     featured,
     order
   }`;
-  return await sanityClient.fetch(query, { category });
+  return await sanityClient.fetch(query, { category, lang });
 }
 
 export async function getContactInfo(): Promise<ContactInfo> {
@@ -317,12 +331,12 @@ export async function getContactInfo(): Promise<ContactInfo> {
   return await sanityClient.fetch(query);
 }
 
-export async function getPackages(): Promise<Package[]> {
+export async function getPackages(lang: Lang = 'en'): Promise<Package[]> {
   const query = `*[_type == "package" && isActive == true] | order(order asc) {
     _id,
     slug,
-    title,
-    description,
+    "title": ${localizedField('title')},
+    "description": ${localizedField('description')},
     icon,
     price,
     originalPrice,
@@ -331,38 +345,38 @@ export async function getPackages(): Promise<Package[]> {
     order,
     isActive
   }`;
-  return await sanityClient.fetch(query);
+  return await sanityClient.fetch(query, { lang });
 }
 
-export async function getBookingInfo(): Promise<BookingInfo | null> {
+export async function getBookingInfo(lang: Lang = 'en'): Promise<BookingInfo | null> {
   const query = `*[_type == "bookingInfo"][0] {
     _id,
-    importantInfo,
-    faqs
+    "importantInfo": importantInfo[]{
+      "text": ${localizedField('text')}
+    },
+    "faqs": faqs[]{
+      "question": ${localizedField('question')},
+      "answer": ${localizedField('answer')}
+    }
   }`;
-  return await sanityClient.fetch(query);
+  const bookingData = await sanityClient.fetch(query, { lang });
+  if (!bookingData) return null;
+
+  return {
+    ...bookingData,
+    importantInfo: (bookingData.importantInfo || []).map((item: { text?: string }) => ({ text: item.text || '' })),
+    faqs: (bookingData.faqs || []).map((faq: { question?: string; answer?: string }) => ({
+      question: faq.question || '',
+      answer: faq.answer || '',
+    })),
+  };
 }
 
-export async function getLocations(): Promise<Location[]> {
+export async function getLocations(lang: Lang = 'en'): Promise<Location[]> {
   const query = `*[_type == "location"] | order(order asc) {
-    _id,
-    name,
-    slug,
-    seoTitle,
-    seoDescription,
-    tagline,
-    description,
-    serviceAreas,
-    keywords,
-    heroImage,
-    ogImage,
-    ctaLabel,
-    mapEmbed,
-    testimonials,
-    faqs,
-    order
+    ${locationFields}
   }`;
-  return await sanityClient.fetch(query);
+  return await sanityClient.fetch(query, { lang });
 }
 
 export async function getLocationsSlugs(): Promise<Array<{ slug: { current: string } }>> {
@@ -372,46 +386,16 @@ export async function getLocationsSlugs(): Promise<Array<{ slug: { current: stri
   return await sanityClient.fetch(query);
 }
 
-export async function getLocationBySlug(slug: string): Promise<Location | null> {
+export async function getLocationBySlug(slug: string, lang: Lang = 'en'): Promise<Location | null> {
   const query = `*[_type == "location" && slug.current == $slug][0] {
-    _id,
-    name,
-    slug,
-    seoTitle,
-    seoDescription,
-    tagline,
-    description,
-    serviceAreas,
-    keywords,
-    heroImage,
-    ogImage,
-    ctaLabel,
-    mapEmbed,
-    testimonials,
-    faqs,
-    order
+    ${locationFields}
   }`;
-  return await sanityClient.fetch(query, { slug });
+  return await sanityClient.fetch(query, { slug, lang });
 }
 
-export async function getServicesByLocation(locationId: string): Promise<Service[]> {
+export async function getServicesByLocation(locationId: string, lang: Lang = 'en'): Promise<Service[]> {
   const query = `*[_type == "service" && $locationId in locations[]._ref] | order(order asc) {
-    _id,
-    slug,
-    title,
-    description,
-    price,
-    duration,
-    image,
-    color,
-    rating,
-    featured,
-    order,
-    locations[]->{
-      _id,
-      name,
-      slug
-    }
+    ${serviceFields}
   }`;
-  return await sanityClient.fetch(query, { locationId });
+  return await sanityClient.fetch(query, { locationId, lang });
 }

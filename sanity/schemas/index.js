@@ -6,6 +6,8 @@ import contactInfo from './contactInfo.js';
 import packageSchema from './package.js';
 import bookingInfo from './bookingInfo.js';
 import location from './location.js';
+import localeString from './localeString.js';
+import localeText from './localeText.js';
 
 export const schemaTypes = [
   service,
@@ -16,4 +18,6 @@ export const schemaTypes = [
   packageSchema,
   bookingInfo,
   location,
+  localeString,
+  localeText,
 ];

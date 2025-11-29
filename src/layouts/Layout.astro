@@ -3,6 +3,7 @@ import '../styles/global.css';
 import '../styles/transitions.css';
 import PageLoader from '../components/PageLoader.astro';
 import { ViewTransitions } from 'astro:transitions';
+import type { Lang } from '../lib/i18n';
 
 interface Props {
   title: string;
@@ -11,6 +12,7 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   structuredData?: Record<string, unknown> | string | null;
+  lang?: Lang;
 }
 
 const {
@@ -20,6 +22,7 @@ const {
   canonical,
   ogImage,
   structuredData,
+  lang = 'en',
 } = Astro.props;
 
 const metaKeywords = Array.isArray(keywords) ? keywords.join(', ') : keywords;
@@ -31,7 +34,7 @@ const structuredDataJson = structuredData
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

@@ -1,0 +1,190 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getGalleryImages, urlFor } from '../../lib/sanity';
+import { SUPPORTED_LANGS, getLangFromAstro, withLangParam } from '../../lib/i18n';
+import { getTranslations } from '../../lib/translations';
+
+export function getStaticPaths() {
+  return SUPPORTED_LANGS.map(lang => ({ params: { lang } }));
+}
+
+// Obtener imágenes de la galería desde Sanity
+let galleryImages: any[] = [];
+
+const lang = getLangFromAstro(Astro);
+const copy = getTranslations(lang);
+const localizedHref = (path: string) => withLangParam(path, lang);
+const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+
+try {
+  galleryImages = await getGalleryImages(lang);
+} catch (error) {
+  console.error('Error fetching gallery images:', error);
+  galleryImages = [];
+}
+
+const categories = [
+  { id: 'all', name: copy.gallery.filterAll },
+  { id: 'massage', name: copy.gallery.categories.massage },
+  { id: 'spa', name: copy.gallery.categories.spa },
+  { id: 'rooms', name: copy.gallery.categories.rooms },
+  { id: 'relaxation', name: copy.gallery.categories.relaxation },
+  { id: 'staff', name: copy.gallery.categories.staff },
+];
+---
+
+<Layout title={copy.gallery.pageTitle} description={copy.gallery.metaDescription} lang={lang}>
+  <Header lang={lang} copy={copy} currentPath={currentPath} />
+
+  <main class="gallery-page">
+    <!-- Hero Section -->
+    <section class="gallery-hero">
+      <div class="container">
+        <div class="gallery-hero-content">
+          <h1 class="gallery-hero-title">{copy.gallery.heroTitle}</h1>
+          <p class="gallery-hero-subtitle">{copy.gallery.heroSubtitle}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter Tabs -->
+    <section class="gallery-filters">
+      <div class="container">
+        <div class="filter-tabs">
+          {
+            categories.map(cat => (
+              <button class={`filter-tab ${cat.id === 'all' ? 'active' : ''}`} data-filter={cat.id}>
+                {cat.name}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Grid -->
+    <section class="gallery-section">
+      <div class="container">
+        {
+          galleryImages && galleryImages.length > 0 ? (
+            <div class="gallery-masonry">
+              {galleryImages.map((image: any, index: number) => {
+                const thumbnailUrl = image.image
+                  ? urlFor(image.image).width(600).height(600).format('webp').quality(80).url()
+                  : '';
+                const fullSizeUrl = image.image
+                  ? urlFor(image.image).width(1920).height(1920).format('webp').quality(90).url()
+                  : '';
+
+                return (
+                  <div
+                    class="gallery-item"
+                    data-category={image.category}
+                    data-index={index}
+                    data-title={image.title}
+                    data-description={image.description || ''}
+                    data-full-url={fullSizeUrl}
+                  >
+                    <div class="gallery-item-inner">
+                      {image.image ? (
+                        <img src={thumbnailUrl} alt={image.image.alt || image.title} loading="lazy" />
+                      ) : (
+                        <div class="gallery-placeholder">
+                          <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                            <rect x="10" y="10" width="40" height="40" rx="4" stroke="currentColor" stroke-width="2" />
+                            <circle cx="22" cy="22" r="4" fill="currentColor" />
+                            <path d="M10 40l10-10 8 8 12-12 10 8" stroke="currentColor" stroke-width="2" />
+                          </svg>
+                        </div>
+                      )}
+                      <div class="gallery-overlay">
+                        <div class="gallery-info">
+                          <h3 class="gallery-title">{image.title}</h3>
+                          <p class="gallery-category">
+                            {categories.find((c: any) => c.id === image.category)?.name || image.category}
+                          </p>
+                        </div>
+                        <button class="view-btn" aria-label={copy.gallery.aria.viewImage}>
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path
+                              d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"
+                              stroke="white"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div class="no-images">
+              <h3>{copy.gallery.noImagesTitle}</h3>
+              <p>{copy.gallery.noImagesDescription}</p>
+            </div>
+          )
+        }
+
+        <!-- Load More Button -->
+        <div class="load-more-container">
+          <button class="load-more-btn">{copy.gallery.loadMore}</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="gallery-cta">
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">{copy.gallery.ctaTitle}</h2>
+          <p class="cta-subtitle">{copy.gallery.ctaSubtitle}</p>
+          <div class="cta-buttons">
+            <a href={localizedHref('/discover')} class="cta-btn-primary">{copy.common.explore}</a>
+            <a href={localizedHref('/contact')} class="cta-btn-secondary">{copy.common.contactUs}</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" aria-label={copy.gallery.aria.closeLightbox}>&times;</button>
+    <button class="lightbox-prev" aria-label={copy.gallery.aria.prevImage}>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18l-6-6 6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+    <button class="lightbox-next" aria-label={copy.gallery.aria.nextImage}>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+        <path d="M9 18l6-6-6-6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </button>
+    <div class="lightbox-content">
+      <img src="" alt="" class="lightbox-image" />
+      <div class="lightbox-info">
+        <h3 class="lightbox-title"></h3>
+        <p class="lightbox-category"></p>
+      </div>
+    </div>
+  </div>
+
+  <Footer lang={lang} copy={copy} />
+</Layout>
+
+<style>
+  @import '../../styles/gallery.css';
+</style>
+
+<script>
+  import { initGallery } from '../../logic/gallery.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initGallery();
+  });
+</script>

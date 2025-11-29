@@ -1,6 +1,20 @@
 // Cart functionality
 let cart = [];
 
+const defaultCartLabels = {
+  quantity: 'Quantity',
+  remove: 'Remove',
+  paymentHeading: 'Payment Details',
+  total: 'Total',
+  giftWrapping: 'Gift Wrapping',
+  newsletter: 'Newsletter',
+  yes: 'Yes',
+  no: 'No',
+  pending: 'Payment integration coming soon!',
+};
+
+let cartLabels = { ...defaultCartLabels };
+
 // Load cart from localStorage
 function loadCart() {
   const savedCart = localStorage.getItem('massageBlissCart');
@@ -126,7 +140,7 @@ function createQuantitySection(item, index) {
 
   const quantityLabel = document.createElement('span');
   quantityLabel.className = 'cart-item-quantity-label';
-  quantityLabel.textContent = `Quantity: ${item.quantity}`;
+  quantityLabel.textContent = `${cartLabels.quantity}: ${item.quantity}`;
   quantityContainer.appendChild(quantityLabel);
 
   const quantityControls = document.createElement('div');
@@ -163,7 +177,7 @@ function createActionsSection(index) {
   removeButton.type = 'button';
   removeButton.className = 'remove-item-btn';
   removeButton.dataset.index = index.toString();
-  removeButton.textContent = 'Remove';
+  removeButton.textContent = cartLabels.remove;
   actionsContainer.appendChild(removeButton);
 
   return actionsContainer;
@@ -268,7 +282,8 @@ function setupButtonListeners() {
   });
 
   continueBtn?.addEventListener('click', () => {
-    globalThis.location.href = '/discover';
+    const target = continueBtn.dataset.target || '/discover';
+    globalThis.location.href = target;
   });
 
   proceedBtn?.addEventListener('click', () => {
@@ -276,14 +291,25 @@ function setupButtonListeners() {
     const giftWrapping = document.getElementById('giftWrapping')?.checked;
     const newsletter = document.getElementById('newsletter')?.checked;
 
-    alert(
-      `Payment Page\n\nTotal: $${total.toFixed(2)}\nGift Wrapping: ${giftWrapping ? 'Yes' : 'No'}\nNewsletter: ${newsletter ? 'Yes' : 'No'}\n\n(Payment integration coming soon!)`
-    );
+    const summaryLines = [
+      cartLabels.paymentHeading,
+      '',
+      `${cartLabels.total}: $${total.toFixed(2)}`,
+      `${cartLabels.giftWrapping}: ${giftWrapping ? cartLabels.yes : cartLabels.no}`,
+      `${cartLabels.newsletter}: ${newsletter ? cartLabels.yes : cartLabels.no}`,
+      '',
+      cartLabels.pending,
+    ];
+
+    alert(summaryLines.join('\n'));
   });
 }
 
 // Initialize cart
-export function initializeCart() {
+export function initializeCart(labelsOverride) {
+  if (labelsOverride) {
+    cartLabels = { ...defaultCartLabels, ...labelsOverride };
+  }
   console.log('Cart: Initializing cart page');
   loadCart();
   renderCart();

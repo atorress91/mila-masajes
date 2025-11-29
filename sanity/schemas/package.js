@@ -6,7 +6,7 @@ export default {
     {
       name: 'title',
       title: 'Package Title',
-      type: 'string',
+      type: 'localeString',
       validation: Rule => Rule.required(),
     },
     {
@@ -14,7 +14,7 @@ export default {
       title: 'Slug',
       type: 'slug',
       options: {
-        source: 'title',
+        source: doc => doc.title?.en || doc.title?.es,
         maxLength: 96,
       },
       validation: Rule => Rule.required(),
@@ -22,9 +22,8 @@ export default {
     {
       name: 'description',
       title: 'Description',
-      type: 'text',
-      rows: 3,
-      validation: Rule => Rule.required().max(200),
+      type: 'localeText',
+      validation: Rule => Rule.required(),
     },
     {
       name: 'icon',
@@ -87,9 +86,10 @@ export default {
     },
     prepare(selection) {
       const { title, price, icon } = selection;
+      const label = title?.en || title?.es || 'Package';
       return {
-        title: `${icon} ${title}`,
-        subtitle: `$${price}`,
+        title: icon ? `${icon} ${label}` : label,
+        subtitle: price ? `$${price}` : undefined,
       };
     },
   },

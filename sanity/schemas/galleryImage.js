@@ -6,7 +6,7 @@ export default {
     {
       name: 'title',
       title: 'Image Title',
-      type: 'string',
+      type: 'localeString',
       validation: Rule => Rule.required(),
     },
     {
@@ -20,7 +20,7 @@ export default {
         {
           name: 'alt',
           title: 'Alt Text',
-          type: 'string',
+          type: 'localeString',
           validation: Rule => Rule.required(),
         },
       ],
@@ -44,8 +44,7 @@ export default {
     {
       name: 'description',
       title: 'Description',
-      type: 'text',
-      rows: 3,
+      type: 'localeText',
     },
     {
       name: 'featured',
@@ -71,9 +70,9 @@ export default {
     prepare(selection) {
       const { title, media, category } = selection;
       return {
-        title: title,
+        title: title?.en || title?.es || 'Gallery image',
         subtitle: category,
-        media: media,
+        media,
       };
     },
   },

@@ -1,41 +1,83 @@
 ---
-// No props needed, cart count will be updated client-side
+import type { Lang } from '../lib/i18n';
+import { withLangParam } from '../lib/i18n';
+import type { SiteTranslations } from '../lib/translations';
+
+interface Props {
+  lang: Lang;
+  copy: SiteTranslations;
+  currentPath: string;
+}
+
+const { lang, copy, currentPath } = Astro.props;
+const tHeader = copy.header;
+const tCommon = copy.common;
+
+const navLinks = [
+  { href: '/', label: tHeader.navHome },
+  { href: '/discover', label: tHeader.navServices },
+  { href: '/ubicaciones', label: tHeader.navLocations },
+  { href: '/gallery', label: tHeader.navGallery },
+  { href: '/contact', label: tHeader.navContact },
+];
+
+const localizedHref = (path: string) => withLangParam(path, lang);
+const currentUrl = currentPath || '/';
+const langOptions: Array<{ code: Lang; label: string }> = [
+  { code: 'en', label: 'EN' },
+  { code: 'es', label: 'ES' },
+];
 ---
 
 <header class="header">
   <div class="container">
-    <a href="/" class="logo">
+    <a href={localizedHref('/')} class="logo">
       <img src="/assets/logo.svg" alt="Massage & Wellness Logo" class="logo-image" />
       <div class="logo-text">
-        <h1 class="logo-title">Massage & Wellness</h1>
-        <p class="logo-subtitle">Therapies</p>
+        <h1 class="logo-title">{tHeader.logoTitle}</h1>
+        <p class="logo-subtitle">{tHeader.logoSubtitle}</p>
       </div>
     </a>
 
     <nav class="nav">
-      <a href="/" class="nav-link">HOME</a>
-      <a href="/discover" class="nav-link">SERVICES</a>
-      <a href="/ubicaciones" class="nav-link">UBICACIONES</a>
-      <a href="/gallery" class="nav-link">GALLERY</a>
-      <a href="/contact" class="nav-link">CONTACT</a>
+      {
+        navLinks.map(link => (
+          <a href={localizedHref(link.href)} class="nav-link">
+            {link.label.toUpperCase()}
+          </a>
+        ))
+      }
     </nav>
 
     <div class="header-icons">
-      <button class="icon-btn search-btn" aria-label="Search">
+      <div class="language-switcher" aria-label={tCommon.languageToggle}>
+        {
+          langOptions.map(option => (
+            <a
+              href={withLangParam(currentUrl, option.code)}
+              class={`lang-pill ${option.code === lang ? 'active' : ''}`}
+            >
+              {option.label}
+            </a>
+          ))
+        }
+      </div>
+
+      <button class="icon-btn search-btn" aria-label={tHeader.searchAria}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"></circle>
           <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
         </svg>
       </button>
 
-      <a href="/booking" class="booking-btn" aria-label="Book appointment" data-astro-prefetch>
+      <a href={localizedHref('/booking')} class="booking-btn" aria-label={tHeader.bookingAria} data-astro-prefetch>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"></rect>
           <path d="M3 10h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
         </svg>
       </a>
 
-      <button class="icon-btn menu-btn" aria-label="Menu" id="menuToggle">
+      <button class="icon-btn menu-btn" aria-label={tHeader.menuAria} id="menuToggle">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="menu-icon">
           <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
           <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
@@ -52,11 +94,13 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <nav class="mobile-nav">
-      <a href="/" class="mobile-nav-link">HOME</a>
-      <a href="/discover" class="mobile-nav-link">SERVICES</a>
-      <a href="/ubicaciones" class="mobile-nav-link">UBICACIONES</a>
-      <a href="/gallery" class="mobile-nav-link">GALLERY</a>
-      <a href="/contact" class="mobile-nav-link">CONTACT</a>
+      {
+        navLinks.map(link => (
+          <a href={localizedHref(link.href)} class="mobile-nav-link">
+            {link.label}
+          </a>
+        ))
+      }
     </nav>
   </div>
 </header>
@@ -139,6 +183,33 @@
     display: flex;
     gap: 16px;
     align-items: center;
+  }
+
+  .language-switcher {
+    display: flex;
+    gap: 6px;
+    margin-right: 8px;
+  }
+
+  .lang-pill {
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--text-secondary);
+    font-size: 12px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+  }
+
+  .lang-pill.active {
+    background: var(--text-primary);
+    color: var(--white);
+    border-color: var(--text-primary);
+  }
+
+  .lang-pill:not(.active):hover {
+    color: var(--text-primary);
+    border-color: var(--text-primary);
   }
 
   .icon-btn {

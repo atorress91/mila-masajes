@@ -20,15 +20,14 @@ export default {
     {
       name: 'title',
       title: 'Page Title (SEO)',
-      type: 'string',
-      validation: Rule => Rule.required().max(60),
+      type: 'localeString',
+      validation: Rule => Rule.required(),
     },
     {
       name: 'description',
       title: 'Meta Description (SEO)',
-      type: 'text',
-      rows: 3,
-      validation: Rule => Rule.required().max(160),
+      type: 'localeText',
+      validation: Rule => Rule.required(),
     },
     {
       name: 'keywords',
@@ -40,14 +39,13 @@ export default {
     {
       name: 'heroTitle',
       title: 'Hero Title',
-      type: 'string',
+      type: 'localeString',
       validation: Rule => Rule.required(),
     },
     {
       name: 'heroSubtitle',
       title: 'Hero Subtitle',
-      type: 'text',
-      rows: 2,
+      type: 'localeText',
     },
     {
       name: 'heroImage',
@@ -61,7 +59,7 @@ export default {
         {
           name: 'alt',
           title: 'Alt Text',
-          type: 'string',
+          type: 'localeString',
         },
       ],
     },
@@ -77,7 +75,7 @@ export default {
         {
           name: 'alt',
           title: 'Alt Text',
-          type: 'string',
+          type: 'localeString',
         },
       ],
     },
@@ -93,7 +91,7 @@ export default {
         {
           name: 'alt',
           title: 'Alt Text',
-          type: 'string',
+          type: 'localeString',
         },
       ],
     },
@@ -114,10 +112,12 @@ export default {
       media: 'heroImage',
     },
     prepare(selection) {
-      const { title, subtitle } = selection;
+      const { title, subtitle, media } = selection;
+      const formattedTitle = title ? title.charAt(0).toUpperCase() + title.slice(1) : 'Page';
       return {
-        title: title.charAt(0).toUpperCase() + title.slice(1),
-        subtitle: subtitle,
+        title: formattedTitle,
+        subtitle: subtitle?.en || subtitle?.es,
+        media,
       };
     },
   },

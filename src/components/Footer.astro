@@ -1,5 +1,16 @@
 ---
-// Footer component
+import type { Lang } from '../lib/i18n';
+import { withLangParam } from '../lib/i18n';
+import type { SiteTranslations } from '../lib/translations';
+
+interface Props {
+  lang: Lang;
+  copy: SiteTranslations;
+}
+
+const { lang, copy } = Astro.props;
+const tFooter = copy.footer;
+const localizedHref = (path: string) => withLangParam(path, lang);
 ---
 
 <footer class="footer">
@@ -7,54 +18,54 @@
     <div class="footer-content">
       <!-- Logo Section -->
       <div class="footer-section">
-        <a href="/" class="footer-logo">
+        <a href={localizedHref('/')} class="footer-logo">
           <img src="/assets/logo.svg" alt="Massage & Wellness Logo" class="logo-image" />
         </a>
       </div>
 
       <!-- Help Links -->
       <div class="footer-section">
-        <h3>Help</h3>
+        <h3>{tFooter.help}</h3>
         <ul>
-          <li><a href="#booking">Booking and Cancellation</a></li>
-          <li><a href="#payment">Payment Options</a></li>
-          <li><a href="#security">Security</a></li>
+          <li><a href="#booking">{tFooter.booking}</a></li>
+          <li><a href="#payment">{tFooter.payment}</a></li>
+          <li><a href="#security">{tFooter.security}</a></li>
         </ul>
       </div>
 
       <!-- Legal Links -->
       <div class="footer-section">
-        <h3>Legal</h3>
+        <h3>{tFooter.legal}</h3>
         <ul>
-          <li><a href="#privacy">Privacy Policy</a></li>
-          <li><a href="#terms">Terms and Conditions</a></li>
-          <li><a href="#cookie">Cookie Policy</a></li>
+          <li><a href="#privacy">{tFooter.privacy}</a></li>
+          <li><a href="#terms">{tFooter.terms}</a></li>
+          <li><a href="#cookie">{tFooter.cookie}</a></li>
         </ul>
       </div>
 
       <!-- Company Links -->
       <div class="footer-section">
-        <h3>Company</h3>
+        <h3>{tFooter.company}</h3>
         <ul>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#contact">Contact Us</a></li>
-          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#about">{tFooter.about}</a></li>
+          <li><a href="#contact">{tFooter.contact}</a></li>
+          <li><a href="#faq">{tFooter.faq}</a></li>
         </ul>
       </div>
 
       <!-- Locations -->
       <div class="footer-section">
-        <h3>Locations</h3>
+        <h3>{tFooter.locations}</h3>
         <ul>
-          <li><a href="/ubicaciones/quepos">Quepos &amp; Manuel Antonio</a></li>
-          <li><a href="/ubicaciones/tamarindo">Tamarindo &amp; Guanacaste</a></li>
-          <li><a href="/ubicaciones/san-jose">San Jose Metropolitan Area</a></li>
+          <li><a href={localizedHref('/ubicaciones/quepos')}>Quepos &amp; Manuel Antonio</a></li>
+          <li><a href={localizedHref('/ubicaciones/tamarindo')}>Tamarindo &amp; Guanacaste</a></li>
+          <li><a href={localizedHref('/ubicaciones/san-jose')}>San Jose Metropolitan Area</a></li>
         </ul>
       </div>
 
       <!-- Social Links -->
       <div class="footer-section social-section">
-        <h3>Social</h3>
+        <h3>{tFooter.social}</h3>
         <div class="social-icons">
           <a href="#facebook" aria-label="Facebook">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -73,7 +84,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p class="copyright">Copyright © MLA Massage & Wellness 2025</p>
+      <p class="copyright">{tFooter.copyright}</p>
     </div>
   </div>
 </footer>

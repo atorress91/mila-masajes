@@ -6,7 +6,7 @@ export default {
     {
       name: 'title',
       title: 'Service Title',
-      type: 'string',
+      type: 'localeString',
       validation: Rule => Rule.required(),
     },
     {
@@ -14,7 +14,7 @@ export default {
       title: 'Slug',
       type: 'slug',
       options: {
-        source: 'title',
+        source: doc => doc.title?.en || doc.title?.es,
         maxLength: 96,
       },
       validation: Rule => Rule.required(),
@@ -22,9 +22,8 @@ export default {
     {
       name: 'description',
       title: 'Description',
-      type: 'text',
-      rows: 4,
-      validation: Rule => Rule.required().max(300),
+      type: 'localeText',
+      validation: Rule => Rule.required(),
     },
     {
       name: 'price',
@@ -49,7 +48,7 @@ export default {
         {
           name: 'alt',
           title: 'Alt Text',
-          type: 'string',
+          type: 'localeString',
         },
       ],
     },
@@ -110,10 +109,11 @@ export default {
     },
     prepare(selection) {
       const { title, media, price } = selection;
+      const displayTitle = title?.en || title?.es || 'Untitled service';
       return {
-        title: title,
-        subtitle: `$${price}`,
-        media: media,
+        title: displayTitle,
+        subtitle: price ? `$${price}` : '',
+        media,
       };
     },
   },

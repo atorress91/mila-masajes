@@ -6,15 +6,14 @@ export default {
     {
       name: 'title',
       title: 'Benefit Title',
-      type: 'string',
+      type: 'localeString',
       validation: Rule => Rule.required(),
     },
     {
       name: 'description',
       title: 'Description',
-      type: 'text',
-      rows: 3,
-      validation: Rule => Rule.required().max(200),
+      type: 'localeText',
+      validation: Rule => Rule.required(),
     },
     {
       name: 'icon',
@@ -27,7 +26,7 @@ export default {
       name: 'items',
       title: 'Benefit Items',
       type: 'array',
-      of: [{ type: 'string' }],
+      of: [{ type: 'localeString' }],
       description: 'List of specific benefits (shown with checkmarks)',
       validation: Rule => Rule.required().min(2).max(5),
     },
@@ -47,8 +46,8 @@ export default {
     prepare(selection) {
       const { title, order } = selection;
       return {
-        title: title,
-        subtitle: `Order: ${order}`,
+        title: title?.en || title?.es || 'Benefit',
+        subtitle: typeof order === 'number' ? `Order: ${order}` : undefined,
       };
     },
   },

@@ -1,0 +1,590 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SUPPORTED_LANGS, getLangFromAstro, withLangParam } from '../../lib/i18n';
+import { getTranslations } from '../../lib/translations';
+
+export function getStaticPaths() {
+  return SUPPORTED_LANGS.map(lang => ({ params: { lang } }));
+}
+
+const lang = getLangFromAstro(Astro);
+const copy = getTranslations(lang);
+const localizedHref = (path: string) => withLangParam(path, lang);
+const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+---
+
+<Layout title={copy.cart.pageTitle} description={copy.cart.metaDescription} lang={lang}>
+  <!-- Promo Banner -->
+  <div class="promo-banner">
+    <p>{copy.cart.promoBanner}</p>
+  </div>
+
+  <Header lang={lang} copy={copy} currentPath={currentPath} />
+
+  <main class="cart-page">
+    <div class="container">
+      <!-- Back Button -->
+      <button class="back-btn" id="backBtn">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path
+            d="M12 4L6 10L12 16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+        <span>{copy.cart.backButton}</span>
+      </button>
+
+      <!-- Page Title -->
+      <h1 class="cart-title">{copy.cart.pageHeading}</h1>
+
+      <!-- Cart Content -->
+      <div class="cart-content">
+        <!-- Cart Items Container -->
+        <div class="cart-items" id="cartItems">
+          <!-- Items will be inserted dynamically -->
+        </div>
+
+        <!-- Empty Cart Message -->
+        <div class="empty-cart" id="emptyCart" style="display: none;">
+          <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="38" stroke="var(--coral-rosado)" stroke-width="4"></circle>
+            <path
+              d="M30 40L38 48L50 32"
+              stroke="var(--verde-salvia)"
+              stroke-width="4"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+          <h2>{copy.cart.emptyTitle}</h2>
+          <p>{copy.cart.emptyDescription}</p>
+          <a href={localizedHref('/discover')} class="btn-primary">{copy.cart.browseServices}</a>
+        </div>
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="cart-summary" id="cartSummary" style="display: none;">
+        <div class="cart-summary-row">
+          <span class="cart-summary-label">{copy.cart.subtotal}</span>
+          <span class="cart-summary-value" id="summarySubtotal">$0.00</span>
+        </div>
+        <div class="cart-summary-row">
+          <span class="cart-summary-label">{copy.cart.tax}</span>
+          <span class="cart-summary-value" id="summaryTax">$0.00</span>
+        </div>
+        <div class="cart-summary-row">
+          <span class="cart-summary-label">{copy.cart.total}</span>
+          <span class="cart-summary-value" id="summaryTotal">$0.00</span>
+        </div>
+      </div>
+
+      <!-- Options -->
+      <div class="cart-options" id="cartOptions" style="display: none;">
+        <label class="checkbox-option">
+          <input type="checkbox" id="giftWrapping" />
+          <span class="checkmark"></span>
+          <span class="option-text">{copy.cart.giftWrapping}</span>
+        </label>
+
+        <label class="checkbox-option">
+          <input type="checkbox" id="newsletter" />
+          <span class="checkmark"></span>
+          <span class="option-text">{copy.cart.newsletter}</span>
+        </label>
+      </div>
+
+      <script type="application/json" id="cart-copy-data">
+        {JSON.stringify(copy.cart.labels)}
+      </script>
+
+      <!-- Action Buttons -->
+      <div class="cart-actions" id="cartActions" style="display: none;">
+        <button
+          class="btn-secondary"
+          id="continueShoppingBtn"
+          data-target={localizedHref('/discover')}
+        >
+          {copy.cart.continueShopping}
+        </button>
+        <button class="btn-primary" id="proceedPaymentBtn" data-target={localizedHref('/booking')}>
+          {copy.cart.proceedPayment}
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <Footer lang={lang} copy={copy} />
+</Layout>
+
+<style>
+  .cart-page {
+    min-height: calc(100vh - 200px);
+    padding: 60px 0 80px;
+    background: linear-gradient(135deg, var(--blanco-calido) 0%, var(--beige-arena) 100%);
+  }
+
+  .promo-banner {
+    background: linear-gradient(135deg, var(--verde-salvia), var(--verde-menta));
+    color: white;
+    text-align: center;
+    padding: 12px 0;
+  }
+
+  .promo-banner p {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 8px 0;
+    margin-bottom: 30px;
+    transition: color 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .back-btn:hover {
+    color: var(--coral-rosado);
+  }
+
+  .back-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .cart-title {
+    font-size: 64px;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin: 0 0 50px;
+  }
+
+  .cart-content {
+    margin-bottom: 40px;
+  }
+
+  .cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Cart Item Styles */
+  :global(.cart-item) {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: 180px 1fr auto auto;
+    gap: 30px;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  :global(.cart-item-image) {
+    width: 180px;
+    height: 180px;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+
+  :global(.cart-item-image img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  :global(.cart-item-details) {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  :global(.cart-item-title) {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  :global(.cart-item-price) {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--verde-salvia) 0%, var(--coral-rosado) 100%);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    width: fit-content;
+  }
+
+  :global(.cart-item-addons) {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 5px;
+  }
+
+  :global(.cart-item-addon) {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding-left: 18px;
+    position: relative;
+  }
+
+  :global(.cart-item-addon::before) {
+    content: '•';
+    position: absolute;
+    left: 6px;
+    color: var(--coral-rosado);
+  }
+
+  :global(.cart-item-quantity) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  :global(.cart-item-quantity-label) {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  :global(.quantity-controls) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--background-light);
+    padding: 8px 12px;
+    border-radius: 30px;
+  }
+
+  :global(.qty-cart-btn) {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--verde-salvia);
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  :global(.qty-cart-btn:hover) {
+    background: var(--verde-menta);
+    transform: scale(1.1);
+  }
+
+  :global(.qty-cart-btn:disabled) {
+    background: var(--gris-perla);
+    cursor: not-allowed;
+  }
+
+  :global(.qty-cart-display) {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 30px;
+    text-align: center;
+  }
+
+  :global(.cart-item-actions) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  :global(.remove-item-btn) {
+    padding: 12px 24px;
+    background: transparent;
+    border: 2px solid #ff4444;
+    border-radius: 10px;
+    color: #ff4444;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  :global(.remove-item-btn:hover) {
+    background: #ff4444;
+    color: white;
+  }
+
+  .empty-cart {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px;
+    text-align: center;
+  }
+
+  .empty-cart svg {
+    margin-bottom: 30px;
+  }
+
+  .empty-cart h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 15px;
+  }
+
+  .empty-cart p {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin: 0 0 30px;
+  }
+
+  .cart-summary {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--background-light);
+  }
+
+  .cart-summary-row:last-child {
+    border-bottom: none;
+    padding-top: 20px;
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .cart-summary-label {
+    font-size: 18px;
+    color: var(--text-secondary);
+  }
+
+  .cart-summary-value {
+    font-size: 18px;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .cart-summary-row:last-child .cart-summary-label,
+  .cart-summary-row:last-child .cart-summary-value {
+    font-size: 24px;
+    color: var(--text-primary);
+  }
+
+  .cart-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 40px;
+  }
+
+  .checkbox-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .checkbox-option input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .checkmark {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--verde-salvia);
+    border-radius: 6px;
+    background: white;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .checkbox-option input[type='checkbox']:checked + .checkmark {
+    background: var(--verde-salvia);
+    border-color: var(--verde-salvia);
+  }
+
+  .checkbox-option input[type='checkbox']:checked + .checkmark::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .option-text {
+    font-size: 16px;
+    color: var(--text-primary);
+  }
+
+  .cart-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+  }
+
+  .cart-actions .btn-primary,
+  .cart-actions .btn-secondary {
+    padding: 15px 40px;
+    font-size: 20px;
+    border-radius: 12px;
+    min-width: 220px;
+  }
+
+  @media (max-width: 968px) {
+    .cart-title {
+      font-size: 48px;
+    }
+
+    .cart-actions {
+      flex-direction: column;
+    }
+
+    .cart-actions .btn-primary,
+    .cart-actions .btn-secondary {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cart-title {
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+
+    .cart-page {
+      padding: 40px 0 60px;
+    }
+
+    .promo-banner p {
+      font-size: 14px;
+      padding: 0 20px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cart-title {
+      font-size: 28px;
+    }
+
+    .back-btn {
+      font-size: 16px;
+    }
+  }
+
+  /* Responsive Cart Items */
+  @media (max-width: 968px) {
+    :global(.cart-item) {
+      grid-template-columns: 140px 1fr;
+      gap: 20px;
+    }
+
+    :global(.cart-item-image) {
+      width: 140px;
+      height: 140px;
+    }
+
+    :global(.cart-item-quantity) {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    :global(.cart-item-actions) {
+      grid-column: 1 / -1;
+      align-items: stretch;
+    }
+
+    :global(.remove-item-btn) {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    :global(.cart-item) {
+      grid-template-columns: 1fr;
+      padding: 20px;
+    }
+
+    :global(.cart-item-image) {
+      width: 100%;
+      height: 200px;
+    }
+
+    :global(.cart-item-title) {
+      font-size: 20px;
+    }
+
+    :global(.cart-item-quantity) {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+
+<script>
+  import { initializeCart } from '../../logic/cart.js';
+
+  const bootstrapCart = () => {
+    const dataEl = document.getElementById('cart-copy-data');
+    let labels = undefined;
+    if (dataEl?.textContent) {
+      try {
+        labels = JSON.parse(dataEl.textContent);
+      } catch (error) {
+        console.error('Cart: Unable to parse translation labels', error);
+      }
+    }
+
+    initializeCart(labels);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrapCart);
+  } else {
+    bootstrapCart();
+  }
+
+  // Re-initialize when navigating with Astro View Transitions
+  document.addEventListener('astro:page-load', () => {
+    setTimeout(bootstrapCart, 50);
+  });
+
+  // Also listen for astro:after-swap
+  document.addEventListener('astro:after-swap', () => {
+    setTimeout(bootstrapCart, 50);
+  });
+</script>

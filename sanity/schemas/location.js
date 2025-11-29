@@ -22,28 +22,24 @@ export default {
     {
       name: 'seoTitle',
       title: 'SEO Title',
-      type: 'string',
+      type: 'localeString',
       description: 'Title tag for search engines',
-      validation: Rule => Rule.max(60),
     },
     {
       name: 'seoDescription',
       title: 'SEO Description',
-      type: 'text',
-      rows: 3,
+      type: 'localeText',
       description: 'Meta description focused on the city',
-      validation: Rule => Rule.max(160),
     },
     {
       name: 'tagline',
       title: 'Tagline',
-      type: 'string',
+      type: 'localeString',
     },
     {
       name: 'description',
       title: 'Overview',
-      type: 'text',
-      rows: 4,
+      type: 'localeText',
     },
     {
       name: 'serviceAreas',
@@ -67,7 +63,7 @@ export default {
         {
           name: 'alt',
           title: 'Alt Text',
-          type: 'string',
+          type: 'localeString',
         },
       ],
     },
@@ -80,8 +76,11 @@ export default {
     {
       name: 'ctaLabel',
       title: 'CTA Label',
-      type: 'string',
-      initialValue: 'Reserva tu masaje',
+      type: 'localeString',
+      initialValue: {
+        en: 'Book your massage',
+        es: 'Reserva tu masaje',
+      },
     },
     {
       name: 'mapEmbed',
@@ -97,9 +96,9 @@ export default {
         {
           type: 'object',
           fields: [
-            { name: 'quote', title: 'Quote', type: 'text', rows: 3 },
+            { name: 'quote', title: 'Quote', type: 'localeText' },
             { name: 'author', title: 'Author', type: 'string' },
-            { name: 'context', title: 'Context (e.g. Quepos Resident)', type: 'string' },
+            { name: 'context', title: 'Context (e.g. Quepos Resident)', type: 'localeString' },
           ],
         },
       ],
@@ -112,8 +111,8 @@ export default {
         {
           type: 'object',
           fields: [
-            { name: 'question', title: 'Question', type: 'string' },
-            { name: 'answer', title: 'Answer', type: 'text', rows: 3 },
+            { name: 'question', title: 'Question', type: 'localeString' },
+            { name: 'answer', title: 'Answer', type: 'localeText' },
           ],
         },
       ],
