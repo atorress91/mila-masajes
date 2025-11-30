@@ -1,35 +1,35 @@
 /* CSS Variables - MIA Massage & Wellness Brand Colors */
 :root {
   /* Colores del Logo (Base) */
-  --coral-rosado: #E8B4A8;      /* Pétalos de loto */
-  --verde-salvia: #A8C5BE;      /* Manos */
+  --coral-rosado: #e8b4a8; /* Pétalos de loto */
+  --verde-salvia: #a8c5be; /* Manos */
 
   /* Fondo y espacios neutros */
-  --beige-arena: #F5F0EB;       /* Fondos principales */
-  --blanco-calido: #FDFBF9;     /* Fondos alternos */
-  --gris-perla: #E8E4DF;        /* Secciones alternas */
+  --beige-arena: #f5f0eb; /* Fondos principales */
+  --blanco-calido: #fdfbf9; /* Fondos alternos */
+  --gris-perla: #e8e4df; /* Secciones alternas */
 
   /* Acentos y elementos interactivos */
-  --terracota-suave: #D4998D;   /* Hover de botones primarios */
-  --verde-menta: #C7DED9;       /* Hover de botones secundarios */
-  --lavanda-pastel: #E5D9E8;    /* Detalles decorativos */
+  --terracota-suave: #d4998d; /* Hover de botones primarios */
+  --verde-menta: #c7ded9; /* Hover de botones secundarios */
+  --lavanda-pastel: #e5d9e8; /* Detalles decorativos */
 
-  /* Tipografía */
-  --texto-principal: #5A5552;   /* Gris cálido oscuro */
-  --texto-secundario: #8B8380;  /* Gris medio */
+  /* Tipografía - Mejorado para WCAG AA contraste */
+  --texto-principal: #4a4543; /* Gris cálido oscuro - más oscuro para mejor contraste */
+  --texto-secundario: #635d5a; /* Gris medio - oscurecido para 4.5:1 ratio */
 
   /* Variables de uso general (mapped to brand colors) */
-  --primary-color: #E8B4A8;     /* Coral rosado */
-  --secondary-color: #A8C5BE;   /* Verde salvia */
-  --accent-color: #A8C5BE;      /* Verde salvia */
-  --accent-secondary: #E8B4A8;  /* Coral rosado */
-  --text-primary: #5A5552;      /* Texto principal */
-  --text-secondary: #8B8380;    /* Texto secundario */
-  --background-light: #F5F0EB;  /* Beige arena */
-  --background-cards: #FDFBF9;  /* Blanco cálido */
-  --emphasis-color: #D4998D;    /* Terracota suave */
-  --white: #FDFBF9;             /* Blanco cálido */
-  --dark-bg: #5A5552;           /* Gris cálido oscuro */
+  --primary-color: #e8b4a8; /* Coral rosado */
+  --secondary-color: #7ba99e; /* Verde salvia - oscurecido para mejor contraste */
+  --accent-color: #7ba99e; /* Verde salvia - oscurecido */
+  --accent-secondary: #d4998d; /* Coral rosado - oscurecido */
+  --text-primary: #4a4543; /* Texto principal - más oscuro */
+  --text-secondary: #635d5a; /* Texto secundario - oscurecido */
+  --background-light: #f5f0eb; /* Beige arena */
+  --background-cards: #fdfbf9; /* Blanco cálido */
+  --emphasis-color: #d4998d; /* Terracota suave */
+  --white: #fdfbf9; /* Blanco cálido */
+  --dark-bg: #5a5552; /* Gris cálido oscuro */
 }
 
 /* Reset */
@@ -69,7 +69,7 @@ h6 {
 
 /* Buttons */
 .btn-primary {
-  background: var(--coral-rosado);
+  background: #9e5f55;
   color: white;
   padding: 15px 40px;
   border: none;
@@ -79,17 +79,18 @@ h6 {
   cursor: pointer;
   transition: all 0.3s ease;
   font-family: 'Poppins', sans-serif;
-  box-shadow: 0 2px 10px rgba(232, 180, 168, 0.2);
+  box-shadow: 0 2px 10px rgba(158, 95, 85, 0.3);
+  text-decoration: none;
 }
 
 .btn-primary:hover {
-  background: var(--terracota-suave);
+  background: #8a524a;
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(212, 153, 141, 0.4);
+  box-shadow: 0 4px 20px rgba(138, 82, 74, 0.4);
 }
 
 .btn-secondary {
-  background: var(--verde-salvia);
+  background: #4a7a6e;
   color: white;
   padding: 15px 40px;
   border: none;

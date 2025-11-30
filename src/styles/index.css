@@ -359,13 +359,13 @@
 .quick-eyebrow {
   display: inline-block;
   padding: 4px 14px;
-  background: rgba(168, 197, 190, 0.15);
+  background: #e8f0ee;
   border-radius: 999px;
   font-size: 12px;
   letter-spacing: 1.8px;
   font-weight: 600;
   text-transform: uppercase;
-  color: var(--verde-salvia);
+  color: #2d4a40;
   margin-bottom: 16px;
 }
 
@@ -379,7 +379,7 @@
 
 .quick-services-tagline {
   font-size: 18px;
-  color: var(--texto-secundario);
+  color: #5a5552;
   line-height: 1.6;
 }
 
@@ -482,7 +482,7 @@
 
 .quick-service-snippet {
   font-size: 14px;
-  color: var(--texto-secundario);
+  color: #5a5552;
   line-height: 1.6;
   margin: 0;
   flex: 1;
@@ -505,10 +505,10 @@
 
 .quick-service-duration {
   font-size: 14px;
-  color: var(--texto-secundario);
-  font-weight: 500;
+  color: #2d4a40;
+  font-weight: 600;
   padding: 4px 12px;
-  background: rgba(168, 197, 190, 0.12);
+  background: #e8f0ee;
   border-radius: 999px;
 }
 
