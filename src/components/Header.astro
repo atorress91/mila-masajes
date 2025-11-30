@@ -526,79 +526,99 @@ const langOptions: Array<{ code: Lang; label: string }> = [
   }
 </style>
 
-<script>
-  // Mobile menu toggle
-  function setupMobileMenu() {
-    const menuToggle = document.getElementById('menuToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const menuIcon = menuToggle?.querySelector('.menu-icon') as HTMLElement;
-    const closeIcon = menuToggle?.querySelector('.close-icon') as HTMLElement;
-    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+<script is:inline>
+  (function () {
+    // Track if already initialized to prevent duplicates
+    if (window.__mobileMenuInitialized) return;
+    window.__mobileMenuInitialized = true;
 
-    if (menuToggle && mobileMenu) {
-      // Remove any existing listeners by cloning
-      const newMenuToggle = menuToggle.cloneNode(true) as HTMLElement;
-      menuToggle.parentNode?.replaceChild(newMenuToggle, menuToggle);
+    function toggleMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const menuToggle = document.getElementById('menuToggle');
+      if (!mobileMenu || !menuToggle) return;
 
-      const newMenuIcon = newMenuToggle.querySelector('.menu-icon') as HTMLElement;
-      const newCloseIcon = newMenuToggle.querySelector('.close-icon') as HTMLElement;
+      const menuIcon = menuToggle.querySelector('.menu-icon');
+      const closeIcon = menuToggle.querySelector('.close-icon');
+      const isActive = mobileMenu.classList.contains('active');
 
-      newMenuToggle.addEventListener('click', e => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const isActive = mobileMenu.classList.contains('active');
-
-        if (isActive) {
-          mobileMenu.classList.remove('active');
-          if (newMenuIcon) newMenuIcon.style.display = 'block';
-          if (newCloseIcon) newCloseIcon.style.display = 'none';
-          document.body.style.overflow = '';
-        } else {
-          mobileMenu.classList.add('active');
-          if (newMenuIcon) newMenuIcon.style.display = 'none';
-          if (newCloseIcon) newCloseIcon.style.display = 'block';
-          document.body.style.overflow = 'hidden';
-        }
-      });
-
-      // Also handle touch events for better mobile support
-      newMenuToggle.addEventListener('touchend', e => {
-        e.preventDefault();
-      });
-
-      // Close menu when clicking on a link
-      mobileNavLinks.forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.remove('active');
-          if (newMenuIcon) newMenuIcon.style.display = 'block';
-          if (newCloseIcon) newCloseIcon.style.display = 'none';
-          document.body.style.overflow = '';
-        });
-      });
-
-      // Close menu when clicking outside
-      document.addEventListener('click', e => {
-        const target = e.target as HTMLElement;
-        if (
-          mobileMenu.classList.contains('active') &&
-          !mobileMenu.contains(target) &&
-          !newMenuToggle.contains(target)
-        ) {
-          mobileMenu.classList.remove('active');
-          if (newMenuIcon) newMenuIcon.style.display = 'block';
-          if (newCloseIcon) newCloseIcon.style.display = 'none';
-          document.body.style.overflow = '';
-        }
-      });
+      if (isActive) {
+        mobileMenu.classList.remove('active');
+        if (menuIcon) menuIcon.style.display = 'block';
+        if (closeIcon) closeIcon.style.display = 'none';
+        document.body.style.overflow = '';
+      } else {
+        mobileMenu.classList.add('active');
+        if (menuIcon) menuIcon.style.display = 'none';
+        if (closeIcon) closeIcon.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
     }
-  }
 
-  // Initialize on load
-  setupMobileMenu();
+    function closeMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      const menuToggle = document.getElementById('menuToggle');
+      if (!mobileMenu || !menuToggle) return;
 
-  // Re-initialize when navigating between pages (Astro View Transitions)
-  document.addEventListener('astro:page-load', () => {
-    setupMobileMenu();
-  });
+      const menuIcon = menuToggle.querySelector('.menu-icon');
+      const closeIcon = menuToggle.querySelector('.close-icon');
+
+      mobileMenu.classList.remove('active');
+      if (menuIcon) menuIcon.style.display = 'block';
+      if (closeIcon) closeIcon.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    // Use event delegation on document for reliability
+    document.addEventListener(
+      'click',
+      function (e) {
+        const target = e.target;
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        // Check if click is on menu button or its children
+        if (menuToggle && (target === menuToggle || menuToggle.contains(target))) {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleMenu();
+          return;
+        }
+
+        // Check if click is on mobile nav link
+        if (target.classList && target.classList.contains('mobile-nav-link')) {
+          closeMenu();
+          return;
+        }
+
+        // Close if clicking outside
+        if (mobileMenu && mobileMenu.classList.contains('active')) {
+          if (!mobileMenu.contains(target) && !menuToggle.contains(target)) {
+            closeMenu();
+          }
+        }
+      },
+      true
+    ); // Use capture phase
+
+    // Handle touch specifically for mobile
+    document.addEventListener(
+      'touchstart',
+      function (e) {
+        const target = e.target;
+        const menuToggle = document.getElementById('menuToggle');
+
+        if (menuToggle && (target === menuToggle || menuToggle.contains(target))) {
+          e.preventDefault();
+          toggleMenu();
+        }
+      },
+      { passive: false }
+    );
+
+    // Reset on page navigation (View Transitions)
+    document.addEventListener('astro:before-swap', function () {
+      closeMenu();
+      window.__mobileMenuInitialized = false;
+    });
+  })();
 </script>
