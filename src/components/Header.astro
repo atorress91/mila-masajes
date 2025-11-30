@@ -397,6 +397,13 @@ const langOptions: Array<{ code: Lang; label: string }> = [
 
   .menu-btn {
     display: none;
+    position: relative;
+    z-index: 1001;
+    min-width: 44px;
+    min-height: 44px;
+    display: none;
+    align-items: center;
+    justify-content: center;
   }
 
   @media (max-width: 968px) {
@@ -405,7 +412,7 @@ const langOptions: Array<{ code: Lang; label: string }> = [
     }
 
     .menu-btn {
-      display: block;
+      display: flex;
     }
 
     .search-btn {
@@ -442,25 +449,54 @@ const langOptions: Array<{ code: Lang; label: string }> = [
   }
 
   @media (max-width: 480px) {
+    .header {
+      padding: 12px 0;
+    }
+
+    .header .container {
+      padding: 0 12px;
+    }
+
     .logo-image {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
     }
 
     .logo-title {
-      font-size: 18px;
+      font-size: 16px;
     }
 
     .logo-subtitle {
-      font-size: 11px;
+      font-size: 10px;
     }
 
     .header-icons {
-      gap: 8px;
+      gap: 4px;
     }
 
     .icon-btn {
-      padding: 6px;
+      padding: 8px;
+      min-width: 40px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .menu-btn {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 10px;
+    }
+
+    .booking-btn {
+      min-width: 40px;
+      min-height: 40px;
+      padding: 8px;
+    }
+
+    .mobile-menu {
+      top: 74px;
     }
 
     .mobile-nav-link {
@@ -500,28 +536,43 @@ const langOptions: Array<{ code: Lang; label: string }> = [
     const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
     if (menuToggle && mobileMenu) {
-      menuToggle.addEventListener('click', () => {
+      // Remove any existing listeners by cloning
+      const newMenuToggle = menuToggle.cloneNode(true) as HTMLElement;
+      menuToggle.parentNode?.replaceChild(newMenuToggle, menuToggle);
+
+      const newMenuIcon = newMenuToggle.querySelector('.menu-icon') as HTMLElement;
+      const newCloseIcon = newMenuToggle.querySelector('.close-icon') as HTMLElement;
+
+      newMenuToggle.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+
         const isActive = mobileMenu.classList.contains('active');
 
         if (isActive) {
           mobileMenu.classList.remove('active');
-          if (menuIcon) menuIcon.style.display = 'block';
-          if (closeIcon) closeIcon.style.display = 'none';
+          if (newMenuIcon) newMenuIcon.style.display = 'block';
+          if (newCloseIcon) newCloseIcon.style.display = 'none';
           document.body.style.overflow = '';
         } else {
           mobileMenu.classList.add('active');
-          if (menuIcon) menuIcon.style.display = 'none';
-          if (closeIcon) closeIcon.style.display = 'block';
+          if (newMenuIcon) newMenuIcon.style.display = 'none';
+          if (newCloseIcon) newCloseIcon.style.display = 'block';
           document.body.style.overflow = 'hidden';
         }
+      });
+
+      // Also handle touch events for better mobile support
+      newMenuToggle.addEventListener('touchend', e => {
+        e.preventDefault();
       });
 
       // Close menu when clicking on a link
       mobileNavLinks.forEach(link => {
         link.addEventListener('click', () => {
           mobileMenu.classList.remove('active');
-          if (menuIcon) menuIcon.style.display = 'block';
-          if (closeIcon) closeIcon.style.display = 'none';
+          if (newMenuIcon) newMenuIcon.style.display = 'block';
+          if (newCloseIcon) newCloseIcon.style.display = 'none';
           document.body.style.overflow = '';
         });
       });
@@ -529,10 +580,14 @@ const langOptions: Array<{ code: Lang; label: string }> = [
       // Close menu when clicking outside
       document.addEventListener('click', e => {
         const target = e.target as HTMLElement;
-        if (mobileMenu.classList.contains('active') && !mobileMenu.contains(target) && !menuToggle.contains(target)) {
+        if (
+          mobileMenu.classList.contains('active') &&
+          !mobileMenu.contains(target) &&
+          !newMenuToggle.contains(target)
+        ) {
           mobileMenu.classList.remove('active');
-          if (menuIcon) menuIcon.style.display = 'block';
-          if (closeIcon) closeIcon.style.display = 'none';
+          if (newMenuIcon) newMenuIcon.style.display = 'block';
+          if (newCloseIcon) newCloseIcon.style.display = 'none';
           document.body.style.overflow = '';
         }
       });
