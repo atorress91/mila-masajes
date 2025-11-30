@@ -48,7 +48,6 @@ export function initGallery() {
   // Open lightbox not use
   function openLightbox(item) {
     const title = item.dataset.title;
-    const description = item.dataset.description;
     const category = item.dataset.category;
     const fullUrl = item.dataset.fullUrl;
 

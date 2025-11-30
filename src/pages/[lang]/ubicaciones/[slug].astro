@@ -131,41 +131,46 @@ const structuredData = {
         {
           services.length > 0 ? (
             <div class="service-card-grid">
-              {services.map(service => (
-                <article class="service-card">
-                  <div class="service-card-image">
-                    <img
-                      src={service.image ? urlFor(service.image).width(600).height(400).url() : '/assets/service-1.jpg'}
-                      alt={service.image?.alt || service.title}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div class="service-card-body">
-                    <div class="service-meta">
-                      <span class="duration">
-                        {service.duration} {copy.common.minutesSuffix}
-                      </span>
-                      <span class="price">${service.price}</span>
+              {services.map(service => {
+                const serviceImageAlt = service.image?.alt || service.title || 'Massage service';
+                return (
+                  <article class="service-card">
+                    <div class="service-card-image">
+                      <img
+                        src={
+                          service.image ? urlFor(service.image).width(600).height(400).url() : '/assets/service-1.jpg'
+                        }
+                        alt={serviceImageAlt}
+                        loading="lazy"
+                      />
                     </div>
-                    <h3>{service.title}</h3>
-                    <p>{service.description}</p>
-                    <div class="service-actions">
-                      <a
-                        href={localizedHref(`/booking?service=${service.slug.current}&city=${slug}`)}
-                        class="btn-primary"
-                        data-astro-prefetch="false"
-                      >
-                        {copy.common.bookNow}
-                      </a>
-                      {service.locations && service.locations.length > 0 && (
-                        <span class="tag">
-                          {copy.locations.detail.availableIn} {service.locations.map(loc => loc.name).join(', ')}
+                    <div class="service-card-body">
+                      <div class="service-meta">
+                        <span class="duration">
+                          {service.duration} {copy.common.minutesSuffix}
                         </span>
-                      )}
+                        <span class="price">${service.price}</span>
+                      </div>
+                      <h3>{service.title}</h3>
+                      <p>{service.description}</p>
+                      <div class="service-actions">
+                        <a
+                          href={localizedHref(`/booking?service=${service.slug.current}&city=${slug}`)}
+                          class="btn-primary"
+                          data-astro-prefetch="false"
+                        >
+                          {copy.common.bookNow}
+                        </a>
+                        {service.locations && service.locations.length > 0 && (
+                          <span class="tag">
+                            {copy.locations.detail.availableIn} {service.locations.map(loc => loc.name).join(', ')}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           ) : (
             <p class="empty-state">{copy.locations.detail.emptyServices}</p>

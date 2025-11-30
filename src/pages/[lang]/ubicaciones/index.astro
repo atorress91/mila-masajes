@@ -43,36 +43,39 @@ const baseDescription = copy.locations.overview.metaDescription;
         {
           locations.length > 0 ? (
             <div class="service-card-grid">
-              {locations.map(location => (
-                <article class="service-card location-card">
-                  <div class="service-card-image">
-                    <img
-                      src={
-                        location.heroImage
-                          ? urlFor(location.heroImage).width(600).height(400).url()
-                          : '/assets/service-2.jpg'
-                      }
-                      alt={location.heroImage?.alt || location.name}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div class="service-card-body">
-                    <div class="service-meta">
-                      <span>{location.serviceAreas?.length || 1} zonas</span>
-                      <span>#{(location.order ?? 0) + 1}</span>
+              {locations.map(location => {
+                const locationImageAlt = location.heroImage?.alt || `${location.name} - Massage services`;
+                return (
+                  <article class="service-card location-card">
+                    <div class="service-card-image">
+                      <img
+                        src={
+                          location.heroImage
+                            ? urlFor(location.heroImage).width(600).height(400).url()
+                            : '/assets/service-2.jpg'
+                        }
+                        alt={locationImageAlt}
+                        loading="lazy"
+                      />
                     </div>
-                    <h3>{location.name}</h3>
-                    <p>
-                      {location.description || location.seoDescription || copy.locations.overview.descriptionFallback}
-                    </p>
-                    <div class="service-actions">
-                      <a href={localizedHref(`/ubicaciones/${location.slug.current}`)} class="btn-primary">
-                        {copy.locations.overview.detailsButton}
-                      </a>
+                    <div class="service-card-body">
+                      <div class="service-meta">
+                        <span>{location.serviceAreas?.length || 1} zonas</span>
+                        <span>#{(location.order ?? 0) + 1}</span>
+                      </div>
+                      <h3>{location.name}</h3>
+                      <p>
+                        {location.description || location.seoDescription || copy.locations.overview.descriptionFallback}
+                      </p>
+                      <div class="service-actions">
+                        <a href={localizedHref(`/ubicaciones/${location.slug.current}`)} class="btn-primary">
+                          {copy.locations.overview.detailsButton}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
           ) : (
             <p class="empty-state">{copy.locations.overview.emptyState}</p>

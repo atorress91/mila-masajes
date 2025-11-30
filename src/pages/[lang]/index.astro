@@ -165,33 +165,37 @@ const pageTitle = pageData?.title || 'MLA Massage & Wellness';
         <div class="quick-services-grid">
           {
             featuredServices && featuredServices.length > 0
-              ? featuredServices.slice(0, 4).map((service: any) => (
-                  <a href={localizedHref('/discover')} class="quick-service-card">
-                    <div class="quick-service-image">
-                      {service.image ? (
-                        <img
-                          src={urlFor(service.image).width(500).height(600).format('webp').url()}
-                          alt={service.image.alt || service.title}
-                        />
-                      ) : (
-                        <img src="/assets/service-1.jpg" alt={service.title} />
-                      )}
-                      <div class="quick-service-overlay">
-                        <span class="quick-service-cta">{copy.home.quickExploreLabel}</span>
+              ? featuredServices.slice(0, 4).map((service: any) => {
+                  const imageAlt = service.image?.alt || service.title || copy.home.quickServiceImageAlt;
+                  return (
+                    <a href={localizedHref('/discover')} class="quick-service-card">
+                      <div class="quick-service-image">
+                        {service.image ? (
+                          <img
+                            src={urlFor(service.image).width(500).height(600).format('webp').url()}
+                            alt={imageAlt}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <img src="/assets/service-1.jpg" alt={imageAlt} loading="lazy" />
+                        )}
+                        <div class="quick-service-overlay">
+                          <span class="quick-service-cta">{copy.home.quickExploreLabel}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div class="quick-service-content">
-                      <h3 class="quick-service-title">{service.title}</h3>
-                      <p class="quick-service-snippet">{service.description?.substring(0, 85)}...</p>
-                      <div class="quick-service-footer">
-                        <span class="quick-service-price">${service.price}</span>
-                        <span class="quick-service-duration">
-                          {service.duration} {copy.common.minutesSuffix}
-                        </span>
+                      <div class="quick-service-content">
+                        <h3 class="quick-service-title">{service.title}</h3>
+                        <p class="quick-service-snippet">{service.description?.substring(0, 85)}...</p>
+                        <div class="quick-service-footer">
+                          <span class="quick-service-price">${service.price}</span>
+                          <span class="quick-service-duration">
+                            {service.duration} {copy.common.minutesSuffix}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </a>
-                ))
+                    </a>
+                  );
+                })
               : null
           }
         </div>

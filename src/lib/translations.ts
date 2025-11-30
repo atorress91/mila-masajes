@@ -59,6 +59,7 @@ const baseTranslations = {
       quickTitle: 'Featured Services',
       quickTagline: 'Professional massage therapies tailored to your needs',
       quickExploreLabel: 'Explore',
+      quickServiceImageAlt: 'Professional massage service',
     },
     discover: {
       pageTitle: 'Our Services - MIA Massage & Wellness',
@@ -323,6 +324,7 @@ const baseTranslations = {
       quickTitle: 'Servicios destacados',
       quickTagline: 'Terapias profesionales adaptadas a tus necesidades',
       quickExploreLabel: 'Explorar',
+      quickServiceImageAlt: 'Servicio profesional de masajes',
     },
     discover: {
       pageTitle: 'Servicios - MIA Massage & Wellness',
