@@ -42,19 +42,19 @@ const contact = contactInfo || fallbackContact;
 // Split phone numbers and emails if multiple are provided
 const phoneNumbers = contact.phone
   ? contact.phone
-    .split(/[,\n]/)
+      .split(/[,\n]/)
       .map((p: string) => p.trim())
       .filter(Boolean)
   : [];
 const emails = contact.email
   ? contact.email
-    .split(/[,\n]/)
+      .split(/[,\n]/)
       .map((e: string) => e.trim())
       .filter(Boolean)
   : [];
 const addressLines = contact.address
   ? contact.address
-    .split(/[,\n]/)
+      .split(/[,\n]/)
       .map((a: string) => a.trim())
       .filter(Boolean)
   : [];
@@ -270,24 +270,15 @@ const specialOffers = copy.contact.specialOffers || [];
   @import '../../styles/contact.css';
 </style>
 
-<script type="application/json" id="contact-form-copy">
-  {JSON.stringify(copy.contact.formMessages)}
+<script is:inline define:vars={{ formMessagesJson: JSON.stringify(copy.contact.formMessages) }}>
+  window.__CONTACT_FORM_MESSAGES__ = JSON.parse(formMessagesJson);
 </script>
 
 <script>
   import { initContactForm } from '../../logic/contact.js';
+
   const bootstrapContact = () => {
-    const dataEl = document.getElementById('contact-form-copy');
-    let formMessages = undefined;
-
-    if (dataEl?.textContent) {
-      try {
-        formMessages = JSON.parse(dataEl.textContent);
-      } catch (error) {
-        console.error('Contact: Unable to parse translation messages', error);
-      }
-    }
-
+    const formMessages = window.__CONTACT_FORM_MESSAGES__ || undefined;
     initContactForm(formMessages);
   };
 
