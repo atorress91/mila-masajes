@@ -891,12 +891,13 @@
     flex-direction: column;
     gap: 12px;
     width: 100%;
+    align-items: center;
   }
 
   .hero-buttons .btn-primary {
-    padding: 12px 32px;
+    padding: 12px 28px;
     font-size: 14px;
-    width: 100%;
+    width: auto;
   }
 
   .hero-images-side {
