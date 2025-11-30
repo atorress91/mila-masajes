@@ -82,7 +82,7 @@
 .hero-buttons .btn-primary {
   padding: 14px 40px;
   font-size: 15px;
-  background: var(--coral-rosado);
+  background: #9e5f55;
   color: white;
   border-radius: 50px;
   text-decoration: none;
@@ -92,9 +92,9 @@
 }
 
 .hero-buttons .btn-primary:hover {
-  background: var(--terracota-suave);
+  background: #8a524a;
   transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(232, 180, 168, 0.3);
+  box-shadow: 0 10px 30px rgba(158, 95, 85, 0.3);
 }
 
 /* Right side - Two stacked images */
