@@ -691,10 +691,17 @@
 @media (max-width: 480px) {
   .contact-page {
     padding: 30px 0 20px;
+    overflow-x: hidden;
   }
 
   .contact-page .container {
-    padding: 0 12px;
+    padding: 0 16px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .contact-layout {
+    gap: 24px;
   }
 
   .contact-hero {
@@ -710,13 +717,20 @@
     font-size: 14px;
   }
 
-  .left-column {
+  .left-column,
+  .right-column {
     gap: 20px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .info-card,
   .form-card {
     padding: 20px 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
   }
 
   .card-title,
@@ -755,6 +769,10 @@
 
   .offers-card {
     padding: 20px 16px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
   }
 
   .offer-item {
@@ -769,14 +787,24 @@
     font-size: 12px;
   }
 
+  .form-group {
+    width: 100%;
+  }
+
   .form-input,
   .form-select,
   .form-textarea {
     padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .form-textarea {
     min-height: 100px;
+  }
+
+  .checkbox-group {
+    width: 100%;
   }
 
   .checkbox-group input[type='checkbox'] {
@@ -793,13 +821,16 @@
   .btn-submit-form {
     padding: 14px 12px;
     font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .map-section {
-    padding: 24px 12px;
-    margin-left: -12px;
-    margin-right: -12px;
+    padding: 24px 16px;
+    margin-left: -16px;
+    margin-right: -16px;
     border-radius: 0;
+    width: calc(100% + 32px);
   }
 
   .section-title {
@@ -828,5 +859,93 @@
   .btn-cta-secondary {
     padding: 14px 20px;
     font-size: 15px;
+  }
+}
+
+/* Extra small devices - S23 Ultra and similar (around 412px) */
+@media (max-width: 420px) {
+  .contact-page .container {
+    padding: 0 14px;
+  }
+
+  .info-card,
+  .form-card,
+  .offers-card {
+    padding: 18px 14px;
+    margin: 0;
+    border-width: 1px;
+  }
+
+  .card-title,
+  .card-title-white {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+
+  .info-label {
+    font-size: 14px;
+  }
+
+  .info-value {
+    font-size: 12px;
+  }
+
+  .hours-day,
+  .hours-time {
+    font-size: 13px;
+  }
+
+  .offer-item {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .offer-title {
+    font-size: 14px;
+  }
+
+  .offer-description {
+    font-size: 11px;
+  }
+
+  .form-label {
+    font-size: 13px;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+
+  .checkbox-label {
+    font-size: 11px;
+  }
+
+  .btn-submit-form {
+    padding: 12px 10px;
+    font-size: 14px;
+  }
+
+  .map-section {
+    padding: 20px 14px;
+    margin-left: -14px;
+    margin-right: -14px;
+    width: calc(100% + 28px);
+  }
+
+  .cta-title {
+    font-size: 18px;
+  }
+
+  .cta-description {
+    font-size: 13px;
+  }
+
+  .btn-cta-primary,
+  .btn-cta-secondary {
+    padding: 12px 16px;
+    font-size: 14px;
   }
 }
