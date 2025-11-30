@@ -7,7 +7,7 @@ import type { Lang } from './i18n';
 export const sanityClient = createClient({
   projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID || '6z0ec6tg',
   dataset: import.meta.env.PUBLIC_SANITY_DATASET || 'production',
-  useCdn: true, // Usa CDN para mejor rendimiento en producción
+  useCdn: false, // Desactivado para obtener datos frescos en cada build
   apiVersion: '2024-01-01',
   token: import.meta.env.SANITY_API_TOKEN, // Solo para escritura
 });
