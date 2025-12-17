@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { getContactInfo } from '../../lib/sanity';
 import { SUPPORTED_LANGS, getLangFromAstro, withLangParam } from '../../lib/i18n';
 import { getTranslations } from '../../lib/translations';
 
@@ -9,10 +10,58 @@ export function getStaticPaths() {
   return SUPPORTED_LANGS.map(lang => ({ params: { lang } }));
 }
 
+// Fetch contact information from Sanity
 const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+
+const contactInfo = await getContactInfo();
+
+// Fallback data if Sanity content is not available
+const fallbackContact = {
+  phone: '(555) 123-BLISS, (555) 123-2547',
+  email: 'info@miamassage.com, bookings@miamassage.com',
+  address: '123 Wellness Boulevard, Relaxation District, Peaceful City, PC 12345',
+  mapEmbed:
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d52901.38783909427!2d-122.41941550000001!3d37.7749295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80859a6d00690021%3A0x4a501367f076adff!2sSan%20Francisco%2C%20CA!5e0!3m2!1sen!2sus!4v1698857612345!5m2!1sen!2sus',
+  socialMedia: {
+    instagram: 'https://instagram.com',
+    twitter: 'https://twitter.com',
+  },
+  hours: [
+    { days: 'Monday - Friday', hours: '9:00 AM - 8:00 PM' },
+    { days: 'Saturday', hours: '8:00 AM - 6:00 PM' },
+    { days: 'Sunday', hours: '10:00 AM - 5:00 PM' },
+    { days: 'Holidays', hours: 'By Appointment' },
+  ],
+};
+
+const contact = contactInfo || fallbackContact;
+
+// Split phone numbers and emails if multiple are provided
+const phoneNumbers = contact.phone
+  ? contact.phone
+      .split(/[,\n]/)
+      .map((p: string) => p.trim())
+      .filter(Boolean)
+  : [];
+const emails = contact.email
+  ? contact.email
+      .split(/[,\n]/)
+      .map((e: string) => e.trim())
+      .filter(Boolean)
+  : [];
+const addressLines = contact.address
+  ? contact.address
+      .split(/[,\n]/)
+      .map((a: string) => a.trim())
+      .filter(Boolean)
+  : [];
+
+// Get first phone number for tel: link (remove non-numeric characters)
+const primaryPhone = phoneNumbers[0] || '';
+const primaryPhoneTel = primaryPhone.replace(/[^0-9]/g, '');
 
 // Special offers
 const specialOffers = copy.contact.specialOffers || [];
@@ -48,7 +97,7 @@ const specialOffers = copy.contact.specialOffers || [];
               </div>
               <div>
                 <h3 class="info-label">{copy.contact.addressLabel}</h3>
-                <div id="address-container"><p class="info-value loading-placeholder">Cargando...</p></div>
+                {addressLines.map((line: string) => <p class="info-value">{line}</p>)}
               </div>
             </div>
 
@@ -63,7 +112,7 @@ const specialOffers = copy.contact.specialOffers || [];
               </div>
               <div>
                 <h3 class="info-label">{copy.contact.phoneLabel}</h3>
-                <div id="phone-container"><p class="info-value loading-placeholder">Cargando...</p></div>
+                {phoneNumbers.map((phone: string) => <p class="info-value">{phone}</p>)}
               </div>
             </div>
 
@@ -78,7 +127,7 @@ const specialOffers = copy.contact.specialOffers || [];
               </div>
               <div>
                 <h3 class="info-label">{copy.contact.emailLabel}</h3>
-                <div id="email-container"><p class="info-value loading-placeholder">Cargando...</p></div>
+                {emails.map((email: string) => <p class="info-value">{email}</p>)}
               </div>
             </div>
           </div>
@@ -86,7 +135,15 @@ const specialOffers = copy.contact.specialOffers || [];
           <!-- Business Hours Card -->
           <div class="info-card">
             <h2 class="card-title">{copy.contact.hoursTitle}</h2>
-            <div id="hours-container"><p class="info-value loading-placeholder">Cargando...</p></div>
+            {
+              contact.hours &&
+                contact.hours.map((hour: any) => (
+                  <div class="hours-row">
+                    <span class="hours-day">{hour.days}</span>
+                    <span class="hours-time">{hour.hours}</span>
+                  </div>
+                ))
+            }
           </div>
 
           <!-- Special Offers Card -->
@@ -175,11 +232,23 @@ const specialOffers = copy.contact.specialOffers || [];
       <!-- Find Us Section -->
       <div class="map-section">
         <h2 class="section-title">{copy.contact.mapTitle}</h2>
-        <div class="map-wrapper">
-          <div class="map-container" id="map-container">
-            <p class="loading-placeholder">Cargando mapa...</p>
-          </div>
-        </div>
+        {
+          contact.mapEmbed && (
+            <div class="map-wrapper">
+              <div class="map-container">
+                <iframe
+                  src={contact.mapEmbed}
+                  width="100%"
+                  height="100%"
+                  style="border:0; border-radius: 8px;"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </div>
+          )
+        }
       </div>
 
       <!-- CTA Section -->
@@ -188,9 +257,7 @@ const specialOffers = copy.contact.specialOffers || [];
         <p class="cta-description">{copy.contact.ctaDescription}</p>
         <div class="cta-buttons">
           <a href={localizedHref('/discover')} class="btn-cta-primary">{copy.contact.ctaPrimary}</a>
-          <a href="#" id="cta-phone-link" class="btn-cta-secondary"
-            >{copy.contact.ctaSecondary} <span id="cta-phone-number"></span></a
-          >
+          <a href={`tel:${primaryPhoneTel}`} class="btn-cta-secondary">{copy.contact.ctaSecondary} {primaryPhone}</a>
         </div>
       </div>
     </div>
@@ -201,11 +268,6 @@ const specialOffers = copy.contact.specialOffers || [];
 
 <style>
   @import '../../styles/contact.css';
-
-  .loading-placeholder {
-    color: rgba(255, 255, 255, 0.6);
-    font-style: italic;
-  }
 </style>
 
 <script is:inline define:vars={{ formMessagesJson: JSON.stringify(copy.contact.formMessages) }}>
@@ -215,115 +277,9 @@ const specialOffers = copy.contact.specialOffers || [];
 <script>
   import { initContactForm } from '../../logic/contact.js';
 
-  // Sanity client configuration for browser
-  const SANITY_PROJECT_ID = '6z0ec6tg';
-  const SANITY_DATASET = 'production';
-  const SANITY_API_VERSION = '2024-01-01';
-
-  async function fetchContactInfo() {
-    const query = encodeURIComponent(`*[_type == "contactInfo"][0] {
-      _id,
-      email,
-      phone,
-      address,
-      hours,
-      socialMedia,
-      mapEmbed
-    }`);
-
-    // Usar apicdn.sanity.io para CORS
-    const url = `https://${SANITY_PROJECT_ID}.apicdn.sanity.io/v${SANITY_API_VERSION}/data/query/${SANITY_DATASET}?query=${query}`;
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      return data.result;
-    } catch (error) {
-      console.error('Error fetching contact info from Sanity:', error);
-      return null;
-    }
-  }
-
-  function updateContactUI(contact) {
-    if (!contact) return;
-
-    // Update address
-    const addressContainer = document.getElementById('address-container');
-    if (addressContainer && contact.address) {
-      const addressLines = contact.address
-        .split(/[,\n]/)
-        .map(a => a.trim())
-        .filter(Boolean);
-      addressContainer.innerHTML = addressLines.map(line => `<p class="info-value">${line}</p>`).join('');
-    }
-
-    // Update phone
-    const phoneContainer = document.getElementById('phone-container');
-    if (phoneContainer && contact.phone) {
-      const phoneNumbers = contact.phone
-        .split(/[,\n]/)
-        .map(p => p.trim())
-        .filter(Boolean);
-      phoneContainer.innerHTML = phoneNumbers.map(phone => `<p class="info-value">${phone}</p>`).join('');
-
-      // Update CTA phone link
-      const primaryPhone = phoneNumbers[0] || '';
-      const primaryPhoneTel = primaryPhone.replace(/[^0-9]/g, '');
-      const ctaPhoneLink = document.getElementById('cta-phone-link');
-      const ctaPhoneNumber = document.getElementById('cta-phone-number');
-      if (ctaPhoneLink) ctaPhoneLink.href = `tel:${primaryPhoneTel}`;
-      if (ctaPhoneNumber) ctaPhoneNumber.textContent = primaryPhone;
-    }
-
-    // Update email
-    const emailContainer = document.getElementById('email-container');
-    if (emailContainer && contact.email) {
-      const emails = contact.email
-        .split(/[,\n]/)
-        .map(e => e.trim())
-        .filter(Boolean);
-      emailContainer.innerHTML = emails.map(email => `<p class="info-value">${email}</p>`).join('');
-    }
-
-    // Update hours
-    const hoursContainer = document.getElementById('hours-container');
-    if (hoursContainer && contact.hours && contact.hours.length > 0) {
-      hoursContainer.innerHTML = contact.hours
-        .map(
-          hour => `
-        <div class="hours-row">
-          <span class="hours-day">${hour.days}</span>
-          <span class="hours-time">${hour.hours}</span>
-        </div>
-      `
-        )
-        .join('');
-    }
-
-    // Update map
-    const mapContainer = document.getElementById('map-container');
-    if (mapContainer && contact.mapEmbed) {
-      mapContainer.innerHTML = `
-        <iframe
-          src="${contact.mapEmbed}"
-          width="100%"
-          height="100%"
-          style="border:0; border-radius: 8px;"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-        ></iframe>
-      `;
-    }
-  }
-
-  const bootstrapContact = async () => {
+  const bootstrapContact = () => {
     const formMessages = window.__CONTACT_FORM_MESSAGES__ || undefined;
     initContactForm(formMessages);
-
-    // Fetch fresh contact data from Sanity
-    const contactInfo = await fetchContactInfo();
-    updateContactUI(contactInfo);
   };
 
   if (document.readyState === 'loading') {

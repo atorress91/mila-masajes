@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { getServices, getPackages, urlFor } from '../../lib/sanity';
 import { SUPPORTED_LANGS, getLangFromAstro, withLangParam } from '../../lib/i18n';
 import { getTranslations } from '../../lib/translations';
 
@@ -9,10 +10,25 @@ export function getStaticPaths() {
   return SUPPORTED_LANGS.map(lang => ({ params: { lang } }));
 }
 
+// Obtener servicios y paquetes desde Sanity
 const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+
+const services = await getServices(lang);
+const packages = await getPackages(lang);
+
+// Función auxiliar para formatear duración
+function formatDuration(minutes: number): string {
+  return `${minutes} ${copy.common.minutesSuffix}`;
+}
+
+// Función auxiliar para obtener URL de imagen
+function getImageUrl(image: any): string {
+  if (!image) return '/assets/placeholder.jpg';
+  return urlFor(image).width(800).height(600).url();
+}
 
 // Valores por defecto para color y rating
 const defaultColor = '#8b5a5a';
@@ -35,13 +51,82 @@ const defaultRating = 5.0;
     <!-- Services Grid -->
     <section class="services-grid-section">
       <div class="container">
-        <div class="services-grid" id="services-grid">
-          <div class="loading-placeholder">
-            <p>Cargando servicios...</p>
-          </div>
+        <div class="services-grid">
+          {
+            services.slice(0, 3).map(service => (
+              <div class="service-card">
+                <div
+                  class="service-image"
+                  style={`background-image: url('${getImageUrl(service.image)}'); background-size: cover; background-position: center;`}
+                >
+                  <div class="duration-badge" style={`color: ${service.color || defaultColor}`}>
+                    {formatDuration(service.duration)}
+                  </div>
+                </div>
+                <div class="service-content">
+                  <h3 class="service-title">{service.title}</h3>
+                  <p class="service-description">{service.description}</p>
+                  <div class="service-footer">
+                    <span class="service-price" style={`color: ${service.color || defaultColor}`}>
+                      ${service.price}
+                    </span>
+                    <div class="service-rating">
+                      <span class="stars">★★★★★</span>
+                      <span class="rating-value">({service.rating || defaultRating})</span>
+                    </div>
+                  </div>
+                  <a
+                    href={localizedHref(`/booking?service=${service.slug.current}`)}
+                    class="book-button"
+                    style={`background-color: ${service.color || defaultColor}`}
+                    data-astro-prefetch="false"
+                  >
+                    {copy.common.bookNow}
+                  </a>
+                </div>
+              </div>
+            ))
+          }
         </div>
 
-        <div class="services-grid-wide" id="services-grid-wide"></div>
+        <!-- Services Grid - Row 2 (wider cards) -->
+        <div class="services-grid-wide">
+          {
+            services.slice(3).map(service => (
+              <div class="service-card-wide">
+                <div
+                  class="service-image-wide"
+                  style={`background-image: url('${getImageUrl(service.image)}'); background-size: cover; background-position: center;`}
+                >
+                  <div class="duration-badge" style={`color: ${service.color || defaultColor}`}>
+                    {formatDuration(service.duration)}
+                  </div>
+                </div>
+                <div class="service-content">
+                  <h3 class="service-title">{service.title}</h3>
+                  <p class="service-description">{service.description}</p>
+                  <div class="service-footer">
+                    <span class="service-price" style={`color: ${service.color || defaultColor}`}>
+                      ${service.price}
+                    </span>
+                    <div class="service-rating">
+                      <span class="stars">★★★★★</span>
+                      <span class="rating-value">({service.rating || defaultRating})</span>
+                    </div>
+                  </div>
+                  <a
+                    href={localizedHref(`/booking?service=${service.slug.current}`)}
+                    class="book-button"
+                    style={`background-color: ${service.color || defaultColor}`}
+                    data-astro-prefetch="false"
+                  >
+                    {copy.common.bookNow}
+                  </a>
+                </div>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </section>
 
@@ -50,10 +135,35 @@ const defaultRating = 5.0;
       <div class="container">
         <div class="packages-wrapper">
           <h2 class="packages-title">{copy.discover.packagesTitle}</h2>
-          <div class="packages-grid" id="packages-grid">
-            <div class="loading-placeholder">
-              <p>Cargando paquetes...</p>
-            </div>
+          <div class="packages-grid">
+            {
+              packages.map(pkg => (
+                <div class={`package-card ${pkg.featured ? 'featured' : ''}`}>
+                  {pkg.featured && (
+                    <div class="popular-badge" style={`background-color: ${pkg.color}`}>
+                      {copy.discover.badgePopular}
+                    </div>
+                  )}
+                  <div
+                    class="package-icon"
+                    style={`background: linear-gradient(to right, ${pkg.color}30, ${pkg.color}15)`}
+                  >
+                    <span class="icon-emoji">{pkg.icon}</span>
+                  </div>
+                  <h3 class="package-title">{pkg.title}</h3>
+                  <p class="package-description">{pkg.description}</p>
+                  <div class="package-pricing">
+                    <span class="package-price" style={`color: ${pkg.color}`}>
+                      ${pkg.price}
+                    </span>
+                    <span class="package-original-price">${pkg.originalPrice}</span>
+                  </div>
+                  <button class="package-button" style={`background-color: ${pkg.color}`}>
+                    {copy.discover.choosePackage}
+                  </button>
+                </div>
+              ))
+            }
           </div>
         </div>
       </div>
@@ -76,168 +186,4 @@ const defaultRating = 5.0;
 
 <style>
   @import '../../styles/discover.css';
-
-  .loading-placeholder {
-    text-align: center;
-    padding: 2rem;
-    color: rgba(255, 255, 255, 0.6);
-    font-style: italic;
-    grid-column: 1 / -1;
-  }
 </style>
-
-<script
-  is:inline
-  define:vars={{
-    lang,
-    defaultColor,
-    defaultRating,
-    bookNowText: copy.common.bookNow,
-    minutesSuffix: copy.common.minutesSuffix,
-    badgePopular: copy.discover.badgePopular,
-    choosePackage: copy.discover.choosePackage,
-  }}
->
-  window.__DISCOVER_CONFIG__ = {
-    lang,
-    defaultColor,
-    defaultRating,
-    bookNowText,
-    minutesSuffix,
-    badgePopular,
-    choosePackage,
-  };
-</script>
-
-<script>
-  import { getServices, getPackages, buildImageUrl } from '../../lib/sanity-client.js';
-
-  function getImageUrl(image) {
-    if (!image) return '/assets/placeholder.jpg';
-    if (image.asset?.url) return image.asset.url;
-    return buildImageUrl(image, { width: 800, height: 600 });
-  }
-
-  function formatDuration(minutes, suffix) {
-    return `${minutes} ${suffix}`;
-  }
-
-  function renderServices(services, config) {
-    const servicesGrid = document.getElementById('services-grid');
-    const servicesGridWide = document.getElementById('services-grid-wide');
-
-    if (!servicesGrid) return;
-
-    const firstThree = services.slice(0, 3);
-    servicesGrid.innerHTML = firstThree
-      .map(
-        service => `
-      <div class="service-card">
-        <div class="service-image" style="background-image: url('${getImageUrl(service.image)}'); background-size: cover; background-position: center;">
-          <div class="duration-badge" style="color: ${service.color || config.defaultColor}">
-            ${formatDuration(service.duration, config.minutesSuffix)}
-          </div>
-        </div>
-        <div class="service-content">
-          <h3 class="service-title">${service.title}</h3>
-          <p class="service-description">${service.description}</p>
-          <div class="service-footer">
-            <span class="service-price" style="color: ${service.color || config.defaultColor}">$${service.price}</span>
-            <div class="service-rating">
-              <span class="stars">★★★★★</span>
-              <span class="rating-value">(${service.rating || config.defaultRating})</span>
-            </div>
-          </div>
-          <a href="/${config.lang}/booking?service=${service.slug?.current || ''}" class="book-button" style="background-color: ${service.color || config.defaultColor}" data-astro-prefetch="false">
-            ${config.bookNowText}
-          </a>
-        </div>
-      </div>
-    `
-      )
-      .join('');
-
-    const remaining = services.slice(3);
-    if (servicesGridWide && remaining.length > 0) {
-      servicesGridWide.innerHTML = remaining
-        .map(
-          service => `
-        <div class="service-card-wide">
-          <div class="service-image-wide" style="background-image: url('${getImageUrl(service.image)}'); background-size: cover; background-position: center;">
-            <div class="duration-badge" style="color: ${service.color || config.defaultColor}">
-              ${formatDuration(service.duration, config.minutesSuffix)}
-            </div>
-          </div>
-          <div class="service-content">
-            <h3 class="service-title">${service.title}</h3>
-            <p class="service-description">${service.description}</p>
-            <div class="service-footer">
-              <span class="service-price" style="color: ${service.color || config.defaultColor}">$${service.price}</span>
-              <div class="service-rating">
-                <span class="stars">★★★★★</span>
-                <span class="rating-value">(${service.rating || config.defaultRating})</span>
-              </div>
-            </div>
-            <a href="/${config.lang}/booking?service=${service.slug?.current || ''}" class="book-button" style="background-color: ${service.color || config.defaultColor}" data-astro-prefetch="false">
-              ${config.bookNowText}
-            </a>
-          </div>
-        </div>
-      `
-        )
-        .join('');
-    }
-  }
-
-  function renderPackages(packages, config) {
-    const packagesGrid = document.getElementById('packages-grid');
-    if (!packagesGrid) return;
-
-    packagesGrid.innerHTML = packages
-      .map(
-        pkg => `
-      <div class="package-card ${pkg.featured ? 'featured' : ''}">
-        ${pkg.featured ? `<div class="popular-badge" style="background-color: ${pkg.color}">${config.badgePopular}</div>` : ''}
-        <div class="package-icon" style="background: linear-gradient(to right, ${pkg.color}30, ${pkg.color}15)">
-          <span class="icon-emoji">${pkg.icon}</span>
-        </div>
-        <h3 class="package-title">${pkg.title}</h3>
-        <p class="package-description">${pkg.description}</p>
-        <div class="package-pricing">
-          <span class="package-price" style="color: ${pkg.color}">$${pkg.price}</span>
-          <span class="package-original-price">$${pkg.originalPrice}</span>
-        </div>
-        <button class="package-button" style="background-color: ${pkg.color}">${config.choosePackage}</button>
-      </div>
-    `
-      )
-      .join('');
-  }
-
-  async function loadDiscoverData() {
-    const config = window.__DISCOVER_CONFIG__;
-
-    try {
-      const [services, packages] = await Promise.all([getServices(config.lang), getPackages(config.lang)]);
-
-      if (services && services.length > 0) {
-        renderServices(services, config);
-      }
-
-      if (packages && packages.length > 0) {
-        renderPackages(packages, config);
-      }
-    } catch (error) {
-      console.error('Error loading discover data:', error);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadDiscoverData);
-  } else {
-    loadDiscoverData();
-  }
-
-  document.addEventListener('astro:page-load', loadDiscoverData);
-  document.addEventListener('astro:after-swap', loadDiscoverData);
-</script>

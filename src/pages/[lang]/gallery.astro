@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { getGalleryImages, urlFor } from '../../lib/sanity';
 import { SUPPORTED_LANGS, getLangFromAstro, withLangParam } from '../../lib/i18n';
 import { getTranslations } from '../../lib/translations';
 
@@ -9,10 +10,20 @@ export function getStaticPaths() {
   return SUPPORTED_LANGS.map(lang => ({ params: { lang } }));
 }
 
+// Obtener imágenes de la galería desde Sanity
+let galleryImages: any[] = [];
+
 const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+
+try {
+  galleryImages = await getGalleryImages(lang);
+} catch (error) {
+  console.error('Error fetching gallery images:', error);
+  galleryImages = [];
+}
 
 const categories = [
   { id: 'all', name: copy.gallery.filterAll },
@@ -56,11 +67,72 @@ const categories = [
     <!-- Gallery Grid -->
     <section class="gallery-section">
       <div class="container">
-        <div class="gallery-masonry" id="gallery-masonry">
-          <div class="loading-placeholder">
-            <p>Cargando galería...</p>
-          </div>
-        </div>
+        {
+          galleryImages && galleryImages.length > 0 ? (
+            <div class="gallery-masonry">
+              {galleryImages.map((image: any, index: number) => {
+                const thumbnailUrl = image.image
+                  ? urlFor(image.image).width(600).height(600).format('webp').quality(80).url()
+                  : '';
+                const fullSizeUrl = image.image
+                  ? urlFor(image.image).width(1920).height(1920).format('webp').quality(90).url()
+                  : '';
+
+                return (
+                  <div
+                    class="gallery-item"
+                    data-category={image.category}
+                    data-index={index}
+                    data-title={image.title}
+                    data-description={image.description || ''}
+                    data-full-url={fullSizeUrl}
+                  >
+                    <div class="gallery-item-inner">
+                      {image.image ? (
+                        <img
+                          src={thumbnailUrl}
+                          alt={image.image.alt || image.title || 'Gallery image'}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div class="gallery-placeholder">
+                          <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+                            <rect x="10" y="10" width="40" height="40" rx="4" stroke="currentColor" stroke-width="2" />
+                            <circle cx="22" cy="22" r="4" fill="currentColor" />
+                            <path d="M10 40l10-10 8 8 12-12 10 8" stroke="currentColor" stroke-width="2" />
+                          </svg>
+                        </div>
+                      )}
+                      <div class="gallery-overlay">
+                        <div class="gallery-info">
+                          <h3 class="gallery-title">{image.title}</h3>
+                          <p class="gallery-category">
+                            {categories.find((c: any) => c.id === image.category)?.name || image.category}
+                          </p>
+                        </div>
+                        <button class="view-btn" aria-label={copy.gallery.aria.viewImage}>
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path
+                              d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1"
+                              stroke="white"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div class="no-images">
+              <h3>{copy.gallery.noImagesTitle}</h3>
+              <p>{copy.gallery.noImagesDescription}</p>
+            </div>
+          )
+        }
 
         <!-- Load More Button -->
         <div class="load-more-container">
@@ -111,126 +183,12 @@ const categories = [
 
 <style>
   @import '../../styles/gallery.css';
-
-  .loading-placeholder {
-    text-align: center;
-    padding: 3rem;
-    color: rgba(255, 255, 255, 0.6);
-    font-style: italic;
-    grid-column: 1 / -1;
-  }
-
-  .no-images {
-    text-align: center;
-    padding: 3rem;
-    grid-column: 1 / -1;
-  }
 </style>
 
-<script
-  is:inline
-  define:vars={{
-    lang,
-    categoriesJson: JSON.stringify(categories),
-    noImagesTitle: copy.gallery.noImagesTitle,
-    noImagesDescription: copy.gallery.noImagesDescription,
-    viewImageLabel: copy.gallery.aria.viewImage,
-  }}
->
-  window.__GALLERY_CONFIG__ = {
-    lang,
-    categories: JSON.parse(categoriesJson),
-    noImagesTitle,
-    noImagesDescription,
-    viewImageLabel,
-  };
-</script>
-
 <script>
-  import { getGalleryImages, buildImageUrl } from '../../lib/sanity-client.js';
   import { initGallery } from '../../logic/gallery.js';
 
-  function getImageUrl(image, width = 600, height = 600) {
-    if (!image) return '';
-    if (image.asset?.url) return image.asset.url;
-    return buildImageUrl(image, { width, height });
-  }
-
-  function renderGallery(images, config) {
-    const galleryMasonry = document.getElementById('gallery-masonry');
-    if (!galleryMasonry) return;
-
-    if (images && images.length > 0) {
-      galleryMasonry.innerHTML = images
-        .map((image, index) => {
-          const thumbnailUrl = getImageUrl(image.image, 600, 600);
-          const fullSizeUrl = getImageUrl(image.image, 1920, 1920);
-          const categoryName = config.categories.find(c => c.id === image.category)?.name || image.category;
-
-          return `
-          <div class="gallery-item" data-category="${image.category}" data-index="${index}" data-title="${image.title || ''}" data-description="${image.description || ''}" data-full-url="${fullSizeUrl}">
-            <div class="gallery-item-inner">
-              ${
-                image.image
-                  ? `
-                <img src="${thumbnailUrl}" alt="${image.image.alt || image.title || 'Gallery image'}" loading="lazy" />
-              `
-                  : `
-                <div class="gallery-placeholder">
-                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                    <rect x="10" y="10" width="40" height="40" rx="4" stroke="currentColor" stroke-width="2" />
-                    <circle cx="22" cy="22" r="4" fill="currentColor" />
-                    <path d="M10 40l10-10 8 8 12-12 10 8" stroke="currentColor" stroke-width="2" />
-                  </svg>
-                </div>
-              `
-              }
-              <div class="gallery-overlay">
-                <div class="gallery-info">
-                  <h3 class="gallery-title">${image.title || ''}</h3>
-                  <p class="gallery-category">${categoryName}</p>
-                </div>
-                <button class="view-btn" aria-label="${config.viewImageLabel}">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M15 3h6v6M14 10l6.1-6.1M9 21H3v-6M10 14l-6.1 6.1" stroke="white" stroke-width="2" stroke-linecap="round" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-        })
-        .join('');
-    } else {
-      galleryMasonry.innerHTML = `
-        <div class="no-images">
-          <h3>${config.noImagesTitle}</h3>
-          <p>${config.noImagesDescription}</p>
-        </div>
-      `;
-    }
-  }
-
-  async function loadGalleryData() {
-    const config = window.__GALLERY_CONFIG__;
-
-    try {
-      const images = await getGalleryImages(config.lang);
-      renderGallery(images, config);
-
-      // Initialize gallery interactions after rendering
-      setTimeout(() => initGallery(), 100);
-    } catch (error) {
-      console.error('Error loading gallery:', error);
-    }
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadGalleryData);
-  } else {
-    loadGalleryData();
-  }
-
-  document.addEventListener('astro:page-load', loadGalleryData);
-  document.addEventListener('astro:after-swap', loadGalleryData);
+  document.addEventListener('DOMContentLoaded', () => {
+    initGallery();
+  });
 </script>
