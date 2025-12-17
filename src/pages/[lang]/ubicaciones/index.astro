@@ -2,7 +2,6 @@
 import Layout from '../../../layouts/Layout.astro';
 import Header from '../../../components/Header.astro';
 import Footer from '../../../components/Footer.astro';
-import { getLocations, urlFor } from '../../../lib/sanity';
 import { SUPPORTED_LANGS, getLangFromAstro, withLangParam } from '../../../lib/i18n';
 import { getTranslations } from '../../../lib/translations';
 
@@ -15,7 +14,6 @@ const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
 
-const locations = await getLocations(lang);
 const baseDescription = copy.locations.overview.metaDescription;
 ---
 
@@ -40,47 +38,11 @@ const baseDescription = copy.locations.overview.metaDescription;
           <p>{copy.locations.overview.sectionSubtitle}</p>
         </div>
 
-        {
-          locations.length > 0 ? (
-            <div class="service-card-grid">
-              {locations.map(location => {
-                const locationImageAlt = location.heroImage?.alt || `${location.name} - Massage services`;
-                return (
-                  <article class="service-card location-card">
-                    <div class="service-card-image">
-                      <img
-                        src={
-                          location.heroImage
-                            ? urlFor(location.heroImage).width(600).height(400).url()
-                            : '/assets/service-2.jpg'
-                        }
-                        alt={locationImageAlt}
-                        loading="lazy"
-                      />
-                    </div>
-                    <div class="service-card-body">
-                      <div class="service-meta">
-                        <span>{location.serviceAreas?.length || 1} zonas</span>
-                        <span>#{(location.order ?? 0) + 1}</span>
-                      </div>
-                      <h3>{location.name}</h3>
-                      <p>
-                        {location.description || location.seoDescription || copy.locations.overview.descriptionFallback}
-                      </p>
-                      <div class="service-actions">
-                        <a href={localizedHref(`/ubicaciones/${location.slug.current}`)} class="btn-primary">
-                          {copy.locations.overview.detailsButton}
-                        </a>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          ) : (
-            <p class="empty-state">{copy.locations.overview.emptyState}</p>
-          )
-        }
+        <div class="service-card-grid" id="locations-grid">
+          <div class="loading-placeholder">
+            <p>Cargando ubicaciones...</p>
+          </div>
+        </div>
       </div>
     </section>
   </main>
@@ -95,4 +57,103 @@ const baseDescription = copy.locations.overview.metaDescription;
     font-size: 0.85rem;
     color: var(--text-secondary);
   }
+
+  .loading-placeholder {
+    text-align: center;
+    padding: 3rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    grid-column: 1 / -1;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    grid-column: 1 / -1;
+  }
 </style>
+
+<script
+  is:inline
+  define:vars={{
+    lang,
+    detailsButton: copy.locations.overview.detailsButton,
+    descriptionFallback: copy.locations.overview.descriptionFallback,
+    emptyState: copy.locations.overview.emptyState,
+  }}
+>
+  window.__LOCATIONS_CONFIG__ = {
+    lang,
+    detailsButton,
+    descriptionFallback,
+    emptyState,
+  };
+</script>
+
+<script>
+  import { getLocations, buildImageUrl } from '../../../lib/sanity-client.js';
+
+  function getImageUrl(image, width = 600, height = 400) {
+    if (!image) return '/assets/service-2.jpg';
+    if (image.asset?.url) return image.asset.url;
+    return buildImageUrl(image, { width, height });
+  }
+
+  function renderLocations(locations, config) {
+    const locationsGrid = document.getElementById('locations-grid');
+    if (!locationsGrid) return;
+
+    if (locations && locations.length > 0) {
+      locationsGrid.innerHTML = locations
+        .map(location => {
+          const locationImageAlt = location.heroImage?.alt || `${location.name} - Massage services`;
+          const imageUrl = getImageUrl(location.heroImage);
+          const description = location.description || location.seoDescription || config.descriptionFallback;
+
+          return `
+          <article class="service-card location-card">
+            <div class="service-card-image">
+              <img src="${imageUrl}" alt="${locationImageAlt}" loading="lazy" />
+            </div>
+            <div class="service-card-body">
+              <div class="service-meta">
+                <span>${location.serviceAreas?.length || 1} zonas</span>
+                <span>#${(location.order ?? 0) + 1}</span>
+              </div>
+              <h3>${location.name}</h3>
+              <p>${description}</p>
+              <div class="service-actions">
+                <a href="/${config.lang}/ubicaciones/${location.slug?.current || ''}" class="btn-primary">
+                  ${config.detailsButton}
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+        })
+        .join('');
+    } else {
+      locationsGrid.innerHTML = `<p class="empty-state">${config.emptyState}</p>`;
+    }
+  }
+
+  async function loadLocationsData() {
+    const config = window.__LOCATIONS_CONFIG__;
+
+    try {
+      const locations = await getLocations(config.lang);
+      renderLocations(locations, config);
+    } catch (error) {
+      console.error('Error loading locations:', error);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadLocationsData);
+  } else {
+    loadLocationsData();
+  }
+
+  document.addEventListener('astro:page-load', loadLocationsData);
+  document.addEventListener('astro:after-swap', loadLocationsData);
+</script>

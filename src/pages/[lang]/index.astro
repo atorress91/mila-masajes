@@ -2,7 +2,6 @@
 import Layout from '../../layouts/Layout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
-import { getPageContent, getFeaturedServices, getBenefits, urlFor } from '../../lib/sanity';
 import { SUPPORTED_LANGS, getLangFromAstro, withLangParam } from '../../lib/i18n';
 import { getTranslations } from '../../lib/translations';
 
@@ -10,29 +9,15 @@ export function getStaticPaths() {
   return SUPPORTED_LANGS.map(lang => ({ params: { lang } }));
 }
 
-// Obtener datos de Sanity
-let pageData: any = null;
-let featuredServices: any[] = [];
-let benefits: any[] = [];
-
 const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
 
-try {
-  pageData = await getPageContent('homepage', lang);
-  featuredServices = await getFeaturedServices(lang);
-  benefits = await getBenefits(lang);
-} catch (error) {
-  console.error('Error fetching from Sanity:', error);
-  // Usar valores por defecto si Sanity falla
-}
-
-const heroTitle = pageData?.heroTitle || copy.home.heroTitle;
-const heroSubtitle = pageData?.heroSubtitle || copy.home.heroSubtitle;
-const metaDescription = pageData?.description || copy.home.metaDescription;
-const pageTitle = pageData?.title || 'MLA Massage & Wellness';
+const heroTitle = copy.home.heroTitle;
+const heroSubtitle = copy.home.heroSubtitle;
+const metaDescription = copy.home.metaDescription;
+const pageTitle = 'MLA Massage & Wellness';
 ---
 
 <Layout title={pageTitle} description={metaDescription} lang={lang}>
@@ -43,61 +28,26 @@ const pageTitle = pageData?.title || 'MLA Massage & Wellness';
     <section class="hero">
       <div class="container">
         <div class="hero-content">
-          {/* Background image */}
-          <div class="hero-background">
-            {
-              pageData?.heroImage ? (
-                <img
-                  src={urlFor(pageData.heroImage).width(1400).height(900).format('webp').url()}
-                  alt={pageData.heroImage.alt || copy.home.heroImageAltMain}
-                />
-              ) : (
-                <img src="/assets/hero-massage.jpg" alt={copy.home.heroImageAltMain} />
-              )
-            }
+          <div class="hero-background" id="hero-background">
+            <img src="/assets/hero-massage.jpg" alt={copy.home.heroImageAltMain} />
           </div>
 
-          {/* Text overlay */}
           <div class="hero-text">
-            <h1 class="hero-title">{heroTitle}</h1>
-            <p class="hero-subtitle">{heroSubtitle}</p>
+            <h1 class="hero-title" id="hero-title">{heroTitle}</h1>
+            <p class="hero-subtitle" id="hero-subtitle">{heroSubtitle}</p>
             <div class="hero-buttons">
               <a href={localizedHref('/discover')} class="btn-primary">{copy.home.heroButton}</a>
             </div>
           </div>
         </div>
 
-        <!-- Right side images -->
         <div class="hero-images-side">
-          {
-            pageData?.heroImageTopRight ? (
-              <div class="hero-image-small">
-                <img
-                  src={urlFor(pageData.heroImageTopRight).width(800).height(800).format('webp').url()}
-                  alt={pageData.heroImageTopRight.alt || copy.home.heroImageAltTop}
-                />
-              </div>
-            ) : (
-              <div class="hero-image-small">
-                <img src="/assets/service-1.jpg" alt={copy.home.heroImageAltTop} />
-              </div>
-            )
-          }
-
-          {
-            pageData?.heroImageBottomRight ? (
-              <div class="hero-image-small">
-                <img
-                  src={urlFor(pageData.heroImageBottomRight).width(800).height(800).format('webp').url()}
-                  alt={pageData.heroImageBottomRight.alt || copy.home.heroImageAltBottom}
-                />
-              </div>
-            ) : (
-              <div class="hero-image-small">
-                <img src="/assets/service-2.jpg" alt={copy.home.heroImageAltBottom} />
-              </div>
-            )
-          }
+          <div class="hero-image-small" id="hero-image-top">
+            <img src="/assets/service-1.jpg" alt={copy.home.heroImageAltTop} />
+          </div>
+          <div class="hero-image-small" id="hero-image-bottom">
+            <img src="/assets/service-2.jpg" alt={copy.home.heroImageAltBottom} />
+          </div>
         </div>
       </div>
     </section>
@@ -108,41 +58,12 @@ const pageTitle = pageData?.title || 'MLA Massage & Wellness';
         <h2 class="section-title">{copy.home.benefitsTitle}</h2>
         <p class="section-subtitle">{copy.home.benefitsSubtitle}</p>
 
-        <div class="benefits-grid">
-          {
-            benefits && benefits.length > 0 ? (
-              benefits.map(benefit => (
-                <div class="benefit-card stagger-item">
-                  <div class="benefit-icon" set:html={benefit.icon} />
-                  <h3>{benefit.title}</h3>
-                  <p>{benefit.description}</p>
-                  <ul class="benefit-list">
-                    {benefit.items?.map((item: string) => (
-                      <li>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))
-            ) : (
-              <div class="benefit-card stagger-item">
-                <div class="benefit-icon">
-                  <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
-                    <circle cx="30" cy="30" r="28" fill="var(--primary-color)" />
-                    <path
-                      d="M30 15C21.716 15 15 21.716 15 30C15 38.284 21.716 45 30 45C38.284 45 45 38.284 45 30C45 21.716 38.284 15 30 15ZM30 40C24.477 40 20 35.523 20 30C20 24.477 24.477 20 30 20C35.523 20 40 24.477 40 30C40 35.523 35.523 40 30 40Z"
-                      fill="var(--accent-color)"
-                    />
-                    <circle cx="30" cy="30" r="4" fill="var(--accent-color)" />
-                  </svg>
-                </div>
-                <h3>{copy.home.benefitsFallbackTitle}</h3>
-                <p>{copy.home.benefitsFallbackDescription}</p>
-              </div>
-            )
-          }
+        <div class="benefits-grid" id="benefits-grid">
+          <div class="loading-placeholder">
+            <p>Cargando beneficios...</p>
+          </div>
         </div>
 
-        <!-- CTA Banner -->
         <div class="benefits-cta">
           <div class="cta-content">
             <h3>{copy.home.benefitsCtaTitle}</h3>
@@ -162,42 +83,10 @@ const pageTitle = pageData?.title || 'MLA Massage & Wellness';
           <p class="quick-services-tagline">{copy.home.quickTagline}</p>
         </div>
 
-        <div class="quick-services-grid">
-          {
-            featuredServices && featuredServices.length > 0
-              ? featuredServices.slice(0, 4).map((service: any) => {
-                  const imageAlt = service.image?.alt || service.title || copy.home.quickServiceImageAlt;
-                  return (
-                    <a href={localizedHref('/discover')} class="quick-service-card">
-                      <div class="quick-service-image">
-                        {service.image ? (
-                          <img
-                            src={urlFor(service.image).width(500).height(600).format('webp').url()}
-                            alt={imageAlt}
-                            loading="lazy"
-                          />
-                        ) : (
-                          <img src="/assets/service-1.jpg" alt={imageAlt} loading="lazy" />
-                        )}
-                        <div class="quick-service-overlay">
-                          <span class="quick-service-cta">{copy.home.quickExploreLabel}</span>
-                        </div>
-                      </div>
-                      <div class="quick-service-content">
-                        <h3 class="quick-service-title">{service.title}</h3>
-                        <p class="quick-service-snippet">{service.description?.substring(0, 85)}...</p>
-                        <div class="quick-service-footer">
-                          <span class="quick-service-price">${service.price}</span>
-                          <span class="quick-service-duration">
-                            {service.duration} {copy.common.minutesSuffix}
-                          </span>
-                        </div>
-                      </div>
-                    </a>
-                  );
-                })
-              : null
-          }
+        <div class="quick-services-grid" id="quick-services-grid">
+          <div class="loading-placeholder">
+            <p>Cargando servicios...</p>
+          </div>
         </div>
       </div>
     </section>
@@ -208,4 +97,180 @@ const pageTitle = pageData?.title || 'MLA Massage & Wellness';
 
 <style>
   @import '../../styles/index.css';
+
+  .loading-placeholder {
+    text-align: center;
+    padding: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-style: italic;
+    grid-column: 1 / -1;
+  }
 </style>
+
+<script
+  is:inline
+  define:vars={{
+    lang,
+    discoverUrl: localizedHref('/discover'),
+    minutesSuffix: copy.common.minutesSuffix,
+    quickExploreLabel: copy.home.quickExploreLabel,
+    benefitsFallbackTitle: copy.home.benefitsFallbackTitle,
+    benefitsFallbackDescription: copy.home.benefitsFallbackDescription,
+    heroImageAltMain: copy.home.heroImageAltMain,
+    heroImageAltTop: copy.home.heroImageAltTop,
+    heroImageAltBottom: copy.home.heroImageAltBottom,
+  }}
+>
+  window.__HOME_CONFIG__ = {
+    lang,
+    discoverUrl,
+    minutesSuffix,
+    quickExploreLabel,
+    benefitsFallbackTitle,
+    benefitsFallbackDescription,
+    heroImageAltMain,
+    heroImageAltTop,
+    heroImageAltBottom,
+  };
+</script>
+
+<script>
+  import { getPageContent, getFeaturedServices, getBenefits, buildImageUrl } from '../../lib/sanity-client.js';
+
+  function getImageUrl(image, width = 800, height = 600) {
+    if (!image) return '/assets/placeholder.jpg';
+    if (image.asset?.url) return image.asset.url;
+    return buildImageUrl(image, { width, height });
+  }
+
+  function renderBenefits(benefits, config) {
+    const benefitsGrid = document.getElementById('benefits-grid');
+    if (!benefitsGrid) return;
+
+    if (benefits && benefits.length > 0) {
+      benefitsGrid.innerHTML = benefits
+        .map(
+          benefit => `
+        <div class="benefit-card stagger-item">
+          <div class="benefit-icon">${benefit.icon || ''}</div>
+          <h3>${benefit.title}</h3>
+          <p>${benefit.description}</p>
+          <ul class="benefit-list">
+            ${(benefit.items || []).map(item => `<li>${item}</li>`).join('')}
+          </ul>
+        </div>
+      `
+        )
+        .join('');
+    } else {
+      benefitsGrid.innerHTML = `
+        <div class="benefit-card stagger-item">
+          <div class="benefit-icon">
+            <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+              <circle cx="30" cy="30" r="28" fill="var(--primary-color)" />
+              <path d="M30 15C21.716 15 15 21.716 15 30C15 38.284 21.716 45 30 45C38.284 45 45 38.284 45 30C45 21.716 38.284 15 30 15ZM30 40C24.477 40 20 35.523 20 30C20 24.477 24.477 20 30 20C35.523 20 40 24.477 40 30C40 35.523 35.523 40 30 40Z" fill="var(--accent-color)" />
+              <circle cx="30" cy="30" r="4" fill="var(--accent-color)" />
+            </svg>
+          </div>
+          <h3>${config.benefitsFallbackTitle}</h3>
+          <p>${config.benefitsFallbackDescription}</p>
+        </div>
+      `;
+    }
+  }
+
+  function renderFeaturedServices(services, config) {
+    const servicesGrid = document.getElementById('quick-services-grid');
+    if (!servicesGrid) return;
+
+    if (services && services.length > 0) {
+      servicesGrid.innerHTML = services
+        .slice(0, 4)
+        .map(service => {
+          const imageAlt = service.image?.alt || service.title || '';
+          const imageUrl = service.image ? getImageUrl(service.image, 500, 600) : '/assets/service-1.jpg';
+          return `
+          <a href="${config.discoverUrl}" class="quick-service-card">
+            <div class="quick-service-image">
+              <img src="${imageUrl}" alt="${imageAlt}" loading="lazy" />
+              <div class="quick-service-overlay">
+                <span class="quick-service-cta">${config.quickExploreLabel}</span>
+              </div>
+            </div>
+            <div class="quick-service-content">
+              <h3 class="quick-service-title">${service.title}</h3>
+              <p class="quick-service-snippet">${(service.description || '').substring(0, 85)}...</p>
+              <div class="quick-service-footer">
+                <span class="quick-service-price">$${service.price}</span>
+                <span class="quick-service-duration">${service.duration} ${config.minutesSuffix}</span>
+              </div>
+            </div>
+          </a>
+        `;
+        })
+        .join('');
+    } else {
+      servicesGrid.innerHTML = '';
+    }
+  }
+
+  function updateHeroImages(pageData, config) {
+    if (pageData?.heroImage) {
+      const heroBackground = document.getElementById('hero-background');
+      if (heroBackground) {
+        heroBackground.innerHTML = `<img src="${getImageUrl(pageData.heroImage, 1400, 900)}" alt="${pageData.heroImage.alt || config.heroImageAltMain}" />`;
+      }
+    }
+
+    if (pageData?.heroImageTopRight) {
+      const heroImageTop = document.getElementById('hero-image-top');
+      if (heroImageTop) {
+        heroImageTop.innerHTML = `<img src="${getImageUrl(pageData.heroImageTopRight, 800, 800)}" alt="${pageData.heroImageTopRight.alt || config.heroImageAltTop}" />`;
+      }
+    }
+
+    if (pageData?.heroImageBottomRight) {
+      const heroImageBottom = document.getElementById('hero-image-bottom');
+      if (heroImageBottom) {
+        heroImageBottom.innerHTML = `<img src="${getImageUrl(pageData.heroImageBottomRight, 800, 800)}" alt="${pageData.heroImageBottomRight.alt || config.heroImageAltBottom}" />`;
+      }
+    }
+
+    if (pageData?.heroTitle) {
+      const heroTitle = document.getElementById('hero-title');
+      if (heroTitle) heroTitle.textContent = pageData.heroTitle;
+    }
+
+    if (pageData?.heroSubtitle) {
+      const heroSubtitle = document.getElementById('hero-subtitle');
+      if (heroSubtitle) heroSubtitle.textContent = pageData.heroSubtitle;
+    }
+  }
+
+  async function loadHomeData() {
+    const config = window.__HOME_CONFIG__;
+
+    try {
+      const [pageData, featuredServices, benefits] = await Promise.all([
+        getPageContent('homepage', config.lang),
+        getFeaturedServices(config.lang),
+        getBenefits(config.lang),
+      ]);
+
+      updateHeroImages(pageData, config);
+      renderBenefits(benefits, config);
+      renderFeaturedServices(featuredServices, config);
+    } catch (error) {
+      console.error('Error loading home data:', error);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadHomeData);
+  } else {
+    loadHomeData();
+  }
+
+  document.addEventListener('astro:page-load', loadHomeData);
+  document.addEventListener('astro:after-swap', loadHomeData);
+</script>
