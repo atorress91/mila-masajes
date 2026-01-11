@@ -277,6 +277,12 @@ const specialOffers = copy.contact.specialOffers || [];
 <script>
   import { initContactForm } from '../../logic/contact.js';
 
+  declare global {
+    interface Window {
+      __CONTACT_FORM_MESSAGES__?: any;
+    }
+  }
+
   const bootstrapContact = () => {
     const formMessages = window.__CONTACT_FORM_MESSAGES__ || undefined;
     initContactForm(formMessages);
