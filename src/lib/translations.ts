@@ -62,7 +62,7 @@ const baseTranslations = {
       quickServiceImageAlt: 'Professional massage service',
     },
     discover: {
-      pageTitle: 'Our Services - MIA Massage & Wellness',
+      pageTitle: 'Our Services - MLA Massage & Wellness',
       heroTitle: 'Our Services',
       heroSubtitle: 'Discover our complete range of relaxation treatments designed to renew your body and mind',
       packagesTitle: 'Special Packages',
@@ -327,7 +327,7 @@ const baseTranslations = {
       quickServiceImageAlt: 'Servicio profesional de masajes',
     },
     discover: {
-      pageTitle: 'Servicios - MIA Massage & Wellness',
+      pageTitle: 'Servicios - MLA Massage & Wellness',
       heroTitle: 'Nuestros servicios',
       heroSubtitle: 'Conoce nuestra oferta completa de tratamientos pensados para renovar cuerpo y mente',
       packagesTitle: 'Paquetes especiales',
@@ -427,7 +427,7 @@ const baseTranslations = {
       metaDescription: 'Habla con nuestro concierge para planear tratamientos a domicilio, hoteles o retiros privados.',
       heroTitle: 'Conecta con nuestro concierge de bienestar',
       heroSubtitle: 'Cuéntanos sobre tu próxima estadía, evento o momento privado y diseñamos la experiencia ideal.',
-      visitTitle: 'Visita nuestro studio',
+      visitTitle: 'Visita nuestro estudio',
       addressLabel: 'Dirección',
       phoneLabel: 'Teléfonos',
       emailLabel: 'Correo',
