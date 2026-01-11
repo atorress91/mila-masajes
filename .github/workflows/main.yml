@@ -1,9 +1,12 @@
-name: Deploy to Hostinger
+name: Deploy to Hostinger (Static)
 
 on:
   push:
     branches:
       - main
+  # Esto permite que Sanity (u otro sistema) dispare el build externamente
+  repository_dispatch:
+    types: [sanity_update]
 
 jobs:
   deploy:
@@ -22,17 +25,7 @@ jobs:
         run: |
           npm ci
           npm run build
-
-      # PASO NUEVO: Prepara los archivos para subir
-      # Crea una carpeta y mete dentro el package.json y la carpeta dist
-      - name: Prepare deployment files
-        run: |
-          mkdir deploy_package
-          cp package.json deploy_package/
-          cp package-lock.json deploy_package/
-          cp -r dist deploy_package/dist
-          # Opcional: Copiar public si tienes assets estáticos que no pasaron por el build
-          # cp -r public deploy_package/public
+          # Esto crea la carpeta 'dist' con tu web lista
 
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
@@ -40,6 +33,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./deploy_package/ # Subimos la carpeta preparada
-          server-dir: ./
-          dangerous-clean-slate: true
+          # Subimos el CONTENIDO de la carpeta dist a la carpeta public_html del servidor
+          local-dir: ./dist/
+          server-dir: ./public_html/
+          dangerous-clean-slate: true # CUIDADO: Borra lo que haya en public_html antes de subir lo nuevo
