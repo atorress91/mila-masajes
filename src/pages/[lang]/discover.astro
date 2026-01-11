@@ -20,9 +20,13 @@ const services = await getServices(lang);
 const packages = await getPackages(lang);
 const contactInfo = await getContactInfo();
 
-// Crear link de WhatsApp
+// Crear link de WhatsApp con mensaje predefinido
 const phoneNumber = contactInfo?.phone?.replace(/[^0-9+]/g, '') || '';
-const whatsappLink = `https://wa.me/${phoneNumber.replace('+', '')}`;
+const whatsappMessage =
+  lang === 'es'
+    ? '¡Hola! Me gustaría recibir información sobre una consulta personalizada de masajes. ¿Podrían ayudarme?'
+    : 'Hello! I would like to receive information about a personalized massage consultation. Could you help me?';
+const whatsappLink = `https://wa.me/${phoneNumber.replace('+', '')}?text=${encodeURIComponent(whatsappMessage)}`;
 
 // Función auxiliar para formatear duración
 function formatDuration(minutes: number): string {
