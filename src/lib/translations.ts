@@ -69,7 +69,7 @@ const baseTranslations = {
       badgePopular: 'MOST POPULAR',
       choosePackage: 'Choose Package',
       ctaTitle: "Can't find what you're looking for?",
-      ctaDescription: 'Our specialized therapists can create a personalized treatment according to your specific needs',
+      ctaDescription: 'I can create a personalized treatment for you, fully tailored to what you need.',
       ctaButton: 'Custom Consultation',
     },
     booking: {
@@ -334,7 +334,7 @@ const baseTranslations = {
       badgePopular: 'MÁS POPULAR',
       choosePackage: 'Elegir paquete',
       ctaTitle: '¿No encuentras lo que buscas?',
-      ctaDescription: 'Nuestros terapeutas pueden crear un tratamiento personalizado según tus necesidades.',
+      ctaDescription: 'Puedo crear un tratamiento personalizado para ti, adaptado totalmente a lo que necesites.',
       ctaButton: 'Consulta personalizada',
     },
     booking: {
