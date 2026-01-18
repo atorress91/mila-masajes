@@ -44,9 +44,11 @@ const structuredDataJson = structuredData
     <meta name="google-site-verification" content="xiMwSYwhINQVhLtTtEYzDRuXic5F-rTPm4nZFG8Xp1s" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:image" content={ogImage || 'https://milamassage.com/assets/logo.svg'} />
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo.svg" />
+    <link rel="apple-touch-icon" href="/assets/logo.svg" />
     <title>{title}</title>
 
     <!-- Google Fonts -->

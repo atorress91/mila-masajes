@@ -33,9 +33,15 @@ const heroTitle = pageData?.heroTitle || copy.home.heroTitle;
 const heroSubtitle = pageData?.heroSubtitle || copy.home.heroSubtitle;
 const metaDescription = pageData?.description || copy.home.metaDescription;
 const pageTitle = pageData?.title || 'MLA Massage & Wellness';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  url: 'https://milamassage.com',
+  logo: 'https://milamassage.com/assets/logo.svg',
+};
 ---
 
-<Layout title={pageTitle} description={metaDescription} lang={lang}>
+<Layout title={pageTitle} description={metaDescription} lang={lang} structuredData={structuredData}>
   <Header lang={lang} copy={copy} currentPath={currentPath} />
 
   <main>
