@@ -2,6 +2,7 @@
 import type { Lang } from '../lib/i18n';
 import { withLangParam } from '../lib/i18n';
 import type { SiteTranslations } from '../lib/translations';
+import { getLocations } from '../lib/sanity';
 
 interface Props {
   lang: Lang;
@@ -11,6 +12,7 @@ interface Props {
 const { lang, copy } = Astro.props;
 const tFooter = copy.footer;
 const localizedHref = (path: string) => withLangParam(path, lang);
+const locations = await getLocations(lang);
 ---
 
 <footer class="footer">
@@ -57,9 +59,13 @@ const localizedHref = (path: string) => withLangParam(path, lang);
       <div class="footer-section">
         <h3>{tFooter.locations}</h3>
         <ul>
-          <li><a href={localizedHref('/ubicaciones/quepos')}>Quepos &amp; Manuel Antonio</a></li>
-          <li><a href={localizedHref('/ubicaciones/tamarindo')}>Tamarindo &amp; Guanacaste</a></li>
-          <li><a href={localizedHref('/ubicaciones/san-jose')}>San Jose Metropolitan Area</a></li>
+          {
+            locations.map(location => (
+              <li>
+                <a href={localizedHref(`/ubicaciones/${location.slug.current}`)}>{location.name}</a>
+              </li>
+            ))
+          }
         </ul>
       </div>
 
