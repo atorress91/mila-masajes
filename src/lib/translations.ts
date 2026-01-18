@@ -162,7 +162,7 @@ const baseTranslations = {
       metaDescription: 'Reach our concierge team to plan in-home treatments, hotel experiences, or private retreats.',
       heroTitle: "Let's talk about your wellness",
       heroSubtitle: 'Tell us about your upcoming stay, event, or private moment. We will craft the ideal experience.',
-      visitTitle: 'Visit our studio',
+      visitTitle: 'Professional relaxation without leaving home.',
       addressLabel: 'Address',
       phoneLabel: 'Phone numbers',
       emailLabel: 'Email',
@@ -170,16 +170,19 @@ const baseTranslations = {
       offersTitle: 'Special offers',
       specialOffers: [
         {
-          title: 'Corporate wellness days',
-          description: 'On-site chair massage circuits, mindfulness breaks, and recovery lounges for your team.',
+          title: 'Wellness Corporativo',
+          description:
+            'Jornadas de bienestar para tu equipo: masajes en silla y pausas mindful adaptadas a la oficina.',
         },
         {
-          title: 'Hotel & villa partnerships',
-          description: 'White-label spa menus and rapid-response therapists for luxury properties.',
+          title: 'Alianzas con Hoteles y Villas',
+          description:
+            'Servicio exclusivo de terapeuta profesional para huéspedes de lujo, con atención personalizada y directa.',
         },
         {
-          title: 'Seasonal retreats',
-          description: 'Multi-day programs with massage, breathwork, and nutrition guidance.',
+          title: 'Retiros de Temporada',
+          description:
+            'Acompañamiento en retiros con sesiones de masaje, técnicas de respiración y bienestar integral.',
         },
       ],
       formTitle: 'Send us a message',
@@ -427,7 +430,7 @@ const baseTranslations = {
       metaDescription: 'Habla con nuestro concierge para planear tratamientos a domicilio, hoteles o retiros privados.',
       heroTitle: 'Hablemos de tu bienestar',
       heroSubtitle: 'Cuéntanos sobre tu próxima estadía, evento o momento privado y diseñamos la experiencia ideal.',
-      visitTitle: 'Visita nuestro estudio',
+      visitTitle: 'Relajación profesional sin salir de casa.',
       addressLabel: 'Dirección',
       phoneLabel: 'Teléfonos',
       emailLabel: 'Correo',
@@ -435,16 +438,19 @@ const baseTranslations = {
       offersTitle: 'Ofertas especiales',
       specialOffers: [
         {
-          title: 'Wellness corporativo',
-          description: 'Circuitos de masaje en silla, pausas mindful y lounges de recuperación para tu equipo.',
+          title: 'Wellness Corporativo',
+          description:
+            'Jornadas de bienestar para tu equipo: masajes en silla y pausas mindful adaptadas a la oficina.',
         },
         {
-          title: 'Alianzas con hoteles y villas',
-          description: 'Menús spa con tu marca y terapeutas de respuesta rápida para propiedades de lujo.',
+          title: 'Alianzas con Hoteles y Villas',
+          description:
+            'Servicio exclusivo de terapeuta profesional para huéspedes de lujo, con atención personalizada y directa.',
         },
         {
-          title: 'Retiros de temporada',
-          description: 'Programas de varios días con masaje, respiración y nutrición consciente.',
+          title: 'Retiros de Temporada',
+          description:
+            'Acompañamiento en retiros con sesiones de masaje, técnicas de respiración y bienestar integral.',
         },
       ],
       formTitle: 'Envíanos un mensaje',
