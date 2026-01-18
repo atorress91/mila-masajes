@@ -121,7 +121,7 @@ const baseTranslations = {
       noImagesDescription: 'We are curating our favorite transformations. Visit again shortly.',
       loadMore: 'Load more moments',
       ctaTitle: 'Ready for your private session?',
-      ctaSubtitle: 'Book a bespoke treatment or talk with our concierge team for recommendations.',
+      ctaSubtitle: 'Book a bespoke treatment or message me to coordinate the details.',
       aria: {
         viewImage: 'View image',
         closeLightbox: 'Close lightbox',
@@ -160,7 +160,7 @@ const baseTranslations = {
     contact: {
       pageTitle: 'Contact | MLA Massage & Wellness',
       metaDescription: 'Reach our concierge team to plan in-home treatments, hotel experiences, or private retreats.',
-      heroTitle: 'Connect with our wellness concierge',
+      heroTitle: "Let's talk about your wellness",
       heroSubtitle: 'Tell us about your upcoming stay, event, or private moment. We will craft the ideal experience.',
       visitTitle: 'Visit our studio',
       addressLabel: 'Address',
@@ -203,7 +203,7 @@ const baseTranslations = {
       submitLabel: 'Send message',
       mapTitle: 'Find us on the map',
       ctaTitle: 'Prefer to talk now?',
-      ctaDescription: 'Our concierge team is on WhatsApp and phone for immediate assistance.',
+      ctaDescription: 'Message or call me and I will personally assist you right away.',
       ctaPrimary: 'Discover services',
       ctaSecondary: 'Call',
       formMessages: {
@@ -386,7 +386,7 @@ const baseTranslations = {
       noImagesDescription: 'Estamos seleccionando nuestras mejores transformaciones. Vuelve pronto.',
       loadMore: 'Ver más momentos',
       ctaTitle: '¿Listo para tu sesión privada?',
-      ctaSubtitle: 'Reserva un tratamiento a medida o conversa con nuestro concierge.',
+      ctaSubtitle: 'Reserva un tratamiento a medida o escríbeme para coordinar los detalles.',
       aria: {
         viewImage: 'Ver imagen',
         closeLightbox: 'Cerrar galería',
@@ -425,7 +425,7 @@ const baseTranslations = {
     contact: {
       pageTitle: 'Contacto | MLA Massage & Wellness',
       metaDescription: 'Habla con nuestro concierge para planear tratamientos a domicilio, hoteles o retiros privados.',
-      heroTitle: 'Conecta con nuestro concierge de bienestar',
+      heroTitle: 'Hablemos de tu bienestar',
       heroSubtitle: 'Cuéntanos sobre tu próxima estadía, evento o momento privado y diseñamos la experiencia ideal.',
       visitTitle: 'Visita nuestro estudio',
       addressLabel: 'Dirección',
@@ -468,7 +468,7 @@ const baseTranslations = {
       submitLabel: 'Enviar mensaje',
       mapTitle: 'Encuéntranos en el mapa',
       ctaTitle: '¿Prefieres hablar ahora?',
-      ctaDescription: 'Nuestro concierge responde por WhatsApp y teléfono para asistirte de inmediato.',
+      ctaDescription: 'Escríbeme o llámame y te atenderé personalmente de inmediato.',
       ctaPrimary: 'Descubrir servicios',
       ctaSecondary: 'Llamar',
       formMessages: {
