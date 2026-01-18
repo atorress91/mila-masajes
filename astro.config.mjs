@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import indexnow from 'astro-indexnow';
 
 // https://astro.build/config
 export default defineConfig({
@@ -38,5 +39,11 @@ export default defineConfig({
     },
   },
 
-  integrations: [sitemap()],
+  integrations: [
+    sitemap(),
+    indexnow({
+      hostname: 'milamassage.com',
+      apiKey: '71a541095663482fb620eaa0533b8744',
+    }),
+  ],
 });

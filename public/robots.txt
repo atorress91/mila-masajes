@@ -1,0 +1,7 @@
+User-agent: *
+Disallow:
+
+User-agent: bingbot
+Disallow:
+
+Sitemap: https://milamassage.com/sitemap-index.xml
