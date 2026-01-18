@@ -58,11 +58,7 @@ const structuredDataJson = structuredData
 
     <script src="/js/trusted-types-policy.js" type="module"></script>
 
-    {structuredDataJson && (
-      <script type="application/ld+json">
-        {structuredDataJson}
-      </script>
-    )}
+    {structuredDataJson && <script type="application/ld+json" set:html={structuredDataJson} />}
 
     <!-- View Transitions -->
     <ViewTransitions />
