@@ -43,7 +43,7 @@ export default defineConfig({
     sitemap(),
     indexnow({
       hostname: 'milamassage.com',
-      apiKey: process.env.INDEXNOW_KEY,
+      Key: process.env.INDEXNOW_KEY,
     }),
   ],
 });

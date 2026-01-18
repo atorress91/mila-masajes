@@ -4,15 +4,12 @@ on:
   push:
     branches:
       - main
-  # Esto permite que Sanity (u otro sistema) dispare el build externamente
   repository_dispatch:
     types: [sanity_update]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
 
     steps:
       - name: Checkout repository
@@ -22,12 +19,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "20"
+          cache: "npm"
 
-      - name: Install dependencies and build
-        run: |
-          npm ci
-          npm run build
-          # Esto crea la carpeta 'dist' con tu web lista
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Astro
+
+        run: npm run build
         env:
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
 
@@ -37,7 +36,6 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # Subimos el CONTENIDO de la carpeta dist a la carpeta public_html del servidor
           local-dir: ./dist/
           server-dir: ./
-          dangerous-clean-slate: true # CUIDADO: Borra lo que haya en public_html antes de subir lo nuevo
+          dangerous-clean-slate: true
