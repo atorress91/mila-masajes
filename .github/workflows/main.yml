@@ -26,6 +26,8 @@ jobs:
           npm ci
           npm run build
           # Esto crea la carpeta 'dist' con tu web lista
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
 
       - name: Deploy to Hostinger via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
