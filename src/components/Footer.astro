@@ -13,6 +13,8 @@ const { lang, copy } = Astro.props;
 const tFooter = copy.footer;
 const localizedHref = (path: string) => withLangParam(path, lang);
 const locations = await getLocations(lang);
+const currentYear = new Date().getFullYear();
+const copyrightText = tFooter.copyright.replace('2025', String(currentYear));
 ---
 
 <footer class="footer">
@@ -90,7 +92,7 @@ const locations = await getLocations(lang);
     </div>
 
     <div class="footer-bottom">
-      <p class="copyright">{tFooter.copyright}</p>
+      <p class="copyright">{copyrightText}</p>
     </div>
   </div>
 </footer>
