@@ -233,10 +233,10 @@ const baseTranslations = {
         pageTitle: 'Locations | MLA Massage & Wellness',
         metaDescription:
           'Browse the Costa Rican destinations where our therapists travel for villa and hotel treatments.',
-        heroEyebrow: 'Nationwide coverage',
-        heroTitle: 'In-home massage wherever you need us',
+        heroEyebrow: 'Local focus',
+        heroTitle: 'In-home massage wherever you are.',
         heroSubtitle:
-          'We pamper boutique hotels, private villas, and residences across Quepos, Tamarindo, San José, and beyond.',
+          "We specialize in serving hotels, villas, and residences in our area and surrounding locations, so you don't have to travel.",
         sectionEyebrow: 'Explore',
         sectionTitle: 'Active service hubs',
         sectionSubtitle: 'Choose your area to view therapist availability, reviews, and curated packages.',
@@ -501,9 +501,10 @@ const baseTranslations = {
         pageTitle: 'Ubicaciones | MLA Massage & Wellness',
         metaDescription:
           'Explora las zonas de Costa Rica donde llegamos con terapeutas para hoteles y villas privadas.',
-        heroEyebrow: 'Cobertura nacional',
-        heroTitle: 'Masajes a domicilio donde nos necesites',
-        heroSubtitle: 'Atendemos hoteles boutique, villas y residencias en destinos como Quepos, Tamarindo y San José.',
+        heroEyebrow: 'Enfoque local',
+        heroTitle: 'Masajes a domicilio donde te encuentres.',
+        heroSubtitle:
+          'Nos especializamos en la atención de hoteles, villas y residencias en nuestro sector y áreas circundantes, para que no tengas que desplazarte.',
         sectionEyebrow: 'Explora',
         sectionTitle: 'Zonas activas',
         sectionSubtitle: 'Selecciona tu área para ver disponibilidad, reseñas locales y paquetes sugeridos.',
