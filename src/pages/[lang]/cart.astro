@@ -13,9 +13,11 @@ const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+const toAbsolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+const canonical = toAbsolute(Astro.url.pathname);
 ---
 
-<Layout title={copy.cart.pageTitle} description={copy.cart.metaDescription} lang={lang}>
+<Layout title={copy.cart.pageTitle} description={copy.cart.metaDescription} lang={lang} canonical={canonical}>
   <!-- Promo Banner -->
   <div class="promo-banner">
     <p>{copy.cart.promoBanner}</p>

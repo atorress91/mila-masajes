@@ -14,12 +14,14 @@ const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+const toAbsolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+const canonical = toAbsolute(Astro.url.pathname);
 
 const locations = await getLocations(lang);
 const baseDescription = copy.locations.overview.metaDescription;
 ---
 
-<Layout title={copy.locations.overview.pageTitle} description={baseDescription} lang={lang}>
+<Layout title={copy.locations.overview.pageTitle} description={baseDescription} lang={lang} canonical={canonical}>
   <Header lang={lang} copy={copy} currentPath={currentPath} />
 
   <main class="location-page locations-overview">

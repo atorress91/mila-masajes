@@ -15,6 +15,8 @@ const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+const toAbsolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+const canonical = toAbsolute(Astro.url.pathname);
 
 const services = await getServices(lang);
 const packages = await getPackages(lang);
@@ -44,7 +46,7 @@ const defaultColor = '#8b5a5a';
 const defaultRating = 5.0;
 ---
 
-<Layout title={copy.discover.pageTitle} lang={lang}>
+<Layout title={copy.discover.pageTitle} lang={lang} canonical={canonical}>
   <Header lang={lang} copy={copy} currentPath={currentPath} />
 
   <!-- SVG Gradient Definition (hidden) -->

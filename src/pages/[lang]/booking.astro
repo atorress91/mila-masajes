@@ -22,6 +22,8 @@ const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${url.pathname}${url.search}`;
+const toAbsolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+const canonical = toAbsolute(url.pathname);
 
 // Obtener información de booking desde Sanity
 const bookingInfo = await getBookingInfo(lang);
@@ -107,7 +109,7 @@ const importantInfo = bookingInfo?.importantInfo || fallbackImportantInfo;
 const faqs = bookingInfo?.faqs || fallbackFaqs;
 ---
 
-<Layout title={`${pageTitle} | MIA Massage & Wellness`} lang={lang}>
+<Layout title={`${pageTitle} | MIA Massage & Wellness`} lang={lang} canonical={canonical}>
   <!-- Deshabilitar view transitions en esta página para evitar conflictos con Cal.com -->
   <meta name="astro-view-transitions-enabled" content="false" slot="head" />
 

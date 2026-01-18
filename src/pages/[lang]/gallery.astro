@@ -17,6 +17,8 @@ const lang = getLangFromAstro(Astro);
 const copy = getTranslations(lang);
 const localizedHref = (path: string) => withLangParam(path, lang);
 const currentPath = `${Astro.url.pathname}${Astro.url.search}`;
+const toAbsolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+const canonical = toAbsolute(Astro.url.pathname);
 
 try {
   galleryImages = await getGalleryImages(lang);
@@ -35,7 +37,7 @@ const categories = [
 ];
 ---
 
-<Layout title={copy.gallery.pageTitle} description={copy.gallery.metaDescription} lang={lang}>
+<Layout title={copy.gallery.pageTitle} description={copy.gallery.metaDescription} lang={lang} canonical={canonical}>
   <Header lang={lang} copy={copy} currentPath={currentPath} />
 
   <main class="gallery-page">
